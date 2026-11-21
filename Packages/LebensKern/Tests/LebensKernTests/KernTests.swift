@@ -208,3 +208,12 @@ final class KernTests: XCTestCase {
         XCTAssertEqual(try JSONDecoder().decode(Bestand.self, from: roh), b)
     }
 }
+
+extension KernTests {
+    /// Schreibt die Beispiel-Szene als JSON, wenn SZENE_JSON gesetzt ist. Damit wird die Web-Szene außerhalb der App geprüft.
+    func testSchreibeBeispielSzene() throws {
+        guard let pfad = ProcessInfo.processInfo.environment["SZENE_JSON"] else { return }
+        let s = Szenenbau.baue(Bestand.beispiel(heute: heute, kalender: kal), heute: heute, kalender: kal)
+        try JSONEncoder().encode(s).write(to: URL(fileURLWithPath: pfad))
+    }
+}

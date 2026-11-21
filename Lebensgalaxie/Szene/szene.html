@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Lebensgalaxie</title>
+<style>
+html,body{height:100%;margin:0;background:#06051A;overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#schilder{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.schild{position:absolute;left:0;top:0;color:#F3F0FF;font:500 11.5px/1 -apple-system,system-ui,'Segoe UI',sans-serif;white-space:nowrap;padding:3px 0;
+  text-shadow:0 0 6px #06051A,0 0 12px #06051A,0 1px 2px #06051A;will-change:transform,opacity;transition:opacity .25s}
+.schild.wolke{font-style:italic;color:#B3ABDD}
+.schild.planet{font-weight:700;font-size:13px}
+.schild.mond{font-size:10.5px;color:#D9D4F5}
+.schild.heute{font-weight:700;font-size:12.5px;color:#06051A;text-shadow:none}
+.schild.heute span{background:#F3F0FF;border-radius:999px;padding:5px 10px;display:inline-block}
+#blende{position:fixed;inset:0;background:#06051A;opacity:0;pointer-events:none}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div id="schilder"></div>
+<div id="blende"></div>
+<script src="three.min.js"></script>
+<script src="szene.js"></script>
+</body>
+</html>
