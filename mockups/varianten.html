@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Lebenskarte: 5 Varianten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Fredoka:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@400;500;600&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#888;display:flex;gap:40px;padding:40px;width:max-content;font-family:Inter,sans-serif}
+.stage{width:520px;padding:40px 0 44px;display:flex;flex-direction:column;align-items:center}
+.cap{width:390px;margin-bottom:26px}
+.cap .n{font-size:15px;font-weight:600;opacity:.6;margin-bottom:4px}
+.cap h2{font-size:38px;line-height:1.05;font-weight:700;letter-spacing:-.01em}
+.cap p{font-size:16px;line-height:1.45;margin-top:10px}
+.foot{width:390px;margin-top:30px;font-size:15px;line-height:1.5}
+.foot b{font-weight:600}
+.phone{width:390px;height:844px;border-radius:56px;position:relative;overflow:hidden;
+  box-shadow:0 0 0 10px #16181d,0 0 0 12px #454851,0 34px 60px -10px rgba(10,15,30,.45)}
+.phone>svg.bg{position:absolute;inset:0;width:390px;height:844px;display:block}
+.notch{position:absolute;top:11px;left:50%;width:122px;height:35px;border-radius:20px;background:#000;transform:translateX(-50%);z-index:20}
+.status{position:absolute;top:17px;left:0;right:0;padding:0 36px 0 40px;display:flex;justify-content:space-between;align-items:center;font:600 16px Inter,sans-serif;z-index:19}
+.status .r{display:flex;gap:6px;align-items:center}
+.status .bat{width:25px;height:12px;border-radius:4px;border:1.5px solid currentColor;position:relative;opacity:.9}
+.status .bat i{position:absolute;inset:1.5px;right:7px;background:currentColor;border-radius:1.5px}
+.status .sig{display:flex;gap:2px;align-items:flex-end;height:11px}
+.status .sig i{width:3px;background:currentColor;border-radius:1px}
+.home{position:absolute;bottom:8px;left:50%;width:136px;height:5px;border-radius:3px;transform:translateX(-50%);z-index:20}
+.seg{display:flex;padding:3px;border-radius:999px;font-size:13px;font-weight:600}
+.seg span{padding:5px 11px;border-radius:999px}
+.lbl{paint-order:stroke;stroke-linejoin:round}
+
+/* ---------- 1 Seekarte ---------- */
+#v1{background:#DDE9EE;color:#1C2B3A;font-family:'IBM Plex Sans Condensed',sans-serif}
+#v1 .cap h2{font-family:'Libre Caslon Text',serif;font-weight:400}
+#v1 .phone{background:#F8FBFB;color:#1C2B3A}
+#v1 .top{position:absolute;top:58px;left:20px;right:20px;display:flex;justify-content:space-between;align-items:flex-start;z-index:5}
+#v1 .top h3{font:400 30px/1 'Libre Caslon Text',serif}
+#v1 .top small{display:block;font-size:14px;margin-top:6px;color:#4A5B6B}
+#v1 .seg{background:#fff;border:1px solid #1C2B3A}
+#v1 .seg .on{background:#1C2B3A;color:#fff}
+#v1 .sheet{position:absolute;left:0;right:0;bottom:0;height:286px;background:#fff;border-top:1.5px solid #1C2B3A;padding:18px 22px 0;z-index:6}
+#v1 .sheet .when{font-size:14px;color:#4A5B6B;display:flex;justify-content:space-between}
+#v1 .sheet blockquote{font:italic 400 16.5px/1.42 'Libre Caslon Text',serif;margin:8px 0 11px}
+#v1 .ai{display:flex;gap:9px;font-size:14.5px;line-height:1.35;color:#8E1F63;align-items:flex-start}
+#v1 .ai svg{flex:none;margin-top:1px}
+#v1 .view{margin-top:12px;padding:11px 13px;background:#EAF4F8;border-left:3px solid #1C2B3A;font-size:15px;line-height:1.38}
+
+/* ---------- 2 Abenteuerkarte ---------- */
+#v2{background:#FFE9B8;color:#27314F;font-family:'Fredoka',sans-serif}
+#v2 .cap h2{font-weight:700}
+#v2 .phone{background:#7CC576;color:#fff}
+#v2 .hud{position:absolute;top:58px;left:14px;right:14px;display:flex;gap:10px;align-items:center;z-index:5}
+#v2 .pill{background:#27314F;color:#fff;border-radius:18px;padding:7px 12px 7px 7px;display:flex;align-items:center;gap:9px;box-shadow:0 4px 0 #161D33}
+#v2 .ava{width:36px;height:36px;border-radius:50%;background:#FFC93C;display:grid;place-items:center;border:2.5px solid #fff}
+#v2 .lv{font-weight:600;font-size:15px;line-height:1.1}
+#v2 .xp{width:92px;height:8px;border-radius:5px;background:#465079;margin-top:5px;overflow:hidden}
+#v2 .xp i{display:block;width:68%;height:100%;background:#6FE3C1;border-radius:5px}
+#v2 .streak{margin-left:auto;padding:9px 13px;font-weight:600;font-size:15px}
+#v2 .bubble{position:absolute;left:18px;top:386px;width:186px;background:#fff;color:#27314F;border-radius:16px;padding:10px 13px;font-size:14.5px;line-height:1.3;font-weight:500;box-shadow:0 4px 0 rgba(39,49,79,.25);z-index:4}
+#v2 .bubble:after{content:"";position:absolute;left:90px;top:-9px;border:9px solid transparent;border-bottom-color:#fff;border-top:0}
+#v2 .bubble b{font-weight:600;color:#D63E6C}
+#v2 .card{position:absolute;left:12px;right:12px;bottom:24px;background:#fff;color:#27314F;border-radius:26px;padding:16px 16px 14px;box-shadow:0 6px 0 rgba(39,49,79,.28);z-index:6}
+#v2 .card .q{display:flex;align-items:center;gap:12px}
+#v2 .card .ico{width:46px;height:46px;border-radius:14px;background:#FFE9B8;display:grid;place-items:center;flex:none}
+#v2 .card .t small{font-size:13.5px;color:#6A7393;font-weight:500}
+#v2 .card .t div{font-size:18px;font-weight:600;line-height:1.15}
+#v2 .btn{margin-left:auto;background:#E4577A;color:#fff;font-weight:600;font-size:15px;padding:10px 13px;border-radius:14px;box-shadow:0 4px 0 #B33A5B;white-space:nowrap}
+#v2 .new{margin-top:14px;padding-top:12px;border-top:2px dashed #DCE0EE;font-size:14.5px;line-height:1.35;display:flex;gap:9px}
+#v2 .new b{font-weight:600}
+
+/* ---------- 3 Sternenhimmel ---------- */
+#v3{background:#191E4A;color:#E9EAFF;font-family:'Sora',sans-serif}
+#v3 .cap h2{font-weight:600;letter-spacing:-.02em}
+#v3 .phone{background:#0F1338;color:#fff}
+#v3 .top{position:absolute;top:60px;left:22px;right:22px;z-index:5}
+#v3 .top h3{font-size:25px;font-weight:600;letter-spacing:-.02em}
+#v3 .top small{font-size:13.5px;color:#A6ABDD;display:block;margin-top:4px}
+#v3 .panel{position:absolute;left:12px;right:12px;bottom:22px;z-index:6}
+#v3 .found{background:rgba(31,37,92,.92);border:1px solid #3A4192;border-radius:22px;padding:14px 15px}
+#v3 .found h4{font-size:14px;font-weight:500;color:#A6ABDD}
+#v3 .chip{display:flex;align-items:center;gap:9px;font-size:14.5px;margin-top:9px;line-height:1.3}
+#v3 .chip i{width:10px;height:10px;border-radius:50%;flex:none;box-shadow:0 0 0 4px rgba(255,255,255,.08)}
+#v3 .chip span{color:#A6ABDD}
+#v3 .input{margin-top:10px;background:#fff;color:#191E4A;border-radius:999px;padding:13px 14px 13px 20px;display:flex;justify-content:space-between;align-items:center;font-size:16px;font-weight:500}
+#v3 .mic{width:34px;height:34px;border-radius:50%;background:#191E4A;display:grid;place-items:center}
+
+/* ---------- 4 Höhenprofil ---------- */
+#v4{background:#E3E8D8;color:#2A2F26;font-family:'Barlow',sans-serif}
+#v4 .cap h2{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:46px;letter-spacing:0}
+#v4 .phone{background:#fff;color:#2A2F26}
+#v4 .top{position:absolute;top:58px;left:18px;right:18px;display:flex;justify-content:space-between;align-items:center;z-index:5}
+#v4 .top h3{font:700 30px/1 'Barlow Condensed',sans-serif}
+#v4 .seg{background:rgba(255,255,255,.9);box-shadow:0 0 0 1px #2A2F26}
+#v4 .seg .on{background:#2A2F26;color:#fff}
+#v4 .prof{position:absolute;left:0;right:0;top:428px;bottom:0;background:#fff;border-top:2px solid #2A2F26;padding:14px 18px 0;z-index:6}
+#v4 .prof h4{font:600 20px/1.1 'Barlow Condensed',sans-serif;display:flex;justify-content:space-between;align-items:baseline}
+#v4 .prof h4 span{font:500 14px 'Barlow',sans-serif;color:#6B7263}
+#v4 .say{margin-top:10px;padding:12px 14px;background:#2A2F26;color:#fff;border-radius:6px;font-size:15.5px;line-height:1.36}
+#v4 .say b{color:#FFB199;font-weight:600}
+#v4 .rate{margin-top:13px;display:flex;align-items:center;gap:12px;font-size:15px;font-weight:500}
+#v4 .track{flex:1;height:6px;background:#DADFD0;border-radius:3px;position:relative}
+#v4 .track i{position:absolute;left:0;top:0;height:6px;width:42%;background:#D8452B;border-radius:3px}
+#v4 .track u{position:absolute;left:42%;top:-8px;width:22px;height:22px;margin-left:-11px;border-radius:50%;background:#fff;border:3px solid #D8452B}
+#v4 .write{background:#D8452B;color:#fff;font-weight:600;padding:9px 14px;border-radius:6px;font-size:15px}
+
+/* ---------- 5 Lebensinsel ---------- */
+#v5{background:#F7D9C4;color:#243B45;font-family:'Bricolage Grotesque',sans-serif}
+#v5 .cap h2{font-weight:800;letter-spacing:-.02em}
+#v5 .phone{background:#2E8C94;color:#fff}
+#v5 .top{position:absolute;top:60px;left:22px;right:22px;display:flex;justify-content:space-between;align-items:flex-start;z-index:5}
+#v5 .top h3{font-size:28px;font-weight:800;letter-spacing:-.02em;line-height:1}
+#v5 .top small{font-size:14px;display:block;margin-top:5px;opacity:.85}
+#v5 .season{background:rgba(255,255,255,.18);border-radius:12px;padding:7px 11px;font-size:13.5px;font-weight:600}
+#v5 .card{position:absolute;left:12px;right:12px;bottom:22px;background:#FFF8F1;color:#243B45;border-radius:24px;padding:16px 16px 14px;z-index:6}
+#v5 .card h4{font-size:18px;font-weight:700;letter-spacing:-.01em}
+#v5 .row{display:flex;gap:11px;align-items:flex-start;margin-top:10px;font-size:14.5px;line-height:1.3}
+#v5 .row .d{width:26px;height:26px;border-radius:8px;flex:none;display:grid;place-items:center}
+#v5 .row b{font-weight:700}
+#v5 .row span{color:#5B717A}
+#v5 .go{margin-top:13px;background:#243B45;color:#fff;border-radius:14px;padding:12px 16px;font-weight:600;font-size:15.5px;display:flex;justify-content:space-between}
+</style>
+</head>
+<body>
+
+<!-- ============ 1 SEEKARTE ============ -->
+<section class="stage" id="v1">
+  <div class="cap"><div class="n">Variante 1</div><h2>Seekarte</h2>
+    <p>Dein Leben als Karte von oben. Die gefahrene Route bleibt sichtbar, und jeder Sturm hat einen Rand.</p></div>
+  <div class="phone">
+    <svg class="bg" id="sea" viewBox="0 0 390 844"></svg>
+    <div class="notch"></div>
+    <div class="status"><span>21:47</span><span class="r"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:11px"></i></span><span class="bat"><i></i></span></span></div>
+    <div class="top"><div><h3>Logbuch</h3><small>Tag 11.284, Kurs Nordost</small></div>
+      <div class="seg"><span>Tag</span><span>Jahr</span><span class="on">Leben</span></div></div>
+    <div class="sheet">
+      <div class="when"><span>Eintrag von heute Abend</span><span>21. November</span></div>
+      <blockquote>„Absage von der Tischlerei. Fühlt sich an, als käme ich nie an. Abends mit Jonas telefoniert, das tat gut.“</blockquote>
+      <div class="ai"><svg width="18" height="18" viewBox="0 0 18 18"><path d="M9 1l1.9 5.1L16 8l-5.1 1.9L9 15l-1.9-5.1L2 8l5.100-1.9z" fill="#B4287C"/></svg>
+        <span>Auf der Karte ergänzt: Gegenwind bei der Jobsuche, Jonas als Lotse an Bord.</span></div>
+      <div class="view">Von oben gesehen ist das dein dritter Sturm. Aus den ersten beiden warst du nach 5 und 9 Wochen wieder raus.</div>
+    </div>
+    <div class="home" style="background:#1C2B3A"></div>
+  </div>
+  <div class="foot"><b>Tagebuch als Logbuch.</b> Aus jedem Eintrag werden Wegpunkte, Inseln und Wetter auf der Karte.</div>
+</section>
+
+<!-- ============ 2 ABENTEUERKARTE ============ -->
+<section class="stage" id="v2">
+  <div class="cap"><div class="n">Variante 2</div><h2>Abenteuerkarte</h2>
+    <p>Dein Leben als Spielwelt mit Feldern, Regionen und Level. Eine schwere Phase ist ein Gebiet, das man durchquert.</p></div>
+  <div class="phone">
+    <svg class="bg" id="rpg" viewBox="0 0 390 844"></svg>
+    <div class="notch"></div>
+    <div class="status"><span>21:47</span><span class="r"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:11px"></i></span><span class="bat"><i></i></span></span></div>
+    <div class="hud">
+      <div class="pill"><div class="ava"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="7" r="4" fill="#27314F"/><path d="M2.500 19a7.500 7.500 0 0115 0z" fill="#27314F"/></svg></div>
+        <div><div class="lv">Level 31</div><div class="xp"><i></i></div></div></div>
+      <div class="pill streak"><svg width="15" height="18" viewBox="0 0 15 18"><path d="M7.500 0c1 3.500 5.500 5.500 5.500 10.500a5.500 5.500 0 01-11 0c0-2 1-3.500 2-4.500.300 1.500 1 2.300 2 2.500C5.500 5.500 6 2.500 7.500 0z" fill="#FFC93C"/></svg>12 Abende</div>
+    </div>
+    <div class="bubble"><b>Du bist hier.</b> Noch 3 Felder bis zum Rand vom Nebelsumpf.</div>
+    <div class="card">
+      <div class="q"><div class="ico"><svg width="26" height="26" viewBox="0 0 26 26"><path d="M5 3h13l3 3v17H5z" fill="#27314F"/><path d="M9 9h8M9 13h8M9 17h5" stroke="#FFE9B8" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="t"><small>Tagesquest, +40 XP</small><div>Abendeintrag schreiben</div></div>
+        <div class="btn">Tag eintragen</div></div>
+      <div class="new"><svg width="18" height="18" viewBox="0 0 18 18" style="flex:none;margin-top:1px"><path d="M9 1l1.900 5.100L16 8l-5.100 1.900L9 15l-1.900-5.100L2 8l5.100-1.900z" fill="#E4577A"/></svg>
+        <span><b>Neue Nebenquest aus gestern:</b> Bei der zweiten Tischlerei nachfragen. Belohnung: 1 Feld Richtung Sonnenküste.</span></div>
+    </div>
+    <div class="home" style="background:#27314F"></div>
+  </div>
+  <div class="foot"><b>Tagebuch als Tagesquest.</b> Jeder Abendeintrag gibt XP und rückt dich ein Feld weiter. Aus dem Text entstehen neue Quests.</div>
+</section>
+
+<!-- ============ 3 STERNENHIMMEL ============ -->
+<section class="stage" id="v3">
+  <div class="cap"><div class="n">Variante 3</div><h2>Sternenhimmel</h2>
+    <p>Eine Mindmap, die von selbst wächst. Du in der Mitte, drumherum Menschen, Arbeit, Gesundheit, Geld und Träume.</p></div>
+  <div class="phone">
+    <svg class="bg" id="sky" viewBox="0 0 390 844"></svg>
+    <div class="notch"></div>
+    <div class="status"><span>21:47</span><span class="r"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:11px"></i></span><span class="bat"><i></i></span></span></div>
+    <div class="top"><h3>Dein Himmel</h3><small>148 Sterne aus 96 Abenden</small></div>
+    <div class="panel">
+      <div class="found"><h4>Aus deinem Eintrag von heute</h4>
+        <div class="chip"><i style="background:#FFC857"></i><div>Absage Tischlerei <span>neuer Stern bei Arbeit</span></div></div>
+        <div class="chip"><i style="background:#FF8FA8"></i><div>Jonas <span>jetzt verbunden mit „schwere Tage“</span></div></div>
+      </div>
+      <div class="input"><span>Erzähl von deinem Tag</span><span class="mic"><svg width="14" height="18" viewBox="0 0 14 18"><rect x="4" y="0" width="6" height="11" rx="3" fill="#fff"/><path d="M1 8a6 6 0 0012 0M7 14v4" stroke="#fff" stroke-width="1.800" fill="none" stroke-linecap="round"/></svg></span></div>
+    </div>
+    <div class="home" style="background:#fff"></div>
+  </div>
+  <div class="foot"><b>Tagebuch als Gespräch.</b> Du erzählst, und aus jedem Eintrag werden neue Sterne und Verbindungen.</div>
+</section>
+
+<!-- ============ 4 HÖHENPROFIL ============ -->
+<section class="stage" id="v4">
+  <div class="cap"><div class="n">Variante 4</div><h2>Höhenprofil</h2>
+    <p>Dein Weg als Wanderkarte. Darunter siehst du, wie tief frühere Täler waren und dass es danach wieder hochging.</p></div>
+  <div class="phone">
+    <svg class="bg" id="topo" viewBox="0 0 390 844"></svg>
+    <div class="notch"></div>
+    <div class="status"><span>21:47</span><span class="r"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:11px"></i></span><span class="bat"><i></i></span></span></div>
+    <div class="top"><h3>Dein Weg</h3><div class="seg"><span>Woche</span><span class="on">Jahr</span><span>Leben</span></div></div>
+    <div class="prof">
+      <h4>Höhenprofil der letzten 12 Monate <span>in Metern</span></h4>
+      <svg id="chart" viewBox="0 0 354 190" width="354" height="190" style="display:block;margin-top:8px"></svg>
+      <div class="say">Heute fühlt sich wie ganz unten an. Du stehst <b>480 m über deinem Tal vom März</b>, und von dort warst du in 7 Wochen wieder oben.</div>
+      <div class="rate"><span>Wie hoch war heute?</span><div class="track"><i></i><u></u></div><div class="write">Eintrag</div></div>
+    </div>
+    <div class="home" style="background:#2A2F26"></div>
+  </div>
+  <div class="foot"><b>Tagebuch mit Höhenangabe.</b> Jeden Abend ein Eintrag und eine Höhe für den Tag. Daraus entsteht die Karte.</div>
+</section>
+
+<!-- ============ 5 LEBENSINSEL ============ -->
+<section class="stage" id="v5">
+  <div class="cap"><div class="n">Variante 5</div><h2>Lebensinsel</h2>
+    <p>Deine Insel von oben. Jeder Lebensbereich ist ein Viertel, das wächst oder gerade Baustelle ist.</p></div>
+  <div class="phone">
+    <svg class="bg" id="isle" viewBox="0 0 390 844"></svg>
+    <div class="notch"></div>
+    <div class="status"><span>21:47</span><span class="r"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:11px"></i></span><span class="bat"><i></i></span></span></div>
+    <div class="top"><div><h3>Deine Insel</h3><small>Jahr 31, 96 Abende eingetragen</small></div><div class="season">Herbst</div></div>
+    <div class="card">
+      <h4>Heute auf deiner Insel</h4>
+      <div class="row"><div class="d" style="background:#CFE9C4"><svg width="14" height="16" viewBox="0 0 14 16"><circle cx="7" cy="6" r="6" fill="#3F8F4E"/><rect x="6" y="10" width="2" height="6" fill="#7A5A3A"/></svg></div><div><b>Neuer Baum im Garten.</b> <span>30 Minuten gelaufen</span></div></div>
+      <div class="row"><div class="d" style="background:#FFE0A8"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M1 13L7 1l6 12z" fill="#E08A1E"/></svg></div><div><b>Die Werft bleibt Baustelle.</b> <span>Absage erhalten. Das Gerüst steht noch, das Fundament auch.</span></div></div>
+      <div class="row"><div class="d" style="background:#FFD3CB"><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5" fill="#E8604C"/></svg></div><div><b>Licht im Dorf.</b> <span>Telefonat mit Jonas</span></div></div>
+      <div class="go"><span>Tag eintragen</span><span>21:47</span></div>
+    </div>
+    <div class="home" style="background:#243B45"></div>
+  </div>
+  <div class="foot"><b>Tagebuch als Baumeister.</b> Aus deinen Einträgen werden Bäume, Häuser und Lichter. Du siehst, was trotz allem steht.</div>
+</section>
+
+<script>
+const NS='http://www.w3.org/2000/svg';
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function smooth(p,closed){ // Catmull-Rom -> bezier
+  const n=p.length;let d='M'+p[0][0].toFixed(1)+' '+p[0][1].toFixed(1);
+  const g=i=>closed?p[(i+n)%n]:p[Math.max(0,Math.min(n-1,i))];
+  for(let i=0;i<(closed?n:n-1);i++){const a=g(i-1),b=g(i),c=g(i+1),e=g(i+2);
+    d+=' C'+(b[0]+(c[0]-a[0])/6).toFixed(1)+' '+(b[1]+(c[1]-a[1])/6).toFixed(1)+' '+(c[0]-(e[0]-b[0])/6).toFixed(1)+' '+(c[1]-(e[1]-b[1])/6).toFixed(1)+' '+c[0].toFixed(1)+' '+c[1].toFixed(1)}
+  return d+(closed?'Z':'')}
+function blob(cx,cy,r,seed,k=9,amp=.28,sx=1,sy=1){const R=rng(seed),pts=[];
+  for(let i=0;i<k;i++){const a=i/k*Math.PI*2,rr=r*(1-amp/2+R()*amp);pts.push([cx+Math.cos(a)*rr*sx,cy+Math.sin(a)*rr*sy])}
+  return smooth(pts,true)}
+const T=(x,y,s,a='')=>`<text x="${x}" y="${y}" ${a}>${s}</text>`;
+
+/* ---------- 1 sea chart ---------- */
+(function(){
+  const land=[
+    {d:blob(18,588,74,3,10,.3,1.2,.8),name:'Heimathafen',sub:'1995',lx:14,ly:548,anchor:'start'},
+    {d:blob(158,520,22,11,8,.35,1.3,.9),name:'Ausbildung',sub:'2019',lx:158,ly:558,anchor:'middle'},
+    {d:blob(322,446,30,7,9,.3,1,1.2),name:'Erste eigene',sub:'Wohnung 2022',lx:322,ly:496,anchor:'middle'},
+    {d:blob(84,388,27,21,9,.35,1.25,.9),name:'Jobwechsel',sub:'2024',lx:84,ly:432,anchor:'middle'},
+    {d:blob(304,168,42,5,11,.3,1.15,.95),name:'Eigene Werkstatt',sub:'dein Ziel',lx:304,ly:228,anchor:'middle'},
+    {d:blob(360,330,10,4,7,.4),name:'',sub:''}];
+  let s='<rect width="390" height="844" fill="#F8FBFB"/>';
+  // grid
+  for(let x=30;x<390;x+=90)s+=`<path d="M${x} 0V900" stroke="#B9CBD4" stroke-width=".7"/>`;
+  for(let y=52;y<900;y+=90)s+=`<path d="M0 ${y}H390" stroke="#B9CBD4" stroke-width=".7"/>`;
+  // shallows
+  land.forEach(l=>s+=`<path d="${l.d}" fill="#D3EAF3" stroke="#D3EAF3" stroke-width="44" stroke-linejoin="round"/>`);
+  land.forEach(l=>s+=`<path d="${l.d}" fill="#B3D9E9" stroke="#B3D9E9" stroke-width="18" stroke-linejoin="round"/>`);
+  land.forEach(l=>s+=`<path d="${l.d}" fill="none" stroke="#6FA9C2" stroke-width="18.800" stroke-linejoin="round" stroke-dasharray="1 4" opacity=".0"/>`);
+  // soundings
+  const R=rng(42);
+  const no=[[0,100,120,110],[240,236,150,90],[100,246,120,50],[30,412,110,40],[262,470,120,50],[110,535,100,50],[0,520,110,60],[236,200,140,50],[20,255,90,50]];
+  for(let i=0;i<60;i++){const x=10+R()*370,y=110+R()*470;if(no.some(b=>x>b[0]-8&&x<b[0]+b[2]&&y>b[1]&&y<b[1]+b[3]+8))continue;
+    s+=T(x.toFixed(0),y.toFixed(0),Math.floor(8+R()*60),`font-family="Libre Caslon Text" font-style="italic" font-size="9.500" fill="#7D97A6"`)}
+  // storm
+  s+=`<defs><pattern id="hat" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(40)"><path d="M0 0V7" stroke="#1C2B3A" stroke-width="1.100"/></pattern></defs>`;
+  const st=blob(196,318,60,17,10,.22,1.1,.92);
+  s+=`<path d="${st}" fill="#F8FBFB" opacity=".75"/><path d="${st}" fill="url(#hat)" opacity=".28"/><path d="${st}" fill="none" stroke="#1C2B3A" stroke-width="1.200" stroke-dasharray="5 4"/>`;
+  // land
+  land.forEach(l=>s+=`<path d="${l.d}" fill="#F3E2A2" stroke="#3B3A2C" stroke-width="1.300"/>`);
+  // harbour + goal marks
+  s+=`<circle cx="46" cy="556" r="3.500" fill="#1C2B3A"/>`;
+  s+=`<path d="M304 172V146l17 6-17 6" fill="#B4287C" stroke="#B4287C" stroke-width="1.600" stroke-linejoin="round"/><circle cx="304" cy="172" r="3" fill="#1C2B3A"/>`;
+  // track
+  const tr=[[46,556],[140,504],[232,478],[286,432],[206,404],[128,372],[150,336],[196,316],[240,288]];
+  s+=`<path d="${smooth(tr,false)}" fill="none" stroke="#B4287C" stroke-width="2.400" stroke-linecap="round"/>`;
+  [[140,504],[286,432],[128,372]].forEach(p=>s+=`<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="#fff" stroke="#B4287C" stroke-width="2"/>`);
+  s+=`<path d="M240 288C262 262 286 232 300 190" fill="none" stroke="#B4287C" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round"/>`;
+  // ship
+  s+=`<circle cx="240" cy="288" r="17" fill="#fff" stroke="#B4287C" stroke-width="1.500"/>`;
+  s+=`<g transform="translate(240 288) rotate(38)"><path d="M0-11C5-5 5 5 3 10H-3C-5 5-5-5 0-11Z" fill="#1C2B3A"/><path d="M0-6V6" stroke="#fff" stroke-width="1.200"/></g>`;
+  // compass
+  s+=`<g transform="translate(60 196)" stroke="#1C2B3A" fill="none"><circle r="26" stroke-width=".800"/><circle r="20" stroke-width=".500" stroke-dasharray="1 3"/><path d="M0-25L4 0 0 25-4 0Z" fill="#1C2B3A" stroke="none"/><path d="M-25 0L0-4 25 0 0 4Z" fill="#fff" stroke-width=".800"/></g>`;
+  s+=T(60,164,'N','text-anchor="middle" font-family="Libre Caslon Text" font-size="12" fill="#1C2B3A"');
+  // labels
+  const L='class="lbl" stroke="#F8FBFB" stroke-width="3.500" font-family="IBM Plex Sans Condensed"';
+  land.forEach(l=>{if(!l.name)return;
+    s+=T(l.lx,l.ly,l.name,`${L} text-anchor="${l.anchor}" font-size="14" font-weight="600" fill="#1C2B3A"`);
+    s+=T(l.lx,l.ly+15,l.sub,`${L} text-anchor="${l.anchor}" font-size="13" fill="${l.sub=='dein Ziel'?'#B4287C':'#4A5B6B'}"`)});
+  s+=T(132,268,'Sturmtief','class="lbl" stroke="#F8FBFB" stroke-width="4" font-family="Libre Caslon Text" font-style="italic" font-size="14" fill="#1C2B3A"');
+  s+=T(132,284,'seit Oktober','class="lbl" stroke="#F8FBFB" stroke-width="4" font-family="Libre Caslon Text" font-style="italic" font-size="12.500" fill="#1C2B3A"');
+  s+=T(263,293,'Du bist hier',`${L} font-size="14" font-weight="600" fill="#B4287C"`);
+  s+=T(263,309,'kurz vor dem Sturmrand',`${L} font-size="12.500" fill="#8E1F63"`);
+  s+=T(62,278,'Meer der','font-family="Libre Caslon Text" font-style="italic" font-size="13" fill="#6C8898" text-anchor="middle" letter-spacing="1.5"');
+  s+=T(62,295,'Zwanziger','font-family="Libre Caslon Text" font-style="italic" font-size="13" fill="#6C8898" text-anchor="middle" letter-spacing="1.5"');
+  document.getElementById('sea').innerHTML='<rect width="390" height="844" fill="#F8FBFB"/><g transform="translate(0 -22)">'+s+'</g>';
+})();
+
+/* ---------- 2 adventure map ---------- */
+(function(){
+  let s='';
+  const wave=(y,amp,ph)=>{const p=[];for(let x=-20;x<=410;x+=43)p.push([x,y+Math.sin(x/60+ph)*amp]);return p};
+  const band=(y,fill,amp,ph)=>{const p=wave(y,amp,ph);return `<path d="${smooth(p,false)} L410 860 L-20 860Z" fill="${fill}"/>`};
+  s+='<rect width="390" height="844" fill="#58C4DD"/>';
+  // sea sparkle
+  for(let i=0;i<7;i++)s+=`<path d="M${30+i*52} ${96+(i%3)*14}q7-5 14 0" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" opacity=".7"/>`;
+  s+=band(142,'#FFE3A1',10,.4);       // beach
+  s+=band(178,'#FFD36B',8,1.2);       // sunny coast
+  s+=band(250,'#8E86B5',12,2.1);      // swamp
+  s+=band(448,'#4FA964',12,.3);       // forest
+  s+=band(620,'#8FD27A',10,1.7);      // meadows
+  // sun
+  s+=`<circle cx="318" cy="132" r="19" fill="#FF9F43"/><g stroke="#FF9F43" stroke-width="3" stroke-linecap="round">${[0,45,90,135,180,225,270,315].map(a=>`<path d="M${318+Math.cos(a*Math.PI/180)*25} ${132+Math.sin(a*Math.PI/180)*25}L${318+Math.cos(a*Math.PI/180)*31} ${132+Math.sin(a*Math.PI/180)*31}"/>`).join('')}</g>`;
+  // decor
+  const R=rng(8);
+  const tree=(x,y,c1,c2)=>`<ellipse cx="${x}" cy="${y+11}" rx="9" ry="3.500" fill="#000" opacity=".12"/><rect x="${x-2}" y="${y+2}" width="4" height="9" rx="1.500" fill="#7A5A3A"/><circle cx="${x}" cy="${y-3}" r="10" fill="${c1}"/><circle cx="${x-3}" cy="${y-6}" r="4" fill="${c2}"/>`;
+  [[28,480],[62,512],[30,548],[92,474],[352,470],[322,500],[362,540],[300,560],[40,596],[336,596],[268,474]].forEach(p=>s+=tree(p[0],p[1],'#2F7D49','#4FA964'));
+  [[40,650],[350,664],[310,640]].forEach(p=>s+=tree(p[0],p[1],'#5DB85A','#A8E08A'));
+  // swamp fog + reeds
+  [[70,300,60,16],[320,372,62,16],[330,282,46,12]].forEach(f=>s+=`<ellipse cx="${f[0]}" cy="${f[1]}" rx="${f[2]}" ry="${f[3]}" fill="#fff" opacity=".2"/>`);
+  [[36,340],[58,352],[350,410],[330,318],[110,426],[366,300]].forEach(p=>s+=`<path d="M${p[0]} ${p[1]}v-14M${p[0]+5} ${p[1]}v-10M${p[0]-5} ${p[1]}v-9" stroke="#5E5788" stroke-width="2.500" stroke-linecap="round"/>`);
+  // palms/huts on coast
+  [[36,198],[86,190]].forEach(p=>s+=`<rect x="${p[0]-1.500}" y="${p[1]-4}" width="3" height="16" rx="1.500" fill="#9A6B3C"/><path d="M${p[0]} ${p[1]-4}q-12-8-16 2M${p[0]} ${p[1]-4}q12-8 16 2M${p[0]} ${p[1]-4}q-4-13-12-12M${p[0]} ${p[1]-4}q4-13 12-12" stroke="#2F9E6B" stroke-width="3.500" fill="none" stroke-linecap="round"/>`);
+  // path
+  const path=[[70,800],[120,730],[250,690],[300,628],[210,584],[100,548],[110,488],[230,466],[300,418],[236,372],[118,346],[150,286],[262,262],[290,212],[200,186]];
+  const d=smooth(path,false);
+  s+=`<path d="${d}" fill="none" stroke="#27314F" stroke-width="24" stroke-linecap="round" opacity=".18" transform="translate(0 4)"/>`;
+  s+=`<path d="${d}" fill="none" stroke="#F6E2B3" stroke-width="20" stroke-linecap="round"/>`;
+  s+=`<path d="${d}" fill="none" stroke="#E2C88E" stroke-width="2.500" stroke-dasharray="1 9" stroke-linecap="round"/>`;
+  // nodes
+  const node=(x,y,r,top,side,inner='')=>`<ellipse cx="${x}" cy="${y+5}" rx="${r}" ry="${r*.82}" fill="${side}"/><ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r*.82}" fill="${top}" stroke="#fff" stroke-width="2.500"/>${inner}`;
+  const chk=(x,y)=>`<path d="M${x-5} ${y}l3.500 3.500 6.500-7" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const star=(x,y,c='#fff')=>`<path d="M${x} ${y-8}l2.400 5 5.400.700-4 3.800 1 5.400-4.800-2.600-4.800 2.600 1-5.400-4-3.800 5.400-.700z" fill="${c}"/>`;
+  const lock=(x,y)=>`<rect x="${x-5}" y="${y-2}" width="10" height="8" rx="2" fill="#fff"/><path d="M${x-3} ${y-2}v-2.500a3 3 0 016 0v2.500" stroke="#fff" stroke-width="2" fill="none"/>`;
+  [[250,690],[210,584],[110,488],[230,466]].forEach(p=>s+=node(p[0],p[1],13,'#FFB627','#C97F0A',chk(p[0],p[1])));
+  [[300,628],[100,548]].forEach(p=>s+=node(p[0],p[1],18,'#E4577A','#B33A5B',star(p[0],p[1])));
+  s+=node(300,418,13,'#FFB627','#C97F0A',chk(300,418));
+  s+=node(236,372,13,'#FFB627','#C97F0A',chk(236,372));
+  [[150,286],[262,262]].forEach(p=>s+=node(p[0],p[1],12,'#B9B4D4','#7D76A6',lock(p[0],p[1])));
+  s+=node(290,212,12,'#F0C873','#C99A3A',lock(290,212));
+  s+=node(200,186,19,'#fff','#D9B25A',star(200,186,'#FFB627'));
+  // current
+  s+=`<circle cx="118" cy="346" r="27" fill="none" stroke="#fff" stroke-width="3" opacity=".55"/>`;
+  s+=node(118,346,19,'#fff','#27314F',`<circle cx="118" cy="341" r="5.500" fill="#27314F"/><path d="M108 354a10 9 0 0120 0z" fill="#27314F"/>`);
+  // region banners
+  const ban=(x,y,t,c,w)=>`<rect x="${x-w/2}" y="${y-13}" width="${w}" height="24" rx="12" fill="${c}"/><text x="${x}" y="${y+4}" text-anchor="middle" font-family="Fredoka" font-weight="600" font-size="13.500" fill="#fff">${t}</text>`;
+  s+=ban(72,236,'Sonnenküste','#E08A1E',112);
+  s+=ban(304,326,'Nebelsumpf','#5E5788',106);
+  s+=ban(310,446,'Lehrjahre-Wald','#27633A',124)
+  const wb=(x,y,t,w)=>`<rect x="${x-w/2}" y="${y-12}" width="${w}" height="22" rx="11" fill="#fff"/><text x="${x}" y="${y+4}" text-anchor="middle" font-family="Fredoka" font-weight="600" font-size="13" fill="#27314F">${t}</text>`;
+  s+=wb(190,148,'Ziel: eigene Werkstatt',158);
+  s+=wb(100,584,'Gesellenbrief',104);
+  document.getElementById('rpg').innerHTML=s;
+})();
+
+/* ---------- 3 constellation ---------- */
+(function(){
+  let s=`<defs><radialGradient id="neb" cx="50%" cy="46%" r="60%"><stop offset="0" stop-color="#2A2F7A"/><stop offset=".55" stop-color="#171B50"/><stop offset="1" stop-color="#0D1030"/></radialGradient>
+  <radialGradient id="me"><stop offset="0" stop-color="#fff"/><stop offset=".35" stop-color="#fff" stop-opacity=".5"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
+  <rect width="390" height="844" fill="url(#neb)"/>`;
+  const R=rng(5);
+  for(let i=0;i<150;i++)s+=`<circle cx="${(R()*390).toFixed(1)}" cy="${(R()*844).toFixed(1)}" r="${(.3+R()*.9).toFixed(2)}" fill="#fff" opacity="${(.15+R()*.5).toFixed(2)}"/>`;
+  const C={x:195,y:372};
+  const groups=[
+    {n:'Menschen',c:'#FF8FA8',x:92,y:262,kids:[['Jonas',40,196,7,'end'],['Mama',162,228,5,'middle'],['Lauftreff',38,298,4,'start']]},
+    {n:'Arbeit',c:'#FFC857',x:296,y:256,kids:[['Gesellenbrief',300,172,6,'middle'],['Bewerbungen',350,300,5,'end'],['Absage Tischlerei',246,198,4,'end','neu']]},
+    {n:'Gesundheit',c:'#6EE7B7',x:76,y:452,kids:[['Laufen',34,392,6,'start'],['Schlaf',42,520,4,'start'],['Kochen',128,524,4,'middle']]},
+    {n:'Träume',c:'#B79CFF',x:312,y:452,kids:[['Eigene Werkstatt',322,540,7,'end'],['Norwegen',356,396,4,'end']]},
+    {n:'Geld',c:'#6FD3FF',x:196,y:536,kids:[['Notgroschen',226,596,5,'middle']]}];
+  // links
+  groups.forEach(g=>{s+=`<path d="M${C.x} ${C.y}L${g.x} ${g.y}" stroke="${g.c}" stroke-width="1.400" opacity=".7"/>`;
+    g.kids.forEach(k=>s+=`<path d="M${g.x} ${g.y}L${k[1]} ${k[2]}" stroke="${g.c}" stroke-width="1" opacity=".5"/>`)});
+  // cross links
+  s+=`<path d="M40 196Q150 150 246 198" fill="none" stroke="#fff" stroke-width="1.100" stroke-dasharray="3 4" opacity=".75"/>`;
+  s+=`<path d="M34 392Q10 455 42 520" fill="none" stroke="#6EE7B7" stroke-width="1" stroke-dasharray="3 4" opacity=".6"/>`;
+  s+=`<path d="M300 172Q372 350 322 540" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="3 4" opacity=".35"/>`;
+  const F='font-family="Sora"';
+  groups.forEach(g=>{
+    s+=`<circle cx="${g.x}" cy="${g.y}" r="20" fill="${g.c}" opacity=".16"/><circle cx="${g.x}" cy="${g.y}" r="9" fill="${g.c}"/>`;
+    const below=g.y>C.y;
+    s+=T(g.x,g.y+(below?-18:30),g.n,`${F} class="lbl" stroke="#1D2260" stroke-width="6" font-size="15" font-weight="600" fill="${g.c}" text-anchor="middle"`);
+    g.kids.forEach(k=>{
+      if(k[5])s+=`<circle cx="${k[1]}" cy="${k[2]}" r="12" fill="none" stroke="#fff" stroke-width="1.200"/><circle cx="${k[1]}" cy="${k[2]}" r="17" fill="none" stroke="#fff" stroke-width=".600" opacity=".5"/>`;
+      s+=`<circle cx="${k[1]}" cy="${k[2]}" r="${k[3]+5}" fill="${g.c}" opacity=".14"/><circle cx="${k[1]}" cy="${k[2]}" r="${k[3]}" fill="${g.c}"/>`;
+      const ax=k[4]=='start'?k[1]-6:k[4]=='end'?k[1]+6:k[1];
+      const up=k[2]<g.y||k[5];
+      s+=T(ax,k[2]+(up?-k[3]-(k[5]?13:8):k[3]+17),k[0],`${F} font-size="12.500" fill="#DADCF7" text-anchor="${k[4]=='start'?'start':k[4]=='end'?'end':'middle'}"`)})});
+  s+=`<rect x="262" y="206" width="46" height="18" rx="9" fill="#fff"/>`+T(285,219,'heute',`${F} font-size="11" font-weight="600" fill="#191E4A" text-anchor="middle"`);
+  s+=T(146,160,'hat dich aufgefangen',`${F} font-size="11" fill="#fff" opacity=".8" text-anchor="middle"`);
+  // me
+  s+=`<circle cx="${C.x}" cy="${C.y}" r="58" fill="url(#me)" opacity=".5"/><circle cx="${C.x}" cy="${C.y}" r="24" fill="#fff"/>`;
+  s+=T(C.x,C.y+5,'Du',`${F} font-size="15" font-weight="700" fill="#191E4A" text-anchor="middle"`);
+  document.getElementById('sky').innerHTML=s;
+})();
+
+/* ---------- 4 topo + profile ---------- */
+(function(){
+  let s='';
+  // forest patches
+  s+=`<path d="${blob(70,330,70,2,9,.3,1.3,.7)}" fill="#DCE8CB"/><path d="${blob(330,140,70,6,9,.3,1,1.1)}" fill="#DCE8CB"/>`;
+  const peaks=[[262,196,31],[96,170,14],[160,330,23]];
+  peaks.forEach(p=>{for(let r=14;r<230;r+=15){const idx=Math.round((r-14)/15);
+    s+=`<path d="${blob(p[0],p[1],r,p[2],12,.22,1.15,.9)}" fill="none" stroke="#B98F5E" stroke-width="${idx%4==0?1.300:.600}" opacity="${Math.max(.12,.85-r/270)}"/>`}});
+  // river in the valley
+  s+=`<path d="${smooth([[-10,250],[60,262],[120,246],[180,262],[200,300],[232,340],[250,440]],false)}" fill="none" stroke="#7FB6D9" stroke-width="3.500" stroke-linecap="round"/>`;
+  // trail
+  const tr=[[20,360],[64,318],[116,290],[150,256],[196,236],[240,214],[262,196],[300,206],[322,238],[306,272],[280,292]];
+  s+=`<path d="${smooth(tr,false)}" fill="none" stroke="#fff" stroke-width="6.500" stroke-linecap="round"/>`;
+  s+=`<path d="${smooth(tr,false)}" fill="none" stroke="#D8452B" stroke-width="3" stroke-linecap="round" stroke-dasharray="9 5"/>`;
+  const F='class="lbl" stroke="#EFF3E6" stroke-width="4" font-family="Barlow Condensed"';
+  // peak
+  s+=`<path d="M262 186l8 13h-16z" fill="#2A2F26"/>`+T(262,176,'Norwegen-Gipfel',`${F} font-size="15" font-weight="600" fill="#2A2F26" text-anchor="middle"`)+T(262,160,'September, 1.600 m',`${F} font-size="13" font-weight="500" fill="#6B7263" text-anchor="middle"`);
+  s+=`<circle cx="150" cy="256" r="4.500" fill="#fff" stroke="#2A2F26" stroke-width="2"/>`+T(142,246,'März-Tal, 360 m',`${F} font-size="14" font-weight="600" fill="#2A2F26" text-anchor="end"`);
+  s+=`<circle cx="64" cy="318" r="4.500" fill="#fff" stroke="#2A2F26" stroke-width="2"/>`+T(74,336,'Start im Dezember',`${F} font-size="13" font-weight="500" fill="#6B7263"`);
+  // you
+  s+=`<circle cx="280" cy="292" r="15" fill="#D8452B" opacity=".2"/><circle cx="280" cy="292" r="7.500" fill="#D8452B" stroke="#fff" stroke-width="2.500"/>`;
+  s+=T(280,324,'Du bist hier, 840 m',`${F} font-size="15" font-weight="700" fill="#D8452B" text-anchor="middle"`);
+  document.getElementById('topo').innerHTML='<rect width="390" height="460" fill="#EFF3E6"/><g transform="translate(0 34)">'+s+'</g>';
+
+  // profile chart
+  const vals=[1240,1100,800,360,700,1160,1440,1000,1320,1600,1200,840];
+  const mon=['D','J','F','M','A','M','J','J','A','S','O','N'];
+  const X=i=>22+i*(322/11),Y=v=>160-(v/1700)*138;
+  const pts=vals.map((v,i)=>[X(i),Y(v)]);
+  let c='';
+  [400,800,1200,1600].forEach(v=>{c+=`<path d="M22 ${Y(v)}H344" stroke="#DADFD0" stroke-width="1"/>`+T(0,Y(v)+4,v,'font-family="Barlow Condensed" font-size="11" fill="#8C937F"')});
+  const d=smooth(pts,false);
+  c+=`<path d="${d} L${X(11)} 160 L${X(0)} 160Z" fill="#E7EEDB"/>`;
+  c+=`<path d="${d}" fill="none" stroke="#2A2F26" stroke-width="2.200" stroke-linejoin="round"/>`;
+  c+=`<path d="M22 160H344" stroke="#2A2F26" stroke-width="1.500"/>`;
+  mon.forEach((m,i)=>c+=T(X(i),176,m,`text-anchor="middle" font-family="Barlow Condensed" font-size="12.500" font-weight="${i==11?700:500}" fill="${i==11?'#D8452B':'#6B7263'}"`));
+  // comparison line march valley -> today
+  c+=`<path d="M${X(3)} ${Y(360)}H${X(11)}" stroke="#D8452B" stroke-width="1.200" stroke-dasharray="3 3"/>`;
+  c+=`<path d="M${X(11)} ${Y(360)-2}V${Y(840)+8}" stroke="#D8452B" stroke-width="2"/><path d="M${X(11)-4} ${Y(840)+13}l4-6 4 6" fill="none" stroke="#D8452B" stroke-width="2" stroke-linejoin="round"/>`;
+  c+=`<circle cx="${X(3)}" cy="${Y(360)}" r="4.500" fill="#fff" stroke="#2A2F26" stroke-width="2"/>`;
+  c+=`<circle cx="${X(9)}" cy="${Y(1600)}" r="4.500" fill="#fff" stroke="#2A2F26" stroke-width="2"/>`;
+  c+=`<circle cx="${X(11)}" cy="${Y(840)}" r="6" fill="#D8452B" stroke="#fff" stroke-width="2.500"/>`;
+  c+=T(X(3)+9,Y(360)+13,'tiefster Punkt','font-family="Barlow Condensed" font-size="12.500" font-weight="600" fill="#2A2F26"');
+  c+=T(X(11)-9,Y(600)+4,'+480 m','text-anchor="end" font-family="Barlow Condensed" font-size="14" font-weight="700" fill="#D8452B"');
+  c+=T(X(11)+1,Y(840)-11,'heute','text-anchor="end" font-family="Barlow Condensed" font-size="12.500" font-weight="700" fill="#D8452B"');
+  document.getElementById('chart').innerHTML=c;
+})();
+
+/* ---------- 5 isometric island ---------- */
+(function(){
+  const W=25,H=12.500,OX=195,OY=214,N=9;
+  const P=(i,j,z=0)=>[OX+(i-j)*W,OY+(i+j)*H-z];
+  const poly=(pts,fill,extra='')=>`<polygon points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="${fill}" ${extra}/>`;
+  let s=`<defs><linearGradient id="seaG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1F6E7A"/><stop offset=".6" stop-color="#2E8C94"/><stop offset="1" stop-color="#3A9FA0"/></linearGradient></defs><rect width="390" height="844" fill="url(#seaG)"/>`;
+  const R=rng(12);
+  for(let i=0;i<26;i++){const x=R()*370,y=110+R()*520;s+=`<path d="M${x.toFixed(0)} ${y.toFixed(0)}q6-4 12 0t12 0" stroke="#fff" stroke-width="1.400" fill="none" opacity=".22" stroke-linecap="round"/>`}
+  // island mask
+  const mask=[
+    '..xxxxx..',
+    '.xxxxxxx.',
+    'xxxxxxxxx',
+    'xxxxxxxxx',
+    'xxxxxxxxx',
+    'xxxxxxxxx',
+    'xxxxxxxx.',
+    '.xxxxxxx.',
+    '..xxxxx..'];
+  const on=(i,j)=>i>=0&&j>=0&&i<N&&j<N&&mask[j][i]=='x';
+  const edge=(i,j)=>!on(i-1,j)||!on(i+1,j)||!on(i,j-1)||!on(i,j+1);
+  // foam ring
+  let foam='';for(let j=0;j<N;j++)for(let i=0;i<N;i++)if(on(i,j))foam+=poly([P(i,j,-16),P(i+1,j,-16),P(i+1,j+1,-16),P(i,j+1,-16)],'#BFE9E4','stroke="#BFE9E4" stroke-width="16" stroke-linejoin="round" opacity=".45"');
+  s+=foam;
+  function box(i,j,w,d,h,z0,top,left,right){ // footprint from (i,j) size w x d
+    const a=P(i,j,z0+h),b=P(i+w,j,z0+h),c=P(i+w,j+d,z0+h),e=P(i,j+d,z0+h);
+    const c0=P(i+w,j+d,z0),e0=P(i,j+d,z0),b0=P(i+w,j,z0);
+    return poly([e,c,c0,e0],left)+poly([c,b,b0,c0],right)+poly([a,b,c,e],top)}
+  function roof(i,j,w,d,z,rh,l,r){const c=P(i+w,j+d,z),e=P(i,j+d,z),b=P(i+w,j,z),a=P(i,j,z);const ap=P(i+w/2,j+d/2,z+rh);
+    return poly([a,b,ap],r)+poly([e,c,ap],l)+poly([c,b,ap],r,'opacity=".8"')}
+  function treeI(i,j,sz=1,c='#3F8F4E',c2='#57A85F'){const p=P(i,j,0);
+    return `<ellipse cx="${p[0]}" cy="${p[1]}" rx="${7*sz}" ry="${3*sz}" fill="#000" opacity=".15"/><rect x="${p[0]-1.500}" y="${p[1]-9*sz}" width="3" height="${9*sz}" fill="#7A5A3A"/><circle cx="${p[0]}" cy="${p[1]-15*sz}" r="${9*sz}" fill="${c}"/><circle cx="${p[0]-2.500*sz}" cy="${p[1]-18*sz}" r="${4*sz}" fill="${c2}"/>`}
+  const items={}; const put=(i,j,fn)=>{(items[i+','+j]=items[i+','+j]||[]).push(fn)};
+  const house=(i,j,wall,rf,h=13)=>put(i,j,()=>box(i+.2,j+.2,.6,.6,h,0,wall,'#E9D9C4','#CDBBA2')+roof(i+.12,j+.12,.76,.76,h,11,rf,shade(rf)));
+  function shade(hex){const n=parseInt(hex.slice(1),16);const f=v=>Math.max(0,Math.round(v*.8));return '#'+[n>>16,(n>>8)&255,n&255].map(v=>f(v).toString(16).padStart(2,'0')).join('')}
+  // village (Menschen) - north-west
+  house(2,1,'#fff','#E8604C');house(3,2,'#fff','#E8604C',16);house(1,3,'#fff','#F08A5D');house(2,3,'#fff','#E8604C');house(3,0,'#fff','#F08A5D');
+  put(2,2,()=>{const p=P(2.5,2.5,0);return `<circle cx="${p[0]}" cy="${p[1]-6}" r="13" fill="#FFE08A" opacity=".35"/><circle cx="${p[0]}" cy="${p[1]-6}" r="4" fill="#FFE08A"/>`});
+  // shipyard (Arbeit) - east: foundation, scaffold, crane
+  put(6,3,()=>box(6.05,3.05,1.9,1.9,4,0,'#D9D2C5','#B9B1A2','#A39B8C'));
+  put(7,4,()=>{let o='';const z=4;[[6.2,3.2],[7.8,3.2],[7.8,4.8],[6.2,4.8]].forEach(q=>{const a=P(q[0],q[1],z),b=P(q[0],q[1],z+30);o+=`<path d="M${a[0]} ${a[1]}L${b[0]} ${b[1]}" stroke="#E08A1E" stroke-width="2.200"/>`});
+    [12,24].forEach(h=>{const q=[[6.2,3.2],[7.8,3.2],[7.8,4.8],[6.2,4.8]].map(v=>P(v[0],v[1],z+h));o+=`<polygon points="${q.map(v=>v.join(',')).join(' ')}" fill="none" stroke="#E08A1E" stroke-width="1.600"/>`});
+    // hull under construction
+    const h1=P(6.5,4,z+2),h2=P(7.5,4,z+2);o+=`<path d="M${h1[0]} ${h1[1]-4}Q${(h1[0]+h2[0])/2} ${h1[1]+10} ${h2[0]} ${h2[1]-4}" fill="none" stroke="#7A5A3A" stroke-width="3" stroke-linecap="round"/>`;
+    return o});
+  put(8,3,()=>{const a=P(8.5,3.5,0),t=P(8.5,3.5,52);return `<path d="M${a[0]} ${a[1]}L${t[0]} ${t[1]}" stroke="#243B45" stroke-width="3"/><path d="M${t[0]+8} ${t[1]+3}L${t[0]-34} ${t[1]-10}" stroke="#243B45" stroke-width="2.500"/><path d="M${t[0]-28} ${t[1]-8}v18" stroke="#243B45" stroke-width="1"/><rect x="${t[0]-31}" y="${t[1]+10}" width="6" height="5" fill="#E08A1E"/>`});
+  // garden (Gesundheit) - south-west
+  [[1,5],[2,6],[3,7],[1,6.3],[2.6,5.2],[3.4,6.2]].forEach((q,k)=>put(Math.floor(q[0]),Math.floor(q[1]),()=>treeI(q[0]+.5,q[1]+.5,k%2?1:.85)));
+  put(2,7,()=>{const p=P(2.9,7.6,0);return `<ellipse cx="${p[0]}" cy="${p[1]}" rx="12" ry="5.500" fill="none" stroke="#fff" stroke-width="1.600"/>`+treeI(2.9,7.6,.5,'#8BD17C','#B6E8A6')});
+  // lighthouse (Träume) - north tip
+  put(6,0,()=>{const p=P(6.5,.5,0);let o=`<ellipse cx="${p[0]}" cy="${p[1]}" rx="11" ry="5" fill="#000" opacity=".15"/>`;
+    o+=`<path d="M${p[0]-7} ${p[1]}L${p[0]-4.500} ${p[1]-46}h9L${p[0]+7} ${p[1]}z" fill="#fff"/><path d="M${p[0]-6.300} ${p[1]-14}h12.600l-.700-10h-11.200z" fill="#E8604C"/><path d="M${p[0]-5.300} ${p[1]-34}h10.600l-.400-8h-9.800z" fill="#E8604C"/>`;
+    o+=`<rect x="${p[0]-6}" y="${p[1]-54}" width="12" height="8" fill="#243B45"/><rect x="${p[0]-3.500}" y="${p[1]-52.500}" width="7" height="5" fill="#FFE08A"/><path d="M${p[0]-7} ${p[1]-54}L${p[0]} ${p[1]-62}l7 8z" fill="#E8604C"/>`;
+    o+=`<path d="M${p[0]+4} ${p[1]-50}L${p[0]+70} ${p[1]-66}L${p[0]+70} ${p[1]-34}z" fill="#FFE08A" opacity=".28"/>`;return o});
+  // storehouse (Geld) - south
+  put(5,7,()=>box(5.15,7.1,1.2,.8,17,0,'#E3C48C','#D6B27A','#B8935A')+roof(5.05,7,1.4,1,17,10,'#B0703A','#8E5527'));
+  // paths
+  // draw tiles
+  for(let sum=0;sum<=2*N-2;sum++)for(let i=0;i<N;i++){const j=sum-i;if(!on(i,j))continue;
+    const sand=edge(i,j);const top=sand?'#F3D9A4':((i+j)%2?'#8FCB6E':'#86C366');
+    s+=box(i,j,1,1,8,-8,top,sand?'#D9B878':'#C9A66B',sand?'#C4A264':'#B58E52');
+  }
+  // plaza + road tiles overlay
+  [[4,3],[4,4],[5,4],[4,5],[4,6],[4,2],[5,2],[5,1],[3,4],[2,4]].forEach(q=>{s+=poly([P(q[0]+.3,q[1]+.3),P(q[0]+.7,q[1]+.3),P(q[0]+.7,q[1]+.7),P(q[0]+.3,q[1]+.7)],'#EAD9B8','stroke="#EAD9B8" stroke-width="7" stroke-linejoin="round"')});
+  for(let sum=0;sum<=2*N-2;sum++)for(let i=0;i<N;i++){const j=sum-i;(items[i+','+j]||[]).forEach(f=>s+=f())}
+  // labels with leader lines
+  const tag=(x,y,tx,ty,name,sub,c,anchor)=>{const w=Math.max(name.length*8.800+26,sub.length*6.400+22);const rx=anchor=='end'?tx-w:tx;
+    return `<path d="M${x} ${y}L${anchor=='end'?tx-12:tx+12} ${ty+16}" stroke="#fff" stroke-width="1.400"/><circle cx="${x}" cy="${y}" r="3.500" fill="#fff"/>`+
+    `<rect x="${rx}" y="${ty-4}" width="${w}" height="40" rx="12" fill="#fff"/><circle cx="${rx+12}" cy="${ty+10}" r="4" fill="${c}"/>`+
+    T(rx+21,ty+14,name,'font-family="Bricolage Grotesque" font-weight="700" font-size="14" fill="#243B45"')+T(rx+11,ty+29,sub,'font-family="Bricolage Grotesque" font-size="12" fill="#5B717A"')};
+  const v=P(2.5,1.8,20),w=P(8.5,3.5,54),g=P(1.6,6.2,14),l=P(6.5,.5,58),m=P(5.8,7.6,18);
+  s+=tag(v[0]-20,v[1],14,132,'Dorf','Menschen, 5 Häuser','#E8604C','start');
+  s+=tag(l[0],l[1],374,116,'Leuchtturm','Träume','#FFC233','end');
+  s+=tag(w[0]+6,w[1]+36,376,400,'Werft','Arbeit, im Bau','#E08A1E','end');
+  s+=tag(g[0]-8,g[1]+6,14,430,'Garten','Gesundheit, 7 Bäume','#3F8F4E','start');
+  s+=tag(m[0],m[1]+16,250,470,'Speicher','Geld','#B58E52','end');
+  // small boat
+  s+=`<g transform="translate(318 520)"><path d="M-12 0h24l-5 7h-14z" fill="#fff"/><path d="M0-16V0M0-16l9 12H0" fill="#FFE08A" stroke="#fff" stroke-width="1.500"/></g>`;
+  document.getElementById('isle').innerHTML=s;
+})();
+</script>
+</body>
+</html>
