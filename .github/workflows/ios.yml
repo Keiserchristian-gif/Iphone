@@ -26,12 +26,14 @@ jobs:
           swift --version
 
       - name: Kern testen
+        timeout-minutes: 10
         run: |
           swift test --package-path Packages/LebensKern > kern.log 2>&1; status=$?
           grep -E "error|failed|Executed" kern.log | tail -20
           exit $status
 
       - name: App für den Simulator bauen
+        timeout-minutes: 15
         run: |
           xcodebuild -project Lebensgalaxie.xcodeproj -scheme Lebensgalaxie -configuration Debug \
             -destination 'generic/platform=iOS Simulator' -derivedDataPath build \
@@ -40,33 +42,41 @@ jobs:
           ls build/Build/Products/Debug-iphonesimulator/Lebensgalaxie.app | head -30 || true
           exit $status
 
-      - name: Im Simulator starten und fotografieren
+      - name: Simulator wählen und starten
+        timeout-minutes: 10
         run: |
+          xcrun simctl list devices available | grep -E "iPhone" | head -20
           GERAET=$(xcrun simctl list devices available -j | python3 -c "
           import json, sys
           geraete = json.load(sys.stdin)['devices']
           iphones = [g for laufzeit, liste in geraete.items() if 'iOS' in laufzeit for g in liste if g['name'].startswith('iPhone')]
           iphones.sort(key=lambda g: ('Pro Max' in g['name'], g['name']))
           print(iphones[-1]['udid'])")
+          echo "GERAET=$GERAET" >> "$GITHUB_ENV"
+          echo "Boot $(date +%T)"
           xcrun simctl boot "$GERAET"
           xcrun simctl bootstatus "$GERAET" -b
+          echo "Bereit $(date +%T)"
           xcrun simctl install "$GERAET" build/Build/Products/Debug-iphonesimulator/Lebensgalaxie.app
+          echo "Installiert $(date +%T)"
+
+      - name: Fotografieren
+        timeout-minutes: 8
+        run: |
           mkdir -p fotos
           foto() {
             name=$1; shift
             xcrun simctl terminate "$GERAET" de.lebensgalaxie.app 2>/dev/null || true
+            echo "Start $name $(date +%T)"
             xcrun simctl launch "$GERAET" de.lebensgalaxie.app -demo 1 "$@"
             sleep ${WARTEN:-14}
             xcrun simctl io "$GERAET" screenshot "fotos/$name.png"
-            sips -Z 520 -s format jpeg -s formatOptions 38 "fotos/$name.png" --out "fotos/$name.jpg" > /dev/null
-            echo "BILD-ANFANG $name"
-            base64 -b 160 -i "fotos/$name.jpg"
-            echo "BILD-ENDE $name"
+            echo "Foto $name $(date +%T)"
           }
           foto galaxie
           foto system -ansicht system
           WARTEN=8 foto abschluss -blatt abschluss
-          xcrun simctl spawn "$GERAET" log show --last 2m --predicate 'process == "Lebensgalaxie"' --style compact 2>/dev/null | grep -iE "error|fault|webgl|szene" | tail -20 || true
+          xcrun simctl spawn "$GERAET" log show --last 5m --predicate 'process == "Lebensgalaxie"' --style compact 2>/dev/null | grep -iE "error|fault|webgl|szene" | tail -20 || true
 
       - uses: actions/upload-artifact@v4
         if: always()
