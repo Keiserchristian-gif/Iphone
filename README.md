@@ -56,6 +56,16 @@ Eine Routine für etwa 15 Minuten:
 3. **Inspiration (4 Min.)** – Stelle den Mut-Regler höher, als dir lieb ist, und würfle eine Richtung. Lies die Standard-Fallen, die du vermeiden willst.
 4. **Skill-Guide (2 Min.)** – Wähle den Skill für den nächsten Schritt und kopiere den Beispielprompt in Claude Code.
 
-## Ausblick: Etappe 2
+## Der design-coach-Skill (Etappe 2)
 
-Geplant ist ein `design-coach`-Skill für Claude Code (unter `.claude/skills/design-coach/`), der dieselben Inhalte nutzt: Er schärft Prompts, schlägt Gegenrichtungen vor und prüft auf Standard-Fallen. Er ist noch nicht gebaut.
+Im Ordner `.claude/skills/design-coach/` liegt ein Skill für Claude Code. Er greift, wenn du ein Aussehen vage beschreibst („mach das cooler", „sieht langweilig aus", „nicht so Standard"):
+
+1. Er spielt deinen Wunsch mit den richtigen Fachbegriffen zurück (Element, Eigenschaft, Wert, Stimmung, Grenze).
+2. Ist die Richtung offen, bietet er drei Gegenrichtungen von vertraut bis extrem an und wartet auf deine Wahl.
+3. Er baut nur das Gewünschte, prüft auf Standard-Fallen und nennt am Ende die gelernten Begriffe samt einem fertigen Prompt für nächstes Mal.
+
+Ist dein Wunsch schon präzise, baut er sofort ohne Rückfragen.
+
+Die Referenzdateien des Skills (`references/`) werden aus den Daten des Trainers erzeugt. Nach Änderungen an `js/data/` einmal `node scripts/build-skill-refs.mjs` ausführen; `npm test` meldet, wenn sie veraltet sind.
+
+Zum Nutzen in einem anderen Projekt kopierst du den Ordner `.claude/skills/design-coach/` dorthin (oder in `~/.claude/skills/`, dann gilt er überall).
