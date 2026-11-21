@@ -16,13 +16,22 @@ struct SperrView: View {
                 Text(meldung).font(.footnote).foregroundStyle(Stil.warnung).multilineTextAlignment(.center).padding(.top, 4)
             }
             Spacer()
-            Button {
-                Task { await model.oeffne() }
-            } label: {
-                Label(model.oeffnetGerade ? "Wird geöffnet …" : "Öffnen", systemImage: "faceid")
+            VStack(spacing: 12) {
+                Button {
+                    Task { await model.oeffne() }
+                } label: {
+                    Label(model.oeffnetGerade ? "Wird geöffnet …" : "Öffnen", systemImage: "faceid")
+                }
+                .buttonStyle(Hauptknopf())
+                .disabled(model.oeffnetGerade)
+
+                Button("Beispiel-Leben ansehen") { model.starteBeispiel(voll: false) }
+                    .buttonStyle(Nebenknopf())
+                Button("Beispiel mit zehn Jahren Einträgen") { model.starteBeispiel(voll: true) }
+                    .font(.footnote).foregroundStyle(Stil.matt)
+                Text("Das Beispiel ist erfunden. Es wird nichts gespeichert.")
+                    .font(.caption).foregroundStyle(Stil.matt)
             }
-            .buttonStyle(Hauptknopf())
-            .disabled(model.oeffnetGerade)
         }
         .padding(28)
         .task(id: phase) {

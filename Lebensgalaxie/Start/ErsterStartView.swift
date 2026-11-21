@@ -29,6 +29,8 @@ struct ErsterStartView: View {
                 }
                 .buttonStyle(Hauptknopf())
                 .disabled(rufname.trimmingCharacters(in: .whitespaces).isEmpty)
+                Button("Erst ein Beispiel-Leben ansehen") { model.starteBeispiel(voll: false) }
+                    .buttonStyle(Nebenknopf())
             }
             .padding(24)
         }

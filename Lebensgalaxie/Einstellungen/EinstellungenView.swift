@@ -16,6 +16,23 @@ struct EinstellungenView: View {
     @State private var fragtLoeschen = false
 
     var body: some View {
+        if model.istBeispiel { beispielInfo } else { echt }
+    }
+
+    private var beispielInfo: some View {
+        List {
+            Section {
+                Text("Du siehst ein erfundenes Beispiel-Leben. Alles, was du hier ausprobierst, bleibt nur im Arbeitsspeicher und ist weg, sobald du das Beispiel beendest. Deine echten Daten bleiben unberührt.")
+                    .foregroundStyle(Stil.tinte)
+                Button("Beispiel beenden") { model.beendeBeispiel() }
+            }
+            .listRowBackground(Stil.tafel)
+        }
+        .raumHintergrund()
+        .navigationTitle("Einstellungen")
+    }
+
+    private var echt: some View {
         List {
             Section("Du") {
                 TextField("Rufname", text: $rufname)

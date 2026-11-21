@@ -108,6 +108,17 @@ struct WeltView: View {
                 }
                 .accessibilityLabel("Mehr")
             }
+            if model.istBeispiel {
+                HStack(spacing: 8) {
+                    Image(systemName: "eye").font(.footnote)
+                    Text("Beispiel-Leben, nichts wird gespeichert").font(.footnote)
+                    Spacer(minLength: 0)
+                    Button("Beenden") { model.beendeBeispiel() }.font(.footnote.weight(.semibold))
+                }
+                .foregroundStyle(Stil.tinte)
+                .padding(.horizontal, 12).padding(.vertical, 8)
+                .tafel(rund: 14)
+            }
             HStack(spacing: 6) {
                 Picker("Ansicht", selection: $modus) {
                     Text("Verlauf").tag("galaxie")

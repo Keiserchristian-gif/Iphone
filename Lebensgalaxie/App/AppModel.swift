@@ -21,6 +21,8 @@ final class AppModel {
     /// Die letzten Tage waren schwer: Die Welt fragt, ob das eine Dunkelwolke werden soll.
     var phasenVorschlag = false
     let demo: Bool
+    /// Beispiel-Leben: erfundene Daten nur im Arbeitsspeicher. Es wird nichts gespeichert und nichts Echtes angefasst.
+    private(set) var istBeispiel = false
 
     @ObservationIgnored private var szeneCache: (stand: Int, tag: Int, szene: Szene)?
     @ObservationIgnored private var aenderungen = 0
@@ -37,6 +39,32 @@ final class AppModel {
             bestand = ProcessInfo.processInfo.arguments.contains("-voll") ? .beispielVoll(heute: .now) : .beispiel(heute: .now)
             zustand = .offen
         }
+        #if DEBUG
+        let argumente = ProcessInfo.processInfo.arguments
+        if !demo, argumente.contains("-beispielstart") { starteBeispiel(voll: argumente.contains("-voll")) }
+        #endif
+    }
+
+    // MARK: Beispiel
+
+    func starteBeispiel(voll: Bool) {
+        istBeispiel = true
+        bestand = voll ? .beispielVoll(heute: .now) : .beispiel(heute: .now)
+        aenderungen += 1
+        meldung = nil
+        phasenVorschlag = false
+        zustand = .offen
+        szenenStand += 1
+    }
+
+    func beendeBeispiel() {
+        guard istBeispiel else { return }
+        istBeispiel = false
+        bestand = Bestand()
+        aenderungen += 1
+        phasenVorschlag = false
+        zustand = .gesperrt
+        szenenStand += 1
     }
 
     // MARK: Sperre
@@ -71,7 +99,7 @@ final class AppModel {
 
     /// Entfernt Schlüssel und entschlüsselte Daten aus dem Arbeitsspeicher.
     func sperre() {
-        guard !demo, zustand == .offen else { return }
+        guard !demo, !istBeispiel, zustand == .offen else { return }
         speichere()
         schluessel = nil
         bestand = Bestand()
@@ -90,7 +118,7 @@ final class AppModel {
     }
 
     func speichere() {
-        guard !demo, let schluessel, let tresor else { return }
+        guard !demo, !istBeispiel, let schluessel, let tresor else { return }
         do {
             try tresor.speichereBestand(JSONEncoder().encode(bestand), schluessel)
             speicherFehler = nil
@@ -126,7 +154,7 @@ final class AppModel {
     // MARK: Dokumente
 
     func bewahreOriginal(_ daten: Data) -> String? {
-        guard !demo, let schluessel, let tresor else { return nil }
+        guard !demo, !istBeispiel, let schluessel, let tresor else { return nil }
         let name = "dokument-\(UUID().uuidString).lg"
         do {
             try tresor.speichereDatei(daten, name: name, schluessel)
@@ -161,6 +189,8 @@ final class AppModel {
     }
 
     func loescheAlles() {
+        // Im Beispiel gibt es nichts Echtes zu löschen. Der Schlüssel und die Datei bleiben unangetastet.
+        if istBeispiel { beendeBeispiel(); return }
         tresor?.loescheAlles()
         schluessel = nil
         bestand = Bestand()

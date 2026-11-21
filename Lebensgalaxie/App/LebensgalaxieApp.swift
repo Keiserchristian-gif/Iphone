@@ -34,7 +34,7 @@ struct Wurzel: View {
                 }
             }
             // Sichtschutz: Im App-Umschalter und beim Wegwischen ist nichts Persönliches zu sehen.
-            if phase != .active, !model.demo, model.zustand == .offen {
+            if phase != .active, !model.demo, !model.istBeispiel, model.zustand == .offen {
                 Sichtschutz()
             }
         }
