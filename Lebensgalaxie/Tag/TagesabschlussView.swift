@@ -50,7 +50,7 @@ struct TagesabschlussView: View {
                                     stimmung = stimmung == stufe ? 0 : stufe
                                 } label: {
                                     VStack(spacing: 6) {
-                                        Image(systemName: Stimmung.symbol(stufe)).font(.title3)
+                                        Image(systemName: Stimmung.symbol(stufe)).font(.title3).frame(height: 28)
                                         Text(Stimmung.wort(stufe)).font(.caption2)
                                     }
                                     .frame(maxWidth: .infinity)

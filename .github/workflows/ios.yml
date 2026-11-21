@@ -76,6 +76,10 @@ jobs:
           foto galaxie
           foto system -ansicht system
           WARTEN=8 foto abschluss -blatt abschluss
+          WARTEN=8 foto mehr -blatt mehr
+          WARTEN=8 foto fragebogen -blatt fragebogen
+          WARTEN=8 foto kapitel -blatt kapitel
+          WARTEN=8 foto einstellungen -blatt einstellungen
           xcrun simctl spawn "$GERAET" log show --last 5m --predicate 'process == "Lebensgalaxie"' --style compact 2>/dev/null | grep -iE "error|fault|webgl|szene" | tail -20 || true
 
       - uses: actions/upload-artifact@v4

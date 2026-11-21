@@ -11,6 +11,8 @@ struct WeltView: View {
     @State private var notiz = ""
     @State private var zeigtAbschluss = false
     @State private var zeigtMehr = false
+    @State private var zeigtDebug = false
+    @State private var debugZiel = ""
     @State private var zeitreise = false
     @State private var zeit = 0.0
     @State private var obenHoehe: CGFloat = 0
@@ -54,6 +56,7 @@ struct WeltView: View {
             }
         }
         .sheet(isPresented: $zeigtMehr) { MehrView() }
+        .sheet(isPresented: $zeigtDebug) { debugBlatt }
         .alert("Die letzten Tage waren schwer", isPresented: Bindable(model).phasenVorschlag) {
             Button("Als Dunkelwolke festhalten") {
                 model.aendere { $0.phasen.append(Phase(name: "Schwere Zeit", beginn: Date.now.addingTimeInterval(-6 * 86_400))) }
@@ -62,6 +65,22 @@ struct WeltView: View {
         } message: {
             Text("Du siehst später, wie lange sie gedauert hat und dass sie vorbeigegangen ist. Unter Phasen kannst du ihr einen Namen geben.")
         }
+    }
+
+    /// Nur für automatische Bildschirmfotos im Debug-Bau erreichbar. Im Release-Bau ist das Blatt leer.
+    @ViewBuilder private var debugBlatt: some View {
+        #if DEBUG
+        NavigationStack {
+            switch debugZiel {
+            case "kapitel": KapitelView(kapitel: FragebogenInhalt.kapitel[2])
+            case "einstellungen": EinstellungenView()
+            case "dokumente": DokumenteView()
+            default: FragebogenView()
+            }
+        }
+        #else
+        EmptyView()
+        #endif
     }
 
     // MARK: Oben
@@ -125,7 +144,7 @@ struct WeltView: View {
                     .tafel(rund: 26)
                 }
                 HStack(spacing: 8) {
-                    TextField("Notiz für jetzt", text: $notiz)
+                    TextField("", text: $notiz, prompt: Text("Notiz für jetzt").foregroundStyle(Color(white: 0.42)))
                         .focused($schreibt)
                         .submitLabel(.done)
                         .onSubmit(halteFest)
@@ -181,6 +200,10 @@ struct WeltView: View {
         if werte.string(forKey: "ansicht") == "system" { modus = "system" }
         if werte.string(forKey: "blatt") == "abschluss" { zeigtAbschluss = true }
         if werte.string(forKey: "blatt") == "mehr" { zeigtMehr = true }
+        if let ziel = werte.string(forKey: "blatt"), ["fragebogen", "kapitel", "einstellungen", "dokumente"].contains(ziel) {
+            debugZiel = ziel
+            zeigtDebug = true
+        }
         #endif
     }
 

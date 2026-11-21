@@ -26,11 +26,14 @@ function rnd() { saat |= 0; saat = saat + 0x6D2B79F5 | 0; var t = Math.imul(saat
 function gauss() { var u = 0; for (var i = 0; i < 4; i++) u += rnd(); return (u - 2) / 1.15; }
 
 /* ---------- Texturen ---------- */
-function verlauf(stops) { var c = document.createElement('canvas'); c.width = c.height = 128; var g = c.getContext('2d');
-  var gr = g.createRadialGradient(64, 64, 0, 64, 64, 64); stops.forEach(function (s) { gr.addColorStop(s[0], s[1]); }); g.fillStyle = gr; g.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c); }
-function ringBild(breite) { var c = document.createElement('canvas'); c.width = c.height = 128; var g = c.getContext('2d'); g.strokeStyle = '#fff'; g.lineWidth = breite; g.beginPath(); g.arc(64, 64, 58, 0, 7); g.stroke(); return new THREE.CanvasTexture(c); }
-var glowTex = verlauf([[0, 'rgba(255,255,255,1)'], [.25, 'rgba(255,255,255,.55)'], [1, 'rgba(255,255,255,0)']]);
-var darkTex = verlauf([[0, 'rgba(4,3,16,1)'], [.5, 'rgba(4,3,16,.92)'], [1, 'rgba(4,3,16,0)']]);
+/* Leuchttexturen werden direkt als Pixelwerte berechnet. Über ein Canvas entstehen bei kleinen Alphawerten bunte Rundungsfehler. */
+function pixelBild(fn) { var n = 128, daten = new Uint8Array(n * n * 4), x, y, i, c;
+  for (y = 0; y < n; y++) for (x = 0; x < n; x++) { var dx = (x + .5) / n * 2 - 1, dy = (y + .5) / n * 2 - 1; c = fn(Math.sqrt(dx * dx + dy * dy)); i = (y * n + x) * 4; daten[i] = c[0]; daten[i + 1] = c[1]; daten[i + 2] = c[2]; daten[i + 3] = c[3]; }
+  var t = new THREE.DataTexture(daten, n, n, THREE.RGBAFormat); t.magFilter = THREE.LinearFilter; t.minFilter = THREE.LinearFilter; t.generateMipmaps = false; t.needsUpdate = true; return t; }
+function verlauf(stufen, rgb) { return pixelBild(function (d) { var j; for (j = 0; j < stufen.length - 1; j++) if (d <= stufen[j + 1][0]) { var k = (d - stufen[j][0]) / (stufen[j + 1][0] - stufen[j][0]); return [rgb[0], rgb[1], rgb[2], Math.round(255 * (stufen[j][1] + (stufen[j + 1][1] - stufen[j][1]) * k))]; } return [rgb[0], rgb[1], rgb[2], 0]; }); }
+function ringBild(breite) { return pixelBild(function (d) { var a = Math.max(0, Math.min(1, breite / 2 + .5 - Math.abs(d - 58 / 64) * 64)); return [255, 255, 255, Math.round(255 * a)]; }); }
+var glowTex = verlauf([[0, 1], [.25, .55], [1, 0]], [255, 255, 255]);
+var darkTex = verlauf([[0, 1], [.5, .92], [1, 0]], [4, 3, 16]);
 var ringTex = ringBild(4), duennTex = ringBild(1.5);
 function sprite(map, color, scale, add) { var s = new THREE.Sprite(new THREE.SpriteMaterial({ map: map, color: color, transparent: true, depthWrite: false, depthTest: false, blending: add === false ? THREE.NormalBlending : THREE.AdditiveBlending })); s.scale.set(scale, scale, 1); return s; }
 
@@ -63,7 +66,7 @@ var v = new THREE.Vector3(), uhr = new THREE.Clock();
 function sp(t, off, y) { var th = t / 10 * Math.PI * 2, r = 10 + t * K + (off || 0); return new THREE.Vector3(Math.cos(th) * r, y || 0, Math.sin(th) * r); }
 function leere(gruppe) { while (gruppe.children.length) { var o = gruppe.children[0]; gruppe.remove(o); if (o.geometry) o.geometry.dispose(); if (o.material && o.material.dispose && !o.material.map) o.material.dispose(); } }
 function schild(text, klasse, eintrag) { var el = document.createElement('div'); el.className = 'schild ' + (klasse || ''); if (klasse === 'heute') { var s = document.createElement('span'); s.textContent = text; el.appendChild(s); } else el.textContent = text;
-  schilderEl.appendChild(el); eintrag.el = el; eintrag.breite = text.length * (klasse === 'planet' ? 8 : 6.6) + 14; schilder.push(eintrag); return eintrag; }
+  schilderEl.appendChild(el); eintrag.el = el; eintrag.breite = klasse === 'heute' ? 66 : text.length * (klasse === 'planet' ? 8 : 6.6) + 14; schilder.push(eintrag); return eintrag; }
 
 /* ---------- Galaxie ---------- */
 function baueGalaxie() {
@@ -212,7 +215,7 @@ function groesse() {
   W = window.innerWidth; H = window.innerHeight; if (!W || !H) return; klein = Math.min(W, H) < 500;
   var pr = Math.min(window.devicePixelRatio || 1, 2); renderer.setPixelRatio(pr); renderer.setSize(W, H, false);
   camera.aspect = W / H; var tanH = Math.tan(25 * Math.PI / 180), frei = Math.max(.35, (H - randOben - randUnten) / H);
-  baseR = Math.max(186 / (tanH * Math.min(camera.aspect, frei * 1.05)), 400);
+  baseR = Math.max(214 / (tanH * Math.min(camera.aspect, frei * 1.05)), 400);
   camera.setViewOffset(W, H, 0, Math.round((randUnten - randOben) / 2), W, H); camera.updateProjectionMatrix(); uni.uH.value = (H * pr / 2) / tanH;
 }
 window.addEventListener('resize', groesse); groesse();
@@ -287,7 +290,7 @@ function bild() {
     if (sichtbar && s.mond) sichtbar = nah || (auswahl && (auswahl.id === s.planet));
     var x = 0, y = 0;
     if (sichtbar) { v.copy(s.pos()).project(camera); x = (v.x * .5 + .5) * W; y = (-v.y * .5 + .5) * H; if (v.z > 1 || y < randOben + 22 || y > H - randUnten - 6 || x < -20 || x > W + 20) sichtbar = false; }
-    if (sichtbar) { var links = s.heute ? (x > W - 96 ? x - s.breite - 12 : x + 10) : x - s.breite / 2, oben = s.heute ? y - 12 : (s.dy !== undefined ? y + s.dy - (s.dy < 0 ? 22 : 0) : y - 26), kasten = [links, oben, links + s.breite, oben + 20];
+    if (sichtbar) { var links = s.heute ? (x > W - 96 ? x - s.breite - 12 : x + 10) : Math.max(6, Math.min(W - s.breite - 6, x - s.breite / 2)), oben = s.heute ? y - 12 : (s.dy !== undefined ? y + s.dy - (s.dy < 0 ? 22 : 0) : y - 26), kasten = [links, oben, links + s.breite, oben + 20];
       if (belegt.some(function (b) { return kasten[0] < b[2] && kasten[2] > b[0] && kasten[1] < b[3] && kasten[3] > b[1]; })) sichtbar = false; else { belegt.push(kasten); s.el.style.transform = 'translate(' + links.toFixed(1) + 'px,' + oben.toFixed(1) + 'px)'; } }
     s.el.style.opacity = sichtbar ? 1 : 0;
   });
