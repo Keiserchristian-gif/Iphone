@@ -2,6 +2,9 @@
 import { vocab } from './data/vocab.js';
 import { exercises } from './data/exercises.js';
 import { analyzePrompt } from './prompt-check.js';
+import { pickDirection, mixDirections } from './generator.js';
+import { directions, traps } from './data/directions.js';
+import { skills, workflow } from './data/skills.js';
 
 const GROUPS = ['Layout', 'Typografie', 'Farbe', 'Abstand', 'Interaktion', 'Bewegung'];
 const byId = new Map(vocab.map((v) => [v.id, v]));
@@ -582,8 +585,307 @@ function initExercises() {
   show(0, false);
 }
 
+/* ───────── 03 · Inspiration ───────── */
+
+const dirById = new Map(directions.map((d) => [d.id, d]));
+
+// Mut-Stufen für Anzeige, Bildschirmleser und den kleinen Schubs Richtung mutig.
+const MUT_LEVELS = [
+  { max: 19, word: 'brav', nudge: 'Brav ist sicher. Und nach fünf Sekunden vergessen. Dreh weiter auf.' },
+  { max: 44, word: 'eigen', nudge: 'Schon eigen. Aber da geht noch deutlich mehr.' },
+  { max: 69, word: 'mutig', nudge: 'Jetzt wird es interessant. Noch ein Stück weiter?' },
+  { max: 89, word: 'wild', nudge: 'So sieht keine Vorlage aus. Genau richtig.' },
+  { max: 100, word: 'extrem', nudge: 'Maximal. Hier fängt Wiedererkennung an.' },
+];
+const mutLevel = (v) => MUT_LEVELS.find((l) => v <= l.max) || MUT_LEVELS[MUT_LEVELS.length - 1];
+
+const SWATCH_ROLES = ['Grund', 'Text', 'Akzent', 'Akzent', 'Akzent'];
+const FONT_ROLES = ['Überschrift', 'Fließtext', 'Ergänzung'];
+
+// Schriften mit kräftigen Schnitten: dort fordern wir 400 und 800 an, sonst nur den Normalschnitt.
+const BOLD_FONTS = new Set([
+  'Archivo', 'Archivo Narrow', 'Space Grotesk', 'Jost', 'Josefin Sans', 'Playfair Display', 'Source Serif 4',
+  'Syne', 'Unbounded', 'DM Sans', 'Orbitron', 'Baloo 2', 'Chakra Petch', 'IBM Plex Mono', 'Space Mono',
+  'Courier Prime', 'Caveat',
+]);
+
+// Schriften erst laden, wenn eine Richtung sie zeigt. Jede Familie einzeln:
+// fällt eine aus (offline, Tippfehler), bleiben die anderen und die Ersatzschrift greift.
+const loadedFonts = new Set();
+function loadFont(family) {
+  if (!family || loadedFonts.has(family)) return;
+  loadedFonts.add(family);
+  const axis = BOLD_FONTS.has(family) ? ':wght@400;800' : '';
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family).replace(/%20/g, '+')}${axis}&display=swap`;
+  link.addEventListener('error', () => { link.remove(); });
+  document.head.append(link);
+}
+
+// Helligkeit nach WCAG, um auf jeder Farbe lesbaren Text zu wählen.
+function luminance(hex) {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex || '');
+  if (!m) return 1;
+  const n = parseInt(m[1], 16);
+  return [16, 8, 0]
+    .map((shift) => ((n >> shift) & 255) / 255)
+    .map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4))
+    .reduce((sum, c, i) => sum + c * [0.2126, 0.7152, 0.0722][i], 0);
+}
+const textOn = (hex) => (luminance(hex) > 0.22 ? '#16130f' : '#f6f0e2');
+const fontStack = (family) => `"${family}", var(--f-text)`;
+
+function newSeed() {
+  if (window.crypto && crypto.getRandomValues) return crypto.getRandomValues(new Uint32Array(1))[0];
+  return Math.floor(Math.random() * 2 ** 32);
+}
+
+// Einheitliche Ansicht für eine einzelne Richtung und für eine Mischung.
+function viewOfDirection(d) {
+  return {
+    key: d.id,
+    art: d.id,
+    kind: `Richtung ${String(directions.indexOf(d) + 1).padStart(2, '0')} von ${directions.length}`,
+    mut: String(d.mut),
+    name: d.name,
+    desc: d.beschreibung,
+    farben: d.farben,
+    schriften: d.schriften,
+    layout: d.layout,
+    bewegung: d.bewegung,
+    prompt: d.prompt,
+  };
+}
+
+function viewOfMix(mix) {
+  const [a, b] = mix.quellen.map((id) => dirById.get(id));
+  return {
+    key: mix.quellen.join('+'),
+    art: a.id,
+    kind: 'Mischung aus zwei Richtungen',
+    mut: 'Mix',
+    name: `${a.name} × ${b.name}`,
+    desc: `Farben und Layout aus „${a.name}“, Schrift und Bewegung aus „${b.name}“. Zwei Welten, die sich normalerweise nie begegnen.`,
+    farben: mix.farben,
+    schriften: [mix.schrift],
+    layout: mix.layout,
+    bewegung: mix.bewegung,
+    prompt: mix.prompt,
+  };
+}
+
+function initInspiration() {
+  const body = $('#inspiration-body');
+  if (!body) return;
+  const range = $('#mut');
+  const num = $('#mut-num');
+  const word = $('#mut-word');
+  const nudge = $('#mut-nudge');
+  const live = $('#insp-live');
+  const card = $('#dir');
+  const spec = $('#spec');
+  const promptEl = $('#dir-prompt');
+  const statusEl = $('#dir-status');
+
+  let seed = newSeed();
+  let current = null;
+
+  function readDial() {
+    const v = Number(range.value);
+    const level = mutLevel(v);
+    num.textContent = String(v);
+    word.textContent = level.word;
+    nudge.textContent = level.nudge;
+    range.setAttribute('aria-valuetext', `${v} von 100, ${level.word}`);
+    range.style.setProperty('--fill', `${v}%`);
+    body.dataset.level = level.word;
+    return v;
+  }
+
+  function paintSwatches(farben) {
+    const list = $('#dir-swatches');
+    list.replaceChildren(...farben.map((hex, i) => {
+      const li = el('li', 'swatch');
+      li.style.setProperty('--sw', hex);
+      li.style.setProperty('--sw-ink', textOn(hex));
+      li.append(el('span', 'swatch__hex', hex.toUpperCase()), el('span', 'swatch__role', SWATCH_ROLES[i] || 'Akzent'));
+      return li;
+    }));
+    list.dataset.count = String(farben.length);
+  }
+
+  function paintFonts(schriften) {
+    const list = $('#dir-fonts');
+    list.replaceChildren(...schriften.map((family, i) => {
+      loadFont(family);
+      const li = el('li', 'font');
+      const name = el('span', 'font__name', family);
+      name.style.fontFamily = fontStack(family);
+      li.append(name, el('span', 'font__role label', schriften.length === 1 ? 'Für alles' : FONT_ROLES[i] || 'Ergänzung'));
+      return li;
+    }));
+  }
+
+  function paintSpecimen(view) {
+    const [c0, c1, c2, c3 = c2, c4 = c3] = view.farben;
+    const colors = { c0, c1, c2, c3, c4 };
+    Object.entries(colors).forEach(([k, hex]) => {
+      spec.style.setProperty(`--${k}`, hex);
+      spec.style.setProperty(`--${k}-ink`, textOn(hex));
+    });
+    const head = view.schriften[0];
+    const text = view.schriften[1] || head;
+    spec.style.setProperty('--fa', fontStack(head));
+    spec.style.setProperty('--fb', fontStack(text));
+    spec.style.setProperty('--wa', BOLD_FONTS.has(head) ? '800' : '400');
+    spec.dataset.art = view.art;
+    $('#spec-cap').textContent = `Vorschau: die Bäckerei aus dem Atlas, gesetzt in ${head} mit dieser Palette`;
+  }
+
+  function render(view, say) {
+    current = view;
+    $('#dir-kind').textContent = view.kind;
+    $('#dir-mut').textContent = view.mut;
+    $('#dir-name').textContent = view.name;
+    $('#dir-desc').textContent = view.desc;
+    $('#dir-layout').textContent = view.layout;
+    $('#dir-motion').textContent = view.bewegung;
+    promptEl.textContent = view.prompt;
+    statusEl.textContent = '';
+    card.dataset.mode = view.mut === 'Mix' ? 'mix' : 'single';
+    paintSwatches(view.farben);
+    paintFonts(view.schriften);
+    paintSpecimen(view);
+    if (!reduceMotion.matches) {
+      card.classList.remove('is-new');
+      void card.offsetWidth;
+      card.classList.add('is-new');
+    }
+    if (say) live.textContent = say;
+  }
+
+  // Einzelne Richtung zum Regler; mit neuem Seed garantiert eine andere als die gezeigte.
+  function showPick({ fresh = false, announce = false } = {}) {
+    const v = readDial();
+    let d = pickDirection(v, seed);
+    for (let tries = 0; fresh && current && d.id === current.key && tries < 12; tries += 1) {
+      seed = newSeed();
+      d = pickDirection(v, seed);
+    }
+    if (!fresh && current && d.id === current.key) return;
+    render(viewOfDirection(d), announce ? `Neue Richtung: ${d.name}, Mut ${d.mut} von 100.` : '');
+  }
+
+  function showMix() {
+    let mix = mixDirections(seed);
+    for (let tries = 0; current && mix.quellen.join('+') === current.key && tries < 12; tries += 1) {
+      seed = newSeed();
+      mix = mixDirections(seed);
+    }
+    const view = viewOfMix(mix);
+    render(view, `Mischung: ${view.name}.`);
+  }
+
+  // Beim Ziehen nur die Anzeige sofort, die Karte erst nach kurzer Ruhe; keine Ansagen.
+  const settle = debounce(() => showPick(), 220);
+  range.addEventListener('input', () => { readDial(); settle(); });
+  range.addEventListener('change', () => showPick());
+
+  $('#insp-new').addEventListener('click', () => { seed = newSeed(); showPick({ fresh: true, announce: true }); });
+  $('#insp-mix').addEventListener('click', () => { seed = newSeed(); showMix(); });
+  bindCopy($('#dir-copy'), () => (current ? current.prompt : ''), statusEl);
+
+  // Standard-Fallen: „Was: Warum“ getrennt setzen
+  const list = $('#traps-list');
+  traps.forEach((t, i) => {
+    const cut = t.indexOf(': ');
+    const what = cut >= 0 ? t.slice(0, cut) : t;
+    const why = cut >= 0 ? t.slice(cut + 2) : '';
+    const li = el('li', 'trap');
+    li.append(el('span', 'trap__no', String(i + 1).padStart(2, '0')));
+    const txt = el('div', 'trap__body');
+    txt.append(el('p', 'trap__what', what));
+    if (why) txt.append(el('p', 'trap__why', why));
+    li.append(txt);
+    list.append(li);
+  });
+
+  showPick({ fresh: true });
+}
+
+/* ───────── 04 · Skill-Guide ───────── */
+
+// Skill-Namen im Fließtext als Code setzen, alles als Textknoten.
+const skillPattern = new RegExp(
+  `(${skills.map((s) => s.name).sort((a, b) => b.length - a.length).map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`,
+);
+function withSkillNames(node, text) {
+  text.split(skillPattern).forEach((piece, i) => {
+    if (!piece) return;
+    node.append(i % 2 ? el('code', 'sk-code', piece) : document.createTextNode(piece));
+  });
+  return node;
+}
+
+// „website-design:landing-page“ darf nach dem Doppelpunkt umbrechen.
+function skillName(node, name) {
+  name.split(/(?<=:)/).forEach((part, i) => {
+    if (i) node.append(document.createElement('wbr'));
+    node.append(document.createTextNode(part));
+  });
+  return node;
+}
+
+function initSkills() {
+  const list = $('#skills-list');
+  const steps = $('#path-steps');
+  if (!list || !steps) return;
+
+  skills.forEach((s, i) => {
+    const li = el('li', 'skill');
+    li.append(el('span', 'skill__no', String(i + 1).padStart(2, '0')));
+
+    const head = el('div', 'skill__head');
+    head.append(skillName(el('h3', 'skill__name'), s.name));
+
+    const why = el('dl', 'skill__why');
+    [['Wann', s.wann], ['Warum', s.warum]].forEach(([k, v]) => {
+      const row = el('div', 'skill__row');
+      row.append(el('dt', 'label', k), el('dd', null, v));
+      why.append(row);
+    });
+    head.append(why);
+
+    const ex = el('div', 'skill__ex');
+    ex.append(el('p', 'label skill__ex-label', 'Beispielprompt'), el('p', 'brick', s.beispielprompt));
+    const btn = el('button', 'btn-copy', 'Kopieren');
+    btn.type = 'button';
+    btn.setAttribute('aria-label', `Beispielprompt für ${s.name} kopieren`);
+    const status = el('span', 'copy-status');
+    status.setAttribute('role', 'status');
+    const actions = el('div', 'skill__actions');
+    actions.append(btn, status);
+    ex.append(actions);
+    bindCopy(btn, () => s.beispielprompt, status);
+
+    li.append(head, ex);
+    list.append(li);
+  });
+
+  workflow.forEach((w, i) => {
+    const cut = w.indexOf(': ');
+    const li = el('li', 'step');
+    li.append(el('span', 'step__no', String(i + 1)));
+    const txt = el('div', 'step__body');
+    txt.append(el('h4', 'step__title', cut >= 0 ? w.slice(0, cut) : w));
+    if (cut >= 0) txt.append(withSkillNames(el('p', 'step__text'), w.slice(cut + 2)));
+    li.append(txt);
+    steps.append(li);
+  });
+}
+
 /* ───────── Start ───────── */
 
-// Spätere Bereiche hängen sich hier an (initInspiration, initSkills).
-const inits = [initShell, initAtlas, initWerkstatt];
+const inits = [initShell, initAtlas, initWerkstatt, initInspiration, initSkills];
 inits.forEach((init) => init());

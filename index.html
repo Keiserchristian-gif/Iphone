@@ -210,7 +210,87 @@
         <h2 class="area__title" id="inspiration-title">Inspi&shy;ration</h2>
         <p class="area__lede">Dreh den Mut-Regler auf und hol dir Richtungen, die nicht nach jeder zweiten Website aussehen, jeweils mit fertigem Prompt.</p>
       </header>
-      <div class="area__body" id="inspiration-body"></div>
+      <div class="area__body insp" id="inspiration-body">
+        <div class="desk">
+          <div class="dial">
+            <div class="dial__head">
+              <label class="dial__label label" for="mut">Mut-Regler <span class="dial__range-hint">brav → extrem</span></label>
+              <p class="dial__read" aria-hidden="true"><span class="dial__num" id="mut-num">75</span><span class="dial__word" id="mut-word">wild</span></p>
+            </div>
+            <input class="dial__range" type="range" id="mut" min="0" max="100" step="5" value="75" aria-describedby="mut-nudge">
+            <ol class="dial__scale label" aria-hidden="true">
+              <li>brav</li><li>eigen</li><li>mutig</li><li>wild</li><li>extrem</li>
+            </ol>
+            <p class="dial__nudge" id="mut-nudge"></p>
+          </div>
+          <div class="desk__actions">
+            <button class="btn btn--hot" type="button" id="insp-new">Neue Richtung <span aria-hidden="true">↻</span></button>
+            <button class="btn btn--line" type="button" id="insp-mix">Mischen <span aria-hidden="true">×</span></button>
+          </div>
+        </div>
+
+        <div class="insp__grid">
+          <article class="dir" id="dir" aria-labelledby="dir-name">
+            <header class="dir__head">
+              <p class="dir__kind label" id="dir-kind"></p>
+              <p class="dir__mut"><span class="label">Mut</span><b id="dir-mut"></b></p>
+              <h3 class="dir__name" id="dir-name"></h3>
+              <p class="dir__desc" id="dir-desc"></p>
+            </header>
+
+            <figure class="spec" id="spec">
+              <div class="spec__sheet" aria-hidden="true">
+                <div class="spec__chrome"><i></i><i></i><i></i><span>baeckerei-korn.de</span></div>
+                <div class="spec__stage">
+                  <span class="spec__shape spec__shape--1"></span>
+                  <span class="spec__shape spec__shape--2"></span>
+                  <span class="spec__shape spec__shape--3"></span>
+                  <p class="spec__kicker">Seit 1952</p>
+                  <p class="spec__title"><span>Brot</span> <span>mit</span> <span>Geduld.</span></p>
+                  <p class="spec__sub">Roggen, Dinkel und Sauerteig aus dem Holzofen.</p>
+                  <span class="spec__cta">Jetzt vorbestellen</span>
+                </div>
+              </div>
+              <figcaption class="spec__cap label" id="spec-cap"></figcaption>
+            </figure>
+
+            <div class="dir__part">
+              <h4 class="dir__h label">Farben</h4>
+              <ul class="swatches" id="dir-swatches"></ul>
+            </div>
+
+            <div class="dir__part">
+              <h4 class="dir__h label">Schriften <span class="dir__h-note">(Google Fonts)</span></h4>
+              <ul class="fonts" id="dir-fonts"></ul>
+            </div>
+
+            <div class="dir__rules">
+              <div class="rule">
+                <h4 class="dir__h label">Layout-Regel</h4>
+                <p class="rule__text" id="dir-layout"></p>
+              </div>
+              <div class="rule">
+                <h4 class="dir__h label">Bewegung</h4>
+                <p class="rule__text" id="dir-motion"></p>
+              </div>
+            </div>
+
+            <div class="dir__prompt">
+              <h4 class="dir__h label">Fertiger Prompt für Claude Code</h4>
+              <p class="brick" id="dir-prompt"></p>
+              <button class="btn-copy" type="button" id="dir-copy">Prompt kopieren</button>
+              <span class="copy-status" role="status" id="dir-status"></span>
+            </div>
+          </article>
+
+          <aside class="traps" aria-labelledby="traps-title">
+            <h3 class="traps__title" id="traps-title">Das machen alle. <span>Vermeide es.</span></h3>
+            <p class="traps__lede">Diese Muster stecken in fast jeder Vorlage und in fast jedem KI-Entwurf. Jedes einzelne macht deine Seite ein Stück austauschbarer. Taucht eines davon in deinem Prompt auf: streichen und lieber eine Richtung aus dem Generator nehmen.</p>
+            <ol class="traps__list" id="traps-list"></ol>
+          </aside>
+        </div>
+        <p class="sr-only" role="status" id="insp-live"></p>
+      </div>
     </section>
 
     <!-- 04 · Skill-Guide -->
@@ -220,7 +300,16 @@
         <h2 class="area__title" id="skills-title">Skill&shy;guide</h2>
         <p class="area__lede">Welcher Claude-Code-Skill hilft wann, und in welcher Reihenfolge du sie am besten einsetzt.</p>
       </header>
-      <div class="area__body" id="skills-body"></div>
+      <div class="area__body sk" id="skills-body">
+        <p class="sk__note"><span class="sk__stamp">Schon da</span><span class="sk__note-text">Alle fünf Skills sind in dieser Claude-Code-Umgebung bereits verfügbar. Für diesen Trainer musst du nichts installieren: Prompt kopieren, in Claude Code einfügen, fertig.</span></p>
+        <ol class="sk__list" id="skills-list"></ol>
+
+        <section class="path" aria-labelledby="path-title">
+          <h3 class="path__title" id="path-title">Der Ablauf</h3>
+          <p class="path__lede">Von der Idee bis zur geprüften Seite, in dieser Reihenfolge.</p>
+          <ol class="path__steps" id="path-steps"></ol>
+        </section>
+      </div>
     </section>
   </main>
 
