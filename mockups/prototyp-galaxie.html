@@ -1,0 +1,253 @@
+<title>Lebensgalaxie</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one full-screen 3D scene; quiet glass controls float at top and bottom so the galaxy stays the only loud thing. */
+:root{
+  --space:#06051A; --panel:rgba(22,18,52,.78); --line:rgba(160,150,255,.28);
+  --ink:#F3F0FF; --dim:#B3ABDD; --gold:#FFD08A;
+  --menschen:#FF8FA8; --arbeit:#FFC857; --gesundheit:#6EE7B7; --geld:#6FD3FF; --traeume:#C3A6FF;
+  --display:'Sora',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:var(--space);color:var(--ink);font-family:var(--display);overflow:hidden;-webkit-font-smoothing:antialiased}
+#app{position:relative;height:100%;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.lab{position:absolute;left:0;top:0;pointer-events:auto;cursor:pointer;background:none;border:0;padding:6px 8px;color:var(--ink);
+  font:500 11.5px/1 var(--display);white-space:nowrap;text-shadow:0 0 6px var(--space),0 0 12px var(--space),0 1px 2px var(--space);will-change:transform;transition:opacity .25s}
+.lab.now{font-weight:700;font-size:12.5px;color:var(--space);text-shadow:none}
+.lab.now span{background:var(--ink);border-radius:999px;padding:5px 10px;display:inline-block}
+.lab.cloud{font-style:italic;color:var(--dim)}
+.lab:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:8px}
+.top,.bottom{position:absolute;left:0;right:0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));pointer-events:none}
+.top{top:0;padding-top:14px}
+.top h1{font-size:24px;font-weight:600;letter-spacing:-.02em;margin:0}
+.top p{margin:4px 0 0;font-size:12.5px;color:var(--dim)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:9px;font-size:11.5px;color:var(--dim)}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
+.hint{margin-top:10px;font-size:12px;color:var(--ink);opacity:.75;transition:opacity .6s}
+.hint.off{opacity:0}
+.bottom{bottom:0;padding-bottom:14px;display:flex;flex-direction:column;gap:8px;max-width:520px;margin:0 auto}
+.bottom>*{pointer-events:auto}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:12px 14px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.card h2{margin:0;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.card h2 i{width:9px;height:9px;border-radius:50%;flex:none}
+.card p{margin:5px 0 0;font-size:13.5px;line-height:1.42;color:var(--ink)}
+.card ul{margin:6px 0 0;padding:0;list-style:none;font-size:13px;line-height:1.45}
+.card li{display:flex;gap:8px}
+.card li time{color:var(--dim);font-variant-numeric:tabular-nums;flex:none}
+.time{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 14px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-size:12.5px}
+.time label{color:var(--dim)}
+.time output{min-width:44px;text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.time input{flex:1;min-width:0;accent-color:var(--gold);touch-action:pan-x}
+.row{display:flex;gap:8px}
+.row input{flex:1;min-width:0;background:var(--ink);color:var(--space);border:0;border-radius:999px;padding:12px 16px;font:500 15px var(--display);user-select:text;-webkit-user-select:text}
+.row input::placeholder{color:#6d6890}
+button.act{border:0;border-radius:999px;padding:12px 16px;font:600 14.5px var(--display);cursor:pointer;white-space:nowrap}
+#add{background:var(--gold);color:var(--space)}
+#close{background:transparent;color:var(--ink);border:1px solid var(--ink);width:100%}
+#close:disabled{opacity:.55;cursor:default}
+button.act:focus-visible,.row input:focus-visible,.time input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media (max-height:640px){.legend,.hint{display:none}}
+</style>
+
+<div id="app">
+  <canvas id="gl" aria-label="Dein Leben als drehbare Spiralgalaxie"></canvas>
+  <div id="labels"></div>
+  <div class="top">
+    <h1>Deine Galaxie</h1>
+    <p>Prototyp mit erfundenem Beispiel-Leben, 31 Jahre</p>
+    <div class="legend">
+      <span><i style="background:var(--menschen)"></i>Menschen</span><span><i style="background:var(--arbeit)"></i>Arbeit</span><span><i style="background:var(--gesundheit)"></i>Gesundheit</span><span><i style="background:var(--geld)"></i>Geld</span><span><i style="background:var(--traeume)"></i>Träume</span>
+    </div>
+    <div class="hint" id="hint">Mit einem Finger drehen, mit zwei Fingern zoomen</div>
+  </div>
+  <div class="bottom">
+    <div class="card" id="card" aria-live="polite"></div>
+    <div class="time"><label for="year">Zeitreise</label><input id="year" type="range" min="0" max="31.9" step="0.1" value="31.9"><output id="yearOut" for="year">heute</output></div>
+    <form class="row" id="noteForm"><input id="note" type="text" placeholder="Notiz für jetzt" autocomplete="off" maxlength="80" aria-label="Notiz für jetzt"><button class="act" id="add" type="submit">Festhalten</button></form>
+    <button class="act" id="close" type="button">Tag abschließen</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+const T_NOW=31.9, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const AREA={m:['Menschen','#FF8FA8'],a:['Arbeit','#FFC857'],g:['Gesundheit','#6EE7B7'],d:['Geld','#6FD3FF'],t:['Träume','#C3A6FF']};
+const app=document.getElementById('app'),canvas=document.getElementById('gl'),labelsEl=document.getElementById('labels'),card=document.getElementById('card');
+let seed=7;const rnd=()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const gauss=()=>{let u=0;for(let i=0;i<4;i++)u+=rnd();return (u-2)/1.15};
+const sp=(t,off=0,y=0)=>{const th=t/10*Math.PI*2,r=10+t*5.2+off;return new THREE.Vector3(Math.cos(th)*r,y,Math.sin(th)*r)};
+
+let renderer;
+try{renderer=new THREE.WebGLRenderer({canvas,antialias:false,alpha:false,powerPreference:'high-performance'})}
+catch(e){card.innerHTML='<h2>3D wird hier nicht unterstützt</h2><p>Dieses Gerät oder diese Ansicht kann die Galaxie nicht zeichnen. Öffne die Seite in einem aktuellen Browser.</p>';return}
+renderer.setClearColor(0x06051A,1);
+const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(50,1,1,6000),galaxy=new THREE.Group();scene.add(galaxy);
+
+/* ---- textures ---- */
+function tex(stops,ring){const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d');
+  if(ring){g.strokeStyle='#fff';g.lineWidth=ring;g.beginPath();g.arc(64,64,58,0,7);g.stroke()}
+  else{const gr=g.createRadialGradient(64,64,0,64,64,64);stops.forEach(s=>gr.addColorStop(s[0],s[1]));g.fillStyle=gr;g.fillRect(0,0,128,128)}
+  return new THREE.CanvasTexture(c)}
+const glowTex=tex([[0,'rgba(255,255,255,1)'],[.25,'rgba(255,255,255,.55)'],[1,'rgba(255,255,255,0)']]);
+const darkTex=tex([[0,'rgba(4,3,16,1)'],[.5,'rgba(4,3,16,.92)'],[1,'rgba(4,3,16,0)']]);
+const ringTex=tex(null,4),thinTex=tex(null,1.5);
+const sprite=(map,color,scale,add=true)=>{const s=new THREE.Sprite(new THREE.SpriteMaterial({map,color,transparent:true,depthWrite:false,depthTest:false,blending:add?THREE.AdditiveBlending:THREE.NormalBlending}));s.scale.set(scale,scale,1);return s};
+
+/* ---- point shader ---- */
+const uni={uT:{value:T_NOW},uH:{value:500},uTime:{value:0}};
+const pointMat=(opacity,order)=>{const m=new THREE.ShaderMaterial({uniforms:Object.assign({uOp:{value:opacity}},uni),transparent:true,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending,
+  vertexShader:`attribute float size;attribute vec3 aColor;attribute float aT;attribute float aPh;uniform float uT;uniform float uH;uniform float uTime;varying vec3 vC;varying float vA;
+   void main(){vec4 mv=modelViewMatrix*vec4(position,1.);gl_Position=projectionMatrix*mv;float tw=.78+.22*sin(uTime*1.4+aPh);gl_PointSize=max(1.,size*tw*uH/-mv.z);vC=aColor;vA=1.-smoothstep(uT,uT+.5,aT);}`,
+  fragmentShader:`precision mediump float;uniform float uOp;varying vec3 vC;varying float vA;void main(){float d=length(gl_PointCoord-.5);float a=smoothstep(.5,0.,d);gl_FragColor=vec4(vC,a*a*vA*uOp);}`});m._order=order;return m};
+function points(list,opacity,order){const n=list.length,p=new Float32Array(n*3),c=new Float32Array(n*3),s=new Float32Array(n),t=new Float32Array(n),ph=new Float32Array(n);
+  list.forEach((o,i)=>{p.set([o.pos.x,o.pos.y,o.pos.z],i*3);c.set(o.col,i*3);s[i]=o.size;t[i]=o.t;ph[i]=rnd()*6.28});
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(p,3));g.setAttribute('aColor',new THREE.BufferAttribute(c,3));g.setAttribute('size',new THREE.BufferAttribute(s,1));g.setAttribute('aT',new THREE.BufferAttribute(t,1));g.setAttribute('aPh',new THREE.BufferAttribute(ph,1));
+  const pts=new THREE.Points(g,pointMat(opacity,order));pts.renderOrder=order;pts.frustumCulled=false;return pts}
+const hex=h=>{const c=new THREE.Color(h);return [c.r,c.g,c.b]};
+const mix=(a,b,k)=>[a[0]+(b[0]-a[0])*k,a[1]+(b[1]-a[1])*k,a[2]+(b[2]-a[2])*k];
+
+/* ---- far background stars ---- */
+{const l=[];for(let i=0;i<900;i++){const v=new THREE.Vector3(gauss(),gauss(),gauss()).normalize().multiplyScalar(2200+rnd()*600);const b=.35+rnd()*.65;l.push({pos:v,col:[b,b,b*1.1],size:14+rnd()*16,t:0})}
+ scene.add(points(l,.8,0));}
+
+/* ---- galaxy dust along the life spiral ---- */
+const small=Math.min(innerWidth,innerHeight)<500;
+{const warm=[1,.84,.6],vio=[.62,.46,1],blue=[.42,.62,1],pink=[1,.5,.72],l=[];
+ const N=small?15000:22000;
+ for(let i=0;i<N;i++){let t,pos;
+   if(rnd()<.14){const r=10+Math.pow(rnd(),.7)*172,a=rnd()*6.283;t=Math.max(0,(r-10)/5.2);pos=new THREE.Vector3(Math.cos(a)*r,gauss()*3,Math.sin(a)*r)}
+   else{t=T_NOW*Math.pow(rnd(),.72);pos=sp(t,gauss()*(4.5+t*.2),gauss()*(2.2+7*Math.exp(-t/3.5)))}
+   let col=t<9?mix(warm,vio,t/9):mix(vio,blue,(t-9)/23);if(rnd()<.07)col=pink;const b=.3+rnd()*.7;
+   l.push({pos,col:[col[0]*b,col[1]*b,col[2]*b],size:2+Math.pow(rnd(),3)*9,t})}
+ for(let t=T_NOW+.5;t<36.5;t+=.13)l.push({pos:sp(t),col:[.75,.7,1],size:2.2,t:0});
+ galaxy.add(points(l,.5,1));}
+const nebula=[];for(let t=1;t<T_NOW;t+=.45){const k=t/T_NOW,c=new THREE.Color().setRGB(.62-.2*k,.46+.14*k,1);const n=sprite(glowTex,c,34+t*.9);n.material.opacity=.075;n.position.copy(sp(t));n.renderOrder=1;n.userData.t=t;galaxy.add(n);nebula.push(n)}
+const core=sprite(glowTex,0xFFD9A0,95);core.renderOrder=2;galaxy.add(core);
+const core2=sprite(glowTex,0xFFF6E6,30);core2.renderOrder=2;galaxy.add(core2);
+
+/* ---- dark clouds (hard phases) ---- */
+const clouds=[{t:26.3,s:44},{t:28.45,s:54},{t:31.72,s:40}].map(c=>{const s=sprite(darkTex,0xffffff,c.s,false);s.position.copy(sp(c.t));s.renderOrder=4;s.userData=c;galaxy.add(s);return s});
+const inCloud=t=>(t>25.95&&t<26.65)||(t>28.0&&t<28.9)||(t>31.5&&t<31.86);
+
+/* ---- life stars ---- */
+const keys=[
+ {t:0,name:'Geburt',year:'1995',a:'m',text:'Hier beginnt die Spirale. Jede Umdrehung nach außen ist ein Jahrzehnt.'},
+ {t:6.7,name:'Einschulung',year:'2001',a:'m',text:'Die erste Umdrehung ist fast geschafft.',quiet:true},
+ {t:17.3,name:'Jonas',year:'2012',a:'m',text:'Kennengelernt mit 17. Seitdem der, den du in schweren Wochen anrufst.'},
+ {t:21.6,name:'Lehrstelle',year:'2016',a:'a',text:'Der Tipp kam von Jonas. Verbindung zwischen Menschen und Arbeit.',quiet:true},
+ {t:24.5,name:'Gesellenbrief',year:'2019',a:'a',text:'Drei Jahre Lehre, zwei dunkle Phasen darin, und trotzdem fertig geworden.'},
+ {t:27.2,name:'Erste Wohnung',year:'2022',a:'d',text:'Kam direkt nach der Dunkelwolke von 2021.'},
+ {t:29.3,name:'Jobwechsel',year:'2024',a:'a',text:'Kam direkt nach der Dunkelwolke von 2023.'},
+ {t:30.4,name:'Norwegen',year:'2025',a:'t',text:'Zwei Wochen allein unterwegs. Dort entstand die Idee mit der eigenen Werkstatt.',quiet:true}];
+const cloudKeys=[
+ {t:26.3,name:'Dunkelwolke 2021',year:'5 Wochen',cloud:true,text:'Fühlte sich damals endlos an. Von hier aus ist sie ein kleiner Fleck auf dem Arm.',quiet:true},
+ {t:28.45,name:'Dunkelwolke 2023',year:'9 Wochen',cloud:true,text:'Die längste bisher. Danach kamen der Jobwechsel und Norwegen.'}];
+{const l=[];const ak=Object.keys(AREA);
+ for(let i=0;i<170;i++){const t=.5+(T_NOW-.6)*Math.pow(rnd(),.62);if(inCloud(t))continue;l.push({pos:sp(t,gauss()*4.5,gauss()*1.5),col:hex(AREA[ak[Math.floor(rnd()*5)]][1]),size:7+rnd()*5,t})}
+ keys.forEach(k=>l.push({pos:sp(k.t),col:hex(AREA[k.a][1]),size:20,t:k.t}));
+ galaxy.add(points(l,1,6));}
+
+/* ---- today ---- */
+const nowPos=sp(T_NOW);
+const nowGlow=sprite(glowTex,0xffffff,30);nowGlow.position.copy(nowPos);nowGlow.renderOrder=8;galaxy.add(nowGlow);
+const nowRing=sprite(ringTex,0xffffff,22);nowRing.position.copy(nowPos);nowRing.renderOrder=8;nowRing.material.opacity=.7;galaxy.add(nowRing);
+const shock=sprite(thinTex,0xFFD08A,1);shock.position.copy(nowPos);shock.renderOrder=9;shock.visible=false;galaxy.add(shock);
+
+/* ---- notes of today: sparks orbiting today's star ---- */
+const notes=[{time:'08:10',text:'Schlecht geschlafen'},{time:'13:30',text:'Absage von der Tischlerei'},{time:'18:45',text:'30 Minuten gelaufen'}];
+const sparks=[];
+function addSpark(fly){const s=sprite(glowTex,0xFFE2B0,7);s.renderOrder=9;galaxy.add(s);
+  const o={s,ang:rnd()*6.28,rad:9+rnd()*6,tilt:(rnd()-.5)*1.2,speed:.9+rnd()*.8,fly:fly?0:1,from:null};
+  if(fly){const v=new THREE.Vector3(0,-.75,.5).unproject(camera);const dir=v.sub(camera.position).normalize();o.from=galaxy.worldToLocal(camera.position.clone().add(dir.multiplyScalar(camera.position.distanceTo(target)*.6)))}
+  sparks.push(o)}
+notes.forEach(()=>addSpark(false));
+
+/* ---- labels ---- */
+const labs=[];
+function mkLabel(k,cls){const b=document.createElement('button');b.type='button';b.className='lab '+(cls||'');b.innerHTML=cls==='now'?'<span>Heute</span>':k.name;
+  b.addEventListener('click',e=>{e.stopPropagation();show(k)});labelsEl.appendChild(b);labs.push({el:b,k,pos:sp(k.t)})}
+keys.concat(cloudKeys).forEach(k=>mkLabel(k,k.cloud?'cloud':''));
+const today={t:T_NOW,name:'Heute',today:true};mkLabel(today,'now');
+
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+let closed=false;
+function show(k){
+  if(!k){card.innerHTML='<h2>Von außen betrachtet</h2><p>Du bist in deiner vierten Umdrehung. Zwei Dunkelwolken liegen schon hinter dir, die jetzige ist 6 Wochen alt. Tippe einen Stern an.</p>';return}
+  if(k.today){card.innerHTML=closed?'<h2><i style="background:var(--gold)"></i>Heute ist jetzt ein Stern</h2><p>Aus '+notes.length+' Notizen ist ein Tag geworden. Zugeordnet zu Arbeit, Gesundheit und Menschen.</p>'
+    :'<h2><i style="background:var(--ink)"></i>Heute, '+notes.length+' Notizen</h2><ul>'+notes.slice(-4).map(n=>'<li><time>'+n.time+'</time><span>'+esc(n.text)+'</span></li>').join('')+'</ul>';return}
+  const col=k.cloud?'var(--dim)':AREA[k.a][1];
+  card.innerHTML='<h2><i style="background:'+col+'"></i>'+k.name+', '+k.year+'</h2><p>'+k.text+'</p>';
+}
+show(null);
+
+/* ---- camera ---- */
+const target=new THREE.Vector3(),cam={theta:reduce?1.9:-.4,phi:reduce?.8:.14,zoom:reduce?1:2.4};
+let topH=0,botH=0,baseR=800,W=1,H=1,lastTouch=performance.now()-9999,intro=reduce?1:0;
+const focus={on:0,k:0};
+function resize(){W=app.clientWidth;H=app.clientHeight;if(!W||!H)return;const pr=Math.min(devicePixelRatio||1,2);renderer.setPixelRatio(pr);renderer.setSize(W,H,false);
+  camera.aspect=W/H;const tanH=Math.tan(25*Math.PI/180);
+  const bottom=document.querySelector('.bottom').offsetHeight,top=document.querySelector('.top').offsetHeight;
+  baseR=Math.max(186/(tanH*Math.min(camera.aspect,1.05)),400);topH=top;botH=bottom;
+  camera.setViewOffset(W,H,0,Math.round((bottom-top)/2*.8),W,H);camera.updateProjectionMatrix();uni.uH.value=(H*pr/2)/tanH}
+new ResizeObserver(resize).observe(app);resize();
+
+const ptrs=new Map();let pinch=0;
+canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,[e.clientX,e.clientY]);pinch=0;document.getElementById('hint').classList.add('off');intro=1});
+canvas.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId))return;const p=ptrs.get(e.pointerId),dx=e.clientX-p[0],dy=e.clientY-p[1];ptrs.set(e.pointerId,[e.clientX,e.clientY]);lastTouch=performance.now();
+  if(ptrs.size===1){cam.theta+=dx*.006;cam.phi=Math.min(1.42,Math.max(.12,cam.phi-dy*.005))}
+  else if(ptrs.size===2){const a=[...ptrs.values()],d=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]);if(pinch)cam.zoom=Math.min(1.7,Math.max(.3,cam.zoom*pinch/d));pinch=d}});
+const up=e=>{ptrs.delete(e.pointerId);pinch=0};canvas.addEventListener('pointerup',up);canvas.addEventListener('pointercancel',up);
+canvas.addEventListener('wheel',e=>{e.preventDefault();cam.zoom=Math.min(1.7,Math.max(.3,cam.zoom*(1+e.deltaY*.0012)));intro=1},{passive:false});
+canvas.addEventListener('click',()=>{if(performance.now()-lastTouch>250)show(null)});
+
+/* ---- controls ---- */
+const year=document.getElementById('year'),yearOut=document.getElementById('yearOut');
+year.addEventListener('input',()=>{const v=+year.value;uni.uT.value=v;yearOut.textContent=v>=T_NOW-.05?'heute':String(1995+Math.floor(v));intro=1});
+document.getElementById('noteForm').addEventListener('submit',e=>{e.preventDefault();const inp=document.getElementById('note'),v=inp.value.trim();if(!v||closed)return;
+  const d=new Date();notes.push({time:String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'),text:v});inp.value='';inp.blur();
+  year.value=T_NOW;uni.uT.value=T_NOW;yearOut.textContent='heute';addSpark(true);show(today)});
+const closeBtn=document.getElementById('close');
+let merge=-1;
+closeBtn.addEventListener('click',()=>{if(closed)return;closed=true;closeBtn.disabled=true;closeBtn.textContent='Tag abgeschlossen';year.value=T_NOW;uni.uT.value=T_NOW;yearOut.textContent='heute';intro=1;merge=0;
+  card.innerHTML='<h2><i style="background:var(--gold)"></i>Deine Notizen werden ein Stern</h2><p>Die App liest sie auf dem Gerät und ordnet sie den Lebensbereichen zu.</p>'});
+
+/* ---- loop ---- */
+const ease=x=>1-Math.pow(1-x,3),v=new THREE.Vector3(),clock=new THREE.Clock();
+function frame(){requestAnimationFrame(frame);const dt=Math.min(clock.getDelta(),.05),time=clock.elapsedTime;uni.uTime.value=reduce?0:time;
+  if(intro<1){intro=Math.min(1,intro+dt/4.2);const k=ease(intro);cam.phi=.14+(.8-.14)*k;cam.zoom=2.4+(1-2.4)*k;cam.theta=-.4+(1.9+.4)*k}
+  else if(!reduce&&!ptrs.size&&performance.now()-lastTouch>2500&&merge<0)cam.theta+=dt*.035;
+  // merge animation: sparks fall into today's star, camera leans in
+  let fz=1;
+  if(merge>=0){merge+=dt/(reduce?.01:3.4);const m=Math.min(merge,1);
+    const inK=m<.55?ease(m/.55):1,outK=m>.72?ease((m-.72)/.28):0;focus.k=inK*(1-outK);fz=1-.55*focus.k;
+    sparks.forEach(o=>{o.rad*=(1-dt*2.2);o.speed+=dt*5;o.s.material.opacity=Math.max(0,1-m*1.8)});
+    const fl=m>.5?Math.max(0,1-(m-.5)/.5):0;nowGlow.scale.setScalar(30+18*Math.min(1,m*2)+90*fl*fl);nowGlow.material.color.set(m>.5?0xFFE2B0:0xffffff);
+    if(m>.5){shock.visible=true;const q=(m-.5)/.5;shock.scale.setScalar(10+170*ease(q));shock.material.opacity=.9*(1-q)}
+    if(merge>=1){merge=-1;focus.k=0;shock.visible=false;sparks.forEach(o=>galaxy.remove(o.s));sparks.length=0;nowGlow.scale.setScalar(48);show(today)}}
+  else if(!closed)nowGlow.scale.setScalar(30+(reduce?0:3*Math.sin(time*2.2)));
+  nowRing.scale.setScalar((closed?30:22)+(reduce?0:2*Math.sin(time*2.2)));
+  target.copy(nowPos).multiplyScalar(focus.k);
+  const R=baseR*cam.zoom*fz;
+  camera.position.set(target.x+R*Math.sin(cam.phi)*Math.cos(cam.theta),target.y+R*Math.cos(cam.phi),target.z+R*Math.sin(cam.phi)*Math.sin(cam.theta));camera.lookAt(target);camera.updateMatrixWorld();
+  // sparks
+  sparks.forEach(o=>{o.ang+=dt*o.speed;const c=Math.cos(o.ang)*o.rad,s=Math.sin(o.ang)*o.rad;v.set(nowPos.x+c,nowPos.y+s*Math.sin(o.tilt),nowPos.z+s*Math.cos(o.tilt));
+    if(o.fly<1){o.fly=Math.min(1,o.fly+dt/1.1);o.s.position.lerpVectors(o.from,v,ease(o.fly));o.s.scale.setScalar(7+10*Math.sin(o.fly*Math.PI))}else o.s.position.copy(v)});
+  // time travel visibility
+  const T=uni.uT.value;clouds.forEach(c=>c.visible=c.userData.t<=T+.2);nebula.forEach(n=>n.visible=n.userData.t<=T);const nowVis=T>=T_NOW-.3;nowGlow.visible=nowRing.visible=nowVis;sparks.forEach(o=>o.s.visible=nowVis);
+  renderer.render(scene,camera);
+  // labels
+  const showQuiet=W>=560||cam.zoom*fz<.75;
+  labs.forEach(l=>{v.copy(l.pos).project(camera);const vis=l.k.t<=T+.05&&v.z<1&&(!l.k.quiet||showQuiet)&&(l.k.today?nowVis:true);
+    if(!vis){if(!l.hidden){l.el.hidden=true;l.hidden=true}return}
+    if(l.hidden){l.el.hidden=false;l.hidden=false}
+    const x=(v.x*.5+.5)*W,y=(-v.y*.5+.5)*H,out=y<topH+26||y>H-botH-4;l.el.style.opacity=out?0:1;l.el.style.pointerEvents=out?'none':'auto';
+    l.el.style.transform='translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px) translate('+(l.k.today?(x>W-96?'calc(-100% - 10px),-50%':'10px,-50%'):'-50%,-135%')+')'});
+}
+frame();
+})();
+</script>
