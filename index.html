@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Design-Trainer</title>
+  <meta name="description" content="Lerne die Teile einer Website zu benennen, schreibe präzise Prompts für Claude Code und finde mutige Designs abseits vom Standard.">
+  <meta name="theme-color" content="#ebe3cf">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;800;900&family=Martian+Mono:wght@400;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="skip" href="#atlas">Zum Vokabel-Atlas springen</a>
+
+  <header class="mast">
+    <a class="mast__brand" href="#top">Design&#8209;Trainer</a>
+    <nav class="mast__nav" aria-label="Bereiche">
+      <a href="#atlas"><span class="mast__no">01</span>Atlas</a>
+      <a href="#werkstatt"><span class="mast__no">02</span>Werkstatt</a>
+      <a href="#inspiration"><span class="mast__no">03</span>Inspiration</a>
+      <a href="#skills"><span class="mast__no">04</span>Skills</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="hero__kicker label">Ein Trainer für Leute, die mit Claude Code Websites bauen</p>
+      <h1 class="hero__title" id="hero-title">
+        <span class="hero__line hero__line--1"><span>Nenn</span></span>
+        <span class="hero__line hero__line--2"><span>es beim</span></span>
+        <span class="hero__line hero__line--3"><span>Namen.</span></span>
+      </h1>
+      <div class="hero__sticker" aria-hidden="true">
+        <span class="hero__sticker-num" data-count="vocab">35</span>
+        <span class="hero__sticker-txt">Fachwörter für genauere Prompts</span>
+      </div>
+      <div class="hero__lede">
+        <p>Wer die Teile einer Website benennen kann, bekommt von Claude Code genau das, was er meint. Hier lernst du die Wörter, schärfst deine Prompts und findest Richtungen weit weg vom Standard.</p>
+        <a class="hero__go" href="#atlas">Mit dem Atlas anfangen</a>
+      </div>
+    </section>
+
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track" id="marquee-track"></div>
+    </div>
+
+    <!-- 01 · Vokabel-Atlas -->
+    <section class="area area--atlas" id="atlas" aria-labelledby="atlas-title">
+      <header class="area__head">
+        <span class="area__no" aria-hidden="true">01</span>
+        <h2 class="area__title" id="atlas-title">Vokabel&shy;atlas</h2>
+        <p class="area__lede">Fahre über die Beispielseite oder tippe ein Teil an. Du siehst, wie es heißt, was es ist, und einen Satz, den du direkt in deinen Prompt kopieren kannst.</p>
+      </header>
+
+      <div class="atlas">
+        <div class="wf" role="group" aria-label="Beispielseite zum Erkunden">
+          <div class="wf__chrome" aria-hidden="true"><i></i><i></i><i></i><span>baeckerei-korn.de</span></div>
+
+          <div class="wf__region wf__nav">
+            <button class="wf__part wf__bg" data-vocab-id="navbar"></button>
+            <span class="wf__logo" aria-hidden="true">Korn</span>
+            <button class="wf__part wf__links" data-vocab-id="letter-spacing"><span>Brot</span><span>Kuchen</span><span>Laden</span></button>
+            <button class="wf__part wf__pin" data-vocab-id="sticky-header">klebt oben</button>
+          </div>
+
+          <div class="wf__region wf__hero">
+            <button class="wf__part wf__bg" data-vocab-id="hero"></button>
+            <div class="wf__hero-copy">
+              <button class="wf__part wf__eyebrow" data-vocab-id="eyebrow">Seit 1952</button>
+              <button class="wf__part wf__h1" data-vocab-id="fluid-type">Brot mit Geduld.</button>
+              <button class="wf__part wf__para" data-vocab-id="line-height"><i></i><i></i><i></i></button>
+              <button class="wf__part wf__cta" data-vocab-id="cta-button">Jetzt vorbestellen</button>
+            </div>
+            <button class="wf__part wf__img" data-vocab-id="overlay"><span>Bild + Overlay</span></button>
+          </div>
+
+          <button class="wf__part wf__marquee" data-vocab-id="marquee"><span>Roggen ✶ Dinkel ✶ Sauerteig ✶ Roggen ✶ Dinkel ✶ Sauerteig ✶ Roggen ✶ Dinkel ✶</span></button>
+
+          <div class="wf__region wf__section">
+            <button class="wf__part wf__bg" data-vocab-id="section"></button>
+            <button class="wf__part wf__h2" data-vocab-id="font-weight">Unsere Brote</button>
+            <div class="wf__region wf__grid">
+              <button class="wf__part wf__bg wf__bg--grid" data-vocab-id="grid"></button>
+              <button class="wf__part wf__card" data-vocab-id="card"><b></b><i></i><i></i></button>
+              <button class="wf__part wf__card wf__card--shadow" data-vocab-id="box-shadow"><b></b><i></i><i></i></button>
+              <button class="wf__part wf__card wf__card--round" data-vocab-id="border-radius"><b></b><i></i><i></i></button>
+            </div>
+          </div>
+
+          <button class="wf__part wf__footer" data-vocab-id="footer"><span>Impressum</span><span>Kontakt</span><span>© Korn</span></button>
+        </div>
+
+        <aside class="detail" id="atlas-detail" aria-live="polite" aria-label="Erklärung zum gewählten Teil">
+          <button class="detail__close" type="button" aria-label="Erklärung schließen">×</button>
+          <p class="detail__group label" id="detail-group">Wähle ein Teil</p>
+          <h3 class="detail__term" id="detail-term">Zeig drauf.</h3>
+          <p class="detail__text" id="detail-text">Jedes umrandete Stück der Beispielseite hat einen Namen. Fahre mit der Maus darüber, tippe es an oder wähle es mit der Tab-Taste.</p>
+          <div class="detail__brick" id="detail-brick" hidden>
+            <p class="label">Prompt-Baustein</p>
+            <p class="brick" id="detail-prompt"></p>
+            <button class="btn-copy" type="button" id="detail-copy">Baustein kopieren</button>
+            <span class="copy-status" role="status" id="detail-status"></span>
+          </div>
+        </aside>
+      </div>
+
+      <div class="lexicon">
+        <div class="lexicon__head">
+          <h3 class="lexicon__title">Alle Begriffe</h3>
+          <p class="lexicon__count label" id="lexicon-count"></p>
+        </div>
+        <div class="filters" role="toolbar" aria-label="Nach Gruppe filtern" id="lexicon-filters"></div>
+        <ol class="lexicon__list" id="lexicon-list"></ol>
+      </div>
+    </section>
+
+    <!-- 02 · Prompt-Werkstatt -->
+    <section class="area area--werkstatt" id="werkstatt" aria-labelledby="werkstatt-title">
+      <header class="area__head">
+        <span class="area__no" aria-hidden="true">02</span>
+        <h2 class="area__title" id="werkstatt-title">Prompt&shy;werkstatt</h2>
+        <p class="area__lede">Aus „mach es schöner“ wird ein Auftrag mit Element, Eigenschaft, Wert, Stimmung und Grenze. Schreib deinen Prompt und sieh, was ihm noch fehlt.</p>
+      </header>
+      <div class="area__body" id="werkstatt-body"></div>
+    </section>
+
+    <!-- 03 · Inspiration -->
+    <section class="area area--inspiration" id="inspiration" aria-labelledby="inspiration-title">
+      <header class="area__head">
+        <span class="area__no" aria-hidden="true">03</span>
+        <h2 class="area__title" id="inspiration-title">Inspi&shy;ration</h2>
+        <p class="area__lede">Dreh den Mut-Regler auf und hol dir Richtungen, die nicht nach jeder zweiten Website aussehen, jeweils mit fertigem Prompt.</p>
+      </header>
+      <div class="area__body" id="inspiration-body"></div>
+    </section>
+
+    <!-- 04 · Skill-Guide -->
+    <section class="area area--skills" id="skills" aria-labelledby="skills-title">
+      <header class="area__head">
+        <span class="area__no" aria-hidden="true">04</span>
+        <h2 class="area__title" id="skills-title">Skill&shy;guide</h2>
+        <p class="area__lede">Welcher Claude-Code-Skill hilft wann, und in welcher Reihenfolge du sie am besten einsetzt.</p>
+      </header>
+      <div class="area__body" id="skills-body"></div>
+    </section>
+  </main>
+
+  <footer class="colophon">
+    <p class="colophon__big" aria-hidden="true">Genau&shy;er.</p>
+    <p class="colophon__small label">Läuft komplett im Browser. Keine Konten, kein Tracking.</p>
+  </footer>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
