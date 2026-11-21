@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Lebenslinie: vier Richtungen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#777;display:flex;gap:40px;padding:40px;width:max-content;font-family:Sora,Inter,sans-serif}
+.stage{width:520px;padding:40px 0 44px;display:flex;flex-direction:column;align-items:center;background:#191E4A;color:#E9EAFF;border-radius:12px}
+.cap{width:390px;margin-bottom:26px}
+.cap .n{font-size:15px;font-weight:600;opacity:.6;margin-bottom:4px}
+.cap h2{font-size:38px;line-height:1.05;font-weight:600;letter-spacing:-.02em}
+.cap p{font-size:16px;line-height:1.5;margin-top:10px;color:#C9CDF8}
+.foot{width:390px;margin-top:30px;font-size:15px;line-height:1.5;color:#C9CDF8}
+.foot b{font-weight:600;color:#fff}
+.phone{width:390px;height:844px;border-radius:56px;position:relative;overflow:hidden;background:#07051C;color:#fff;
+  box-shadow:0 0 0 10px #16181d,0 0 0 12px #454851,0 34px 60px -10px rgba(10,15,30,.5)}
+.phone>svg{position:absolute;inset:0;width:390px;height:844px;display:block}
+.notch{position:absolute;top:11px;left:50%;width:122px;height:35px;border-radius:20px;background:#000;transform:translateX(-50%);z-index:20}
+.status{position:absolute;top:17px;left:0;right:0;padding:0 36px 0 40px;display:flex;justify-content:space-between;align-items:center;font:600 16px Inter,sans-serif;z-index:19}
+.status .r{display:flex;gap:6px;align-items:center}
+.status .bat{width:25px;height:12px;border-radius:4px;border:1.5px solid currentColor;position:relative;opacity:.9}
+.status .bat i{position:absolute;inset:1.5px;right:7px;background:currentColor;border-radius:1.5px}
+.status .sig{display:flex;gap:2px;align-items:flex-end;height:11px}
+.status .sig i{width:3px;background:currentColor;border-radius:1px}
+.home{position:absolute;bottom:8px;left:50%;width:136px;height:5px;border-radius:3px;background:#fff;transform:translateX(-50%);z-index:20}
+.top{position:absolute;top:56px;left:20px;right:20px;z-index:5;display:flex;justify-content:space-between;align-items:flex-start}
+.top h3{font-size:24px;font-weight:600;letter-spacing:-.02em}
+.top small{display:block;margin-top:3px;font-size:12.5px;color:#A6ABDD}
+.heute{font:600 12.5px Sora;background:rgba(31,37,92,.9);border:1px solid #3A4192;border-radius:999px;padding:8px 13px;margin-top:2px}
+.panel{position:absolute;left:12px;right:12px;bottom:22px;z-index:6}
+.card{background:rgba(24,20,66,.9);border:1px solid #3A4192;border-radius:20px;padding:7px 14px;backdrop-filter:blur(10px)}
+.card .r{display:flex;gap:10px;align-items:baseline;padding:4px 0}
+.card .r+.r{border-top:1px solid rgba(160,150,255,.16)}
+.card i{width:9px;height:9px;border-radius:50%;flex:none;transform:translateY(0)}
+.card b{font-weight:600;font-size:12px;width:84px;flex:none}
+.card span{font-size:12px;line-height:1.34;color:#DADCF7}
+.input{margin-top:8px;background:#fff;color:#191E4A;border-radius:999px;padding:11px 12px 11px 20px;display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:500}
+.input .plus{width:32px;height:32px;border-radius:50%;background:#FFD08A;display:grid;place-items:center;font-size:20px;font-weight:600}
+.t{font-family:Sora,Inter,sans-serif;paint-order:stroke;stroke-linejoin:round}
+</style>
+</head>
+<body>
+
+<section class="stage"><div class="cap"><div class="n">Idee A</div><h2>Lichtweg</h2><p>Ein leuchtender Weg führt von unten nach oben. Unter dir liegt, was war. Über dir teilt er sich in mögliche Ziele.</p></div>
+  <div class="phone"><svg id="pA" viewBox="0 0 390 844"></svg><div class="notch"></div><div class="status"><span>21:47</span><span class="r"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:11px"></i></span><span class="bat"><i></i></span></span></div>
+    <div class="top"><div><h3>Deine Lebenslinie</h3><small>Fenster: 2022 bis 2031</small></div><div class="heute">Heute</div></div>
+    <div class="panel"><div class="card"><div class="r"><i style="background:#8F95D2"></i><b>Was war</b><span>Zwei Dunkelwolken, beide vorbei. Die längste dauerte 9 Wochen.</span></div><div class="r"><i style="background:#fff"></i><b>Jetzt</b><span>Jobsuche seit 6 Wochen. Norwegen ist ein Jahr her.</span></div><div class="r"><i style="background:#FFD08A"></i><b>Was kommt</b><span>Neue Stelle, Meisterschule oder eigene Werkstatt.</span></div></div><div class="input"><span>Notiz für jetzt</span><span class="plus">+</span></div></div><div class="home"></div></div>
+  <div class="foot"><b>Wie ein Flug nach vorn.</b> Du wischst nach oben in die Zukunft und nach unten in die Vergangenheit. Rechts siehst du, wo im ganzen Leben du gerade bist.</div></section>
+
+<section class="stage"><div class="cap"><div class="n">Idee B</div><h2>Lebenskurve</h2><p>Dein Lebensgefühl als leuchtende Kurve. Oben das ganze Leben, unten die Lupe auf das letzte Jahr und die nächsten Jahre.</p></div>
+  <div class="phone"><svg id="pB" viewBox="0 0 390 844"></svg><div class="notch"></div><div class="status"><span>21:47</span><span class="r"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:11px"></i></span><span class="bat"><i></i></span></span></div>
+    <div class="top"><div><h3>Deine Lebenslinie</h3><small>1995 bis heute, und die nächsten Jahre</small></div><div class="heute">Heute</div></div>
+    <div class="panel"><div class="card"><div class="r"><i style="background:#8F95D2"></i><b>Was war</b><span>Zwei tiefe Täler, beide vorbei. Danach kamen deine zwei höchsten Punkte.</span></div><div class="r"><i style="background:#fff"></i><b>Jetzt</b><span>Ein Tal seit 6 Wochen. Du bist nicht am tiefsten Punkt.</span></div><div class="r"><i style="background:#FFD08A"></i><b>Was kommt</b><span>Der Nebel zeigt, was offen ist. Die Sterne sind deine Ziele.</span></div></div><div class="input"><span>Notiz für jetzt</span><span class="plus">+</span></div></div><div class="home"></div></div>
+  <div class="foot"><b>Hoch und tief auf einen Blick.</b> Das Tal heute sieht neben den früheren Tälern kleiner aus. Die Lupe zeigt jeden Tag.</div></section>
+
+<section class="stage"><div class="cap"><div class="n">Idee C</div><h2>Fäden</h2><p>Fünf Fäden, einer pro Lebensbereich, flechten sich zu deinem Weg. In schweren Zeiten ziehen sie sich zusammen, in der Zukunft läuft jeder zu seinem Ziel.</p></div>
+  <div class="phone"><svg id="pC" viewBox="0 0 390 844"></svg><div class="notch"></div><div class="status"><span>21:47</span><span class="r"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:11px"></i></span><span class="bat"><i></i></span></span></div>
+    <div class="top"><div><h3>Deine Lebenslinie</h3><small>Fenster: 2020 bis 2031</small></div><div class="heute">Heute</div></div>
+    <div class="panel"><div class="card"><div class="r"><i style="background:#8F95D2"></i><b>Was war</b><span>Die Fäden zogen sich zweimal zusammen und gingen wieder auf.</span></div><div class="r"><i style="background:#fff"></i><b>Jetzt</b><span>Alle fünf Fäden sind eng. Gesundheit und Menschen tragen dich.</span></div><div class="r"><i style="background:#FFD08A"></i><b>Was kommt</b><span>Jeder Faden hat ein Ziel. Du kannst sie verschieben.</span></div></div><div class="input"><span>Notiz für jetzt</span><span class="plus">+</span></div></div><div class="home"></div></div>
+  <div class="foot"><b>Du siehst, was trägt.</b> Ist ein Bereich dünn, laufen die anderen weiter. Der Zeitstrahl oben zeigt das ganze Leben.</div></section>
+
+<section class="stage"><div class="cap"><div class="n">Idee D</div><h2>Lebensmonate</h2><p>Jeder Punkt ein Monat. Dein ganzes Leben auf einen Blick, mit dem, was war, dem Jetzt und den Monaten, die noch offen sind.</p></div>
+  <div class="phone"><svg id="pD" viewBox="0 0 390 844"></svg><div class="notch"></div><div class="status"><span>21:47</span><span class="r"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:11px"></i></span><span class="bat"><i></i></span></span></div>
+    <div class="top"><div><h3>Deine Lebenslinie</h3><small>Dein Leben in Monaten</small></div><div class="heute">Heute</div></div>
+    <div class="panel"><div class="card"><div class="r"><i style="background:#8F95D2"></i><b>Was war</b><span>381 Monate. Dunkle Punkte sind schwere Zeiten, alle vorbei.</span></div><div class="r"><i style="background:#fff"></i><b>Jetzt</b><span>Monat 382. Eine dunkle Phase, bisher 1 Monat.</span></div><div class="r"><i style="background:#FFD08A"></i><b>Was kommt</b><span>Die hellen Umrisse sind offen. Goldene Sterne sind Ziele.</span></div></div><div class="input"><span>Notiz für jetzt</span><span class="plus">+</span></div></div><div class="home"></div></div>
+  <div class="foot"><b>Bleibt auch bei vielen Einträgen übersichtlich.</b> Ein Monat ist immer ein Punkt, egal wie viel du schreibst. Antippen öffnet ihn.</div></section>
+
+<script>
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function smooth(p){const n=p.length;let d='M'+p[0][0].toFixed(1)+' '+p[0][1].toFixed(1);const g=i=>p[Math.max(0,Math.min(n-1,i))];
+  for(let i=0;i<n-1;i++){const a=g(i-1),b=g(i),c=g(i+1),e=g(i+2);d+=' C'+(b[0]+(c[0]-a[0])/6).toFixed(1)+' '+(b[1]+(c[1]-a[1])/6).toFixed(1)+' '+(c[0]-(e[0]-b[0])/6).toFixed(1)+' '+(c[1]-(e[1]-b[1])/6).toFixed(1)+' '+c[0].toFixed(1)+' '+c[1].toFixed(1)}return d}
+const COL={m:'#FF8FA8',a:'#FFC857',g:'#6EE7B7',d:'#6FD3FF',t:'#C3A6FF'};
+const NOW=2026.85;
+const PEAK=[[2012.5,.3,1.1],[2016.7,.2,.9],[2019.6,.38,1.1],[2022.5,.3,.8],[2025.6,.42,.55]],DIP=[[2021.15,.46,.25],[2023.8,.52,.3],[2026.6,.36,.45]];
+function mood(t){let m=.5+.08*Math.sin(t*1.3)+.03*Math.sin(t*2.9+1)+.1*Math.exp(-Math.pow((t-2001.7)/1.2,2));
+  PEAK.forEach(p=>m+=p[1]*Math.exp(-Math.pow((t-p[0])/p[2],2)));DIP.forEach(d=>m-=d[1]*Math.exp(-Math.pow((t-d[0])/d[2],2)));return Math.max(.05,Math.min(.97,m))}
+const EV=[['Einschulung',2001.7,'a',1],['Fußballverein',2005.4,'g',1],['Umzug aufs Land',2007.6,'m',2],['Realschulabschluss',2011.6,'a',2],['Jonas kennengelernt',2012.5,'m',3],['Lehrstelle',2016.7,'a',2],['Gesellenbrief',2019.6,'a',3],['Erste Wohnung',2022.5,'d',3],['Lauftreff',2023.3,'g',2],['Jobwechsel',2024.4,'a',2],['Norwegen allein',2025.6,'t',3]];
+const PH=[['Nach der Trennung',2021.1,2021.25],['Ausgebrannt',2023.7,2023.9],['Jobsuche',2026.45,NOW]];
+const ZIEL=[['Neue Stelle',2027.2,'a'],['Notgroschen voll',2027.8,'d'],['Mit Jonas nach Norwegen',2028.2,'m'],['Meisterschule',2028.9,'a'],['Halbmarathon',2029.3,'g'],['Eigene Werkstatt',2030.5,'t']];
+const T=(x,y,s,a='')=>`<text x="${x}" y="${y}" class="t" ${a}>${s}</text>`;
+function star(x,y,r,c,hollow){const p=`M${x} ${y-r}L${x+r*.28} ${y-r*.28}L${x+r} ${y}L${x+r*.28} ${y+r*.28}L${x} ${y+r}L${x-r*.28} ${y+r*.28}L${x-r} ${y}L${x-r*.28} ${y-r*.28}Z`;
+  return hollow?`<path d="${p}" fill="#0E0A2C" stroke="${c}" stroke-width="1.4"/>`:`<circle cx="${x}" cy="${y}" r="${r*1.7}" fill="${c}" opacity=".22"/><path d="${p}" fill="${c}"/>`}
+function bgStars(seed,n,y0,y1){const R=rng(seed);let s='';for(let i=0;i<n;i++)s+=`<circle cx="${(R()*390).toFixed(1)}" cy="${(y0+R()*(y1-y0)).toFixed(1)}" r="${(.3+R()*.9).toFixed(2)}" fill="#fff" opacity="${(.12+R()*.45).toFixed(2)}"/>`;return s}
+const LBL=(c)=>`fill="${c||'#EDEAFF'}" stroke="#0A0726" stroke-width="3.500" font-size="11.500" font-weight="500"`;
+
+/* ============ A: Lichtweg ============ */
+(function(){
+  const y0=380,PX=54,yy=t=>y0-(t-2026.7)*PX;
+  const X=y=>195+(y>y0?52*Math.sin((y-y0)/56)+10*Math.sin((y-y0)/19):0);
+  let s=`<defs><radialGradient id="aBg" cx="50%" cy="36%" r="80%"><stop offset="0" stop-color="#261C62"/><stop offset=".55" stop-color="#130E3A"/><stop offset="1" stop-color="#07051C"/></radialGradient>
+  <linearGradient id="aRib" gradientUnits="userSpaceOnUse" x1="0" y1="380" x2="0" y2="720"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="#BDB0FF"/><stop offset="1" stop-color="#5546C8" stop-opacity=".25"/></linearGradient>
+  <linearGradient id="aFut" gradientUnits="userSpaceOnUse" x1="0" y1="380" x2="0" y2="150"><stop offset="0" stop-color="#FFE3B0"/><stop offset="1" stop-color="#FFE3B0" stop-opacity=".25"/></linearGradient>
+  <linearGradient id="aFog" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#07051C" stop-opacity=".92"/><stop offset="1" stop-color="#07051C" stop-opacity="0"/></linearGradient>
+  <radialGradient id="aDark"><stop offset="0" stop-color="#03020F" stop-opacity=".97"/><stop offset=".62" stop-color="#03020F" stop-opacity=".86"/><stop offset="1" stop-color="#03020F" stop-opacity="0"/></radialGradient>
+  <filter id="aGl" x="-80%" y="-30%" width="260%" height="160%"><feGaussianBlur stdDeviation="6"/></filter></defs>
+  <rect width="390" height="844" fill="url(#aBg)"/>`+bgStars(3,140,0,844);
+  // year ticks
+  for(let yr=2022;yr<=2031;yr++){const y=yy(yr);s+=`<path d="M10 ${y}H24" stroke="#6F68B8" stroke-width="1"/>`+T(28,y+4,yr,'fill="#8C86C8" font-size="10.500"')}
+  // past ribbon
+  const pts=[];for(let y=y0;y<=720;y+=6)pts.push([X(y),y]);const d=smooth(pts);
+  s+=`<path d="${d}" fill="none" stroke="url(#aRib)" stroke-width="18" opacity=".5" filter="url(#aGl)"/><path d="${d}" fill="none" stroke="url(#aRib)" stroke-width="5.500" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#fff" stroke-width="1.600" opacity=".85" stroke-linecap="round"/>`;
+  // dark clouds over the ribbon
+  const cloud=(t,rx,ry,name,dur,dx,anchor)=>{const y=yy(t),x=X(y);return `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="url(#aDark)"/><ellipse cx="${x}" cy="${y}" rx="${rx*.8}" ry="${ry*.8}" fill="none" stroke="#9D8BD6" stroke-width=".9" stroke-dasharray="2 3" opacity=".7"/>`+T(x+dx,y+4,`${name}, ${dur}`,`fill="#C9BEEA" stroke="#07051C" stroke-width="3.500" font-size="11" font-style="italic" text-anchor="${anchor}"`)};
+  s+=cloud(2023.8,88,32,'Ausgebrannt','9 Wochen',0,'middle');
+  // events on the past ribbon
+  [['Norwegen allein',2025.6,'t',16,'start'],['Jobwechsel',2024.4,'a',-16,'end'],['Lauftreff',2023.3,'g',16,'start'],['Erste Wohnung',2022.5,'d',-16,'end']].forEach(e=>{const y=yy(e[1]),x=X(y);s+=star(x,y,7,COL[e[2]])+T(x+e[3],y+4,e[0],`${LBL()} text-anchor="${e[4]}"`)});
+  // future: trunk and three branches
+  const fut=(dd,w,op)=>`<path d="${dd}" fill="none" stroke="url(#aFut)" stroke-width="${w}" stroke-linecap="round" ${op||''}/>`;
+  const trunk='M195 380C195 352 197 330 200 304', L='M200 304C170 292 112 286 84 258', M='M200 304C200 280 196 250 196 224', R='M200 304C240 286 290 252 306 170';
+  [trunk,L,M,R].forEach(p=>s+=`<path d="${p}" fill="none" stroke="#FFE3B0" stroke-width="12" opacity=".14" filter="url(#aGl)"/>`+fut(p,2.600,'stroke-dasharray="1 7"'));
+  s+=star(196,yy(2027.2),6.500,COL.a,true)+T(210,yy(2027.2)+4,'Neue Stelle',`${LBL('#E7D9B4')} font-style="italic"`);
+  s+=star(199,yy(2027.8),6.500,COL.d,true)+T(-0,0,'','')+T(184,yy(2027.8)+4,'Notgroschen voll',`${LBL('#E7D9B4')} font-style="italic" text-anchor="end"`);
+  const planet=(x,y,r,c,ring)=>`<circle cx="${x}" cy="${y}" r="${r*3}" fill="${c}" opacity=".16"/>`+(ring?`<ellipse cx="${x}" cy="${y}" rx="${r*2}" ry="${r*.8}" fill="none" stroke="${c}" stroke-width="2" opacity=".8"/>`:'')+`<circle cx="${x}" cy="${y}" r="${r}" fill="#0E0A2C" stroke="${c}" stroke-width="2.200"/><circle cx="${x-r*.3}" cy="${y-r*.3}" r="${r*.35}" fill="${c}" opacity=".6"/>`;
+  s+=planet(84,258,9,COL.a)+T(84,236,'Meisterschule',`${LBL('#E7D9B4')} text-anchor="middle" font-style="italic"`)+T(84,278,'2028',`fill="#8C86C8" font-size="10.500" text-anchor="middle"`);
+  s+=planet(196,224,9,COL.g)+T(196,202,'Halbmarathon',`${LBL('#E7D9B4')} text-anchor="middle" font-style="italic"`)+T(196,244,'2029',`fill="#8C86C8" font-size="10.500" text-anchor="middle"`);
+  s+=planet(306,170,11,COL.t,true)+T(306,142,'Eigene Werkstatt',`${LBL('#F0E4FF')} text-anchor="middle" font-style="italic" font-weight="600"`)+T(306,196,'2030',`fill="#8C86C8" font-size="10.500" text-anchor="middle"`);
+  // fog
+  s+=`<rect x="0" y="110" width="390" height="70" fill="url(#aFog)"/>`+T(195,128,'noch offen',`fill="#8C86C8" font-size="11" font-style="italic" text-anchor="middle"`);
+  // now
+  s+=`<ellipse cx="195" cy="386" rx="46" ry="19" fill="url(#aDark)" opacity=".9"/><circle cx="195" cy="380" r="30" fill="#fff" opacity=".1"/><circle cx="195" cy="380" r="17" fill="none" stroke="#fff" stroke-width="1.300" opacity=".8"/><circle cx="195" cy="380" r="8" fill="#fff"/>`;
+  s+=`<rect x="226" y="366" width="48" height="24" rx="12" fill="#fff"/>`+T(250,382.500,'Jetzt',`fill="#191E4A" stroke="none" font-size="13" font-weight="700" text-anchor="middle"`);
+  s+=T(214,408,'Jobsuche, Woche 6',`fill="#C9BEEA" stroke="#07051C" stroke-width="3.500" font-size="11" font-style="italic"`);
+  // life scrubber on the right
+  const sy=t=>560-(t-1995)/45*420;
+  s+=`<rect x="370" y="140" width="4" height="420" rx="2" fill="#1C1750"/><rect x="370" y="${sy(NOW)}" width="4" height="${560-sy(NOW)}" rx="2" fill="#8D82F2"/><rect x="370" y="140" width="4" height="${sy(NOW)-140}" rx="2" fill="none" stroke="#6F68B8" stroke-dasharray="1.500 3"/>`;
+  PH.forEach(p=>s+=`<rect x="368" y="${sy(p[2])}" width="8" height="${Math.max(2,sy(p[1])-sy(p[2]))}" rx="1" fill="#03020F" stroke="#9D8BD6" stroke-width=".7"/>`);
+  s+=`<rect x="364" y="${sy(2031)}" width="16" height="${sy(2022)-sy(2031)}" rx="5" fill="none" stroke="#fff" stroke-width="1.300"/><circle cx="372" cy="${sy(NOW)}" r="3.500" fill="#fff"/>`;
+  s+=T(372,576,'1995',`fill="#8C86C8" font-size="9.500" text-anchor="middle"`)+T(372,132,'2040',`fill="#8C86C8" font-size="9.500" text-anchor="middle"`);
+  document.getElementById('pA').innerHTML=s;
+})();
+
+/* ============ B: Lebenskurve ============ */
+(function(){
+  const X0=16,W=358,Y1=2038,Z0=2025.7,Z1=2031;
+  const xo=t=>X0+(t-1995)/(Y1-1995)*W, yo=m=>300-m*146;
+  const xz=t=>X0+(t-Z0)/(Z1-Z0)*W, yz=m=>574-m*140;
+  let s=`<defs><radialGradient id="bBg" cx="50%" cy="30%" r="85%"><stop offset="0" stop-color="#261C62"/><stop offset=".55" stop-color="#130E3A"/><stop offset="1" stop-color="#07051C"/></radialGradient>
+  <linearGradient id="bLn" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7D6BFF"/><stop offset=".6" stop-color="#9FC4FF"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient>
+  <linearGradient id="bAr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8D7BFF" stop-opacity=".4"/><stop offset="1" stop-color="#8D7BFF" stop-opacity="0"/></linearGradient>
+  <linearGradient id="bFan" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFD08A" stop-opacity=".32"/><stop offset="1" stop-color="#FFD08A" stop-opacity=".02"/></linearGradient>
+  <radialGradient id="bDark"><stop offset="0" stop-color="#03020F" stop-opacity=".96"/><stop offset=".6" stop-color="#03020F" stop-opacity=".8"/><stop offset="1" stop-color="#03020F" stop-opacity="0"/></radialGradient>
+  <filter id="bGl" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="4.500"/></filter></defs>
+  <rect width="390" height="844" fill="url(#bBg)"/>`+bgStars(8,120,0,844);
+  s+=T(16,126,'Dein ganzes Leben',`fill="#A6ABDD" stroke="none" font-size="11.500"`);
+  const ov=[];for(let t=1995.2;t<=NOW;t+=.1)ov.push([xo(t),yo(mood(t))]);
+  const dOv='M'+ov.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join('L');
+  const nx=xo(NOW),ny=yo(mood(NOW));
+  s+=`<path d="${dOv}L${nx} 306L${xo(1995.2)} 306Z" fill="url(#bAr)"/>`;
+  [1995,2005,2015,2025,2035].forEach(yr=>{s+=`<path d="M${xo(yr)} 306V311" stroke="#6F68B8"/>`+T(xo(yr),324,yr,`fill="#8C86C8" stroke="none" font-size="10" text-anchor="middle"`)});
+  // fan of the open future
+  s+=`<path d="M${nx} ${ny}L${xo(2038)} ${yo(.95)}L${xo(2038)} ${yo(.03)}Z" fill="url(#bFan)"/>`;
+  [.85,.5,.2].forEach(f=>s+=`<path d="M${nx} ${ny}C${nx+24} ${ny-6} ${xo(2032)} ${yo(f+.03)} ${xo(2038)} ${yo(f)}" fill="none" stroke="#FFD08A" stroke-width="1.300" stroke-dasharray="1.500 5" opacity=".75" stroke-linecap="round"/>`);
+  s+=`<path d="${dOv}" fill="none" stroke="url(#bLn)" stroke-width="7" opacity=".5" filter="url(#bGl)"/><path d="${dOv}" fill="none" stroke="url(#bLn)" stroke-width="2.200" stroke-linejoin="round"/>`;
+  [2021.15,2023.8,2026.6].forEach(t=>{const x=xo(t),y=yo(mood(t));s+=`<ellipse cx="${x}" cy="${y+2}" rx="9" ry="7" fill="url(#bDark)"/><ellipse cx="${x}" cy="${y+2}" rx="8" ry="6" fill="none" stroke="#9D8BD6" stroke-width=".8" stroke-dasharray="2 2" opacity=".85"/>`});
+  EV.filter(e=>e[3]>=3).forEach(e=>{s+=star(xo(e[1]),yo(mood(e[1])),5,COL[e[2]])});
+  [['Jonas',2012.5,'middle',0],['Gesellenbrief',2019.6,'end',9],['Norwegen',2025.6,'start',-9]].forEach(l=>{const x=xo(l[1]),y=yo(mood(l[1]));s+=T(x+l[3],y-11,l[0],`${LBL()} text-anchor="${l[2]}" font-size="10.500"`)});
+  s+=`<path d="M${nx} ${ny}V306" stroke="#fff" stroke-width="1" stroke-dasharray="2 3" opacity=".6"/><circle cx="${nx}" cy="${ny}" r="11" fill="#fff" opacity=".12"/><circle cx="${nx}" cy="${ny}" r="5.500" fill="#fff"/>`;
+  // zoom window and connectors
+  const zx0=xo(Z0),zx1=xo(Z1);
+  s+=`<rect x="${zx0}" y="150" width="${zx1-zx0}" height="158" rx="6" fill="#fff" opacity=".07" stroke="#fff" stroke-width="1.200"/>`;
+  s+=`<path d="M${zx0} 308L${X0} 346M${zx1} 308L${X0+W} 346" stroke="#fff" stroke-width="1" stroke-dasharray="2 4" opacity=".5"/>`;
+  // ---------- zoom panel
+  s+=`<rect x="8" y="346" width="374" height="262" rx="16" fill="#0F0B2E" stroke="#3A4192" stroke-width="1"/>`;
+  s+=T(20,367,'Lupe: November 2025 bis 2031',`fill="#A6ABDD" stroke="none" font-size="11.500"`);
+  for(let yr=2026;yr<=2031;yr++){s+=`<path d="M${xz(yr)} 384V584" stroke="#2A2468" stroke-width="1"/>`+(yr<2031?T(xz(yr)+3,598,yr,`fill="#8C86C8" stroke="none" font-size="10"`):'')}
+  const zp=[];for(let t=Z0;t<=NOW;t+=.02)zp.push([xz(t),yz(mood(t))]);
+  const dZ='M'+zp.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join('L');
+  const zx=xz(NOW),zy=yz(mood(NOW));
+  s+=`<path d="M${zx} ${zy}L${X0+W} ${yz(.97)}L${X0+W} ${yz(.03)}Z" fill="url(#bFan)"/>`;
+  s+=`<path d="${dZ}L${zx} 584L${xz(Z0)} 584Z" fill="url(#bAr)"/><path d="${dZ}" fill="none" stroke="url(#bLn)" stroke-width="6" opacity=".5" filter="url(#bGl)"/><path d="${dZ}" fill="none" stroke="url(#bLn)" stroke-width="2.400"/>`;
+  const R=rng(5);for(let t=Z0;t<NOW;t+=.0274){const m=mood(t)+(R()-.5)*.1;s+=`<circle cx="${xz(t)}" cy="${yz(m)}" r="1.400" fill="${m<.3?'#B3A5F5':(m>.7?'#FFD08A':'#E9EAFF')}" opacity=".85"/>`}
+  const cx=xz(2026.6),cyy=yz(mood(2026.6));
+  s+=`<ellipse cx="${cx}" cy="${cyy+2}" rx="24" ry="13" fill="url(#bDark)"/><ellipse cx="${cx}" cy="${cyy+2}" rx="19" ry="10" fill="none" stroke="#9D8BD6" stroke-width=".8" stroke-dasharray="2 2.500"/>`;
+  s+=T(cx-4,cyy+28,'Jobsuche, Woche 6',`fill="#C9BEEA" stroke="#0F0B2E" stroke-width="3" font-size="10.500" font-style="italic" text-anchor="start"`);
+  s+=T(xz(2025.6)+5,yz(mood(2025.6))-8,'Norwegen',`${LBL()} font-size="10.500"`);
+  s+=`<path d="M${zx} ${zy}V584" stroke="#fff" stroke-width="1" stroke-dasharray="2 3" opacity=".6"/><circle cx="${zx}" cy="${zy}" r="12" fill="#fff" opacity=".13"/><circle cx="${zx}" cy="${zy}" r="5.500" fill="#fff"/>`;
+  s+=`<rect x="${zx-22}" y="${zy-36}" width="44" height="22" rx="11" fill="#fff"/>`+T(zx,zy-20.500,'Jetzt',`fill="#191E4A" stroke="none" font-size="12" font-weight="700" text-anchor="middle"`);
+  [['Neue Stelle',2027.2,.46,'a',1],['Notgroschen',2027.8,.62,'d',0],['Meisterschule',2028.9,.56,'a',0],['Halbmarathon',2029.3,.74,'g',1],['Werkstatt',2030.5,.84,'t',0]].forEach(g=>{
+    const x=xz(g[1]),y=yz(g[2]);s+=`<path d="M${x} ${y}V584" stroke="${COL[g[3]]}" stroke-width=".8" stroke-dasharray="2 4" opacity=".45"/>`+star(x,y,6,COL[g[3]],true)+T(x,y-(g[4]?30:14),g[0],`${LBL('#F0E4FF')} text-anchor="middle" font-size="10.500" font-style="italic"`)});
+  s+=T(xz(2029.7),yz(.06),'was offen ist',`fill="#8C86C8" stroke="none" font-size="10.500" font-style="italic" text-anchor="middle"`);
+  document.getElementById('pB').innerHTML=s;
+})();
+
+/* ============ C: Fäden ============ */
+(function(){
+  const X0=16,W=358,T0=2020.4,T1=2031.4,xc=t=>X0+(t-T0)/(T1-T0)*W, cy=388;
+  const order=['m','a','g','d','t'];
+  let s=`<defs><radialGradient id="cBg" cx="50%" cy="45%" r="85%"><stop offset="0" stop-color="#261C62"/><stop offset=".55" stop-color="#130E3A"/><stop offset="1" stop-color="#07051C"/></radialGradient>
+  <radialGradient id="cDark"><stop offset="0" stop-color="#03020F" stop-opacity=".95"/><stop offset=".6" stop-color="#03020F" stop-opacity=".75"/><stop offset="1" stop-color="#03020F" stop-opacity="0"/></radialGradient>
+  <linearGradient id="cFog" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#07051C" stop-opacity="0"/><stop offset="1" stop-color="#07051C" stop-opacity=".7"/></linearGradient>
+  <filter id="cGl" x="-10%" y="-40%" width="120%" height="180%"><feGaussianBlur stdDeviation="3.500"/></filter></defs>
+  <rect width="390" height="844" fill="url(#cBg)"/>`+bgStars(13,120,0,844);
+  const xb=t=>X0+(t-1995)/45*W;
+  s+=T(16,126,'Dein ganzes Leben',`fill="#A6ABDD" stroke="none" font-size="11.500"`);
+  s+=`<rect x="${X0}" y="134" width="${xb(NOW)-X0}" height="10" rx="5" fill="#2B2478"/>`;
+  order.forEach((k,i)=>{s+=`<rect x="${X0}" y="${134+i*2}" width="${xb(NOW)-X0}" height="2" fill="${COL[k]}" opacity=".85"/>`});
+  PH.forEach(p=>s+=`<rect x="${xb(p[1])-1}" y="133" width="${Math.max(3,xb(p[2])-xb(p[1])+2)}" height="12" rx="2" fill="#03020F" stroke="#9D8BD6" stroke-width=".7"/>`);
+  s+=`<rect x="${xb(NOW)}" y="134" width="${X0+W-xb(NOW)}" height="10" rx="5" fill="none" stroke="#6F68B8" stroke-dasharray="1.500 3"/>`;
+  s+=`<rect x="${xb(T0)}" y="130" width="${xb(T1)-xb(T0)}" height="18" rx="5" fill="none" stroke="#fff" stroke-width="1.300"/>`;
+  [1995,2005,2015,2025,2035].forEach(yr=>s+=T(xb(yr),162,yr,`fill="#8C86C8" stroke="none" font-size="9.500" text-anchor="middle"`));
+  for(let yr=2021;yr<=2031;yr++)s+=`<path d="M${xc(yr)} 592V598" stroke="#6F68B8"/>`+T(xc(yr),611,yr,`fill="#8C86C8" stroke="none" font-size="10" text-anchor="middle"`);
+  s+=`<path d="M${X0} 592H${X0+W}" stroke="#3A4192"/>`;
+  const g=(t,c,w)=>Math.exp(-Math.pow((t-c)/w,2));
+  const squeeze=t=>Math.min(1,g(t,2021.15,.28)*.92+g(t,2023.8,.3)*.95+g(t,2026.7,.7)*.82);
+  const goal={m:[2028.2,'Norwegen mit Jonas'],a:[2028.9,'Meisterschule'],g:[2029.3,'Halbmarathon'],d:[2027.8,'Notgroschen voll'],t:[2030.5,'Eigene Werkstatt']};
+  const gyy=k=>cy+(order.indexOf(k)-2)*58;
+  const baseY=(k,t)=>{const i=order.indexOf(k);return cy+40*(1-squeeze(t))*Math.sin(t*2.6+i*1.2566)};
+  const yAt=(k,t)=>{if(t<=NOW)return baseY(k,t);const gt=goal[k][0],f=Math.min(1,(t-NOW)/(gt-NOW)),e=f*f*(3-2*f),b=baseY(k,NOW);return b+(gyy(k)-b)*e};
+  const pathFor=(k,a,b)=>{const p=[];for(let t=a;t<=b+1e-6;t+=.03)p.push([xc(t),yAt(k,t)]);return 'M'+p.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')};
+  order.forEach(k=>{s+=`<path d="${pathFor(k,T0,NOW)}" fill="none" stroke="${COL[k]}" stroke-width="9" opacity=".3" filter="url(#cGl)"/>`});
+  order.forEach(k=>{const d=pathFor(k,T0,NOW);s+=`<path d="${d}" fill="none" stroke="${COL[k]}" stroke-width="2.600" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#fff" stroke-width=".8" opacity=".45"/>`});
+  [[2021.15,'Trennung','5 Wochen'],[2023.8,'Ausgebrannt','9 Wochen']].forEach(c=>{const x=xc(c[0]);s+=`<ellipse cx="${x}" cy="${cy}" rx="26" ry="44" fill="url(#cDark)" opacity=".9"/><ellipse cx="${x}" cy="${cy}" rx="21" ry="36" fill="none" stroke="#9D8BD6" stroke-width=".8" stroke-dasharray="2 3" opacity=".75"/>`+T(Math.max(x,58),cy+88,c[1],`fill="#C9BEEA" stroke="#07051C" stroke-width="3.500" font-size="10.500" font-style="italic" text-anchor="middle"`)+T(Math.max(x,58),cy+101,c[2],`fill="#8C86C8" stroke="#07051C" stroke-width="3" font-size="10" font-style="italic" text-anchor="middle"`)});
+  [['Erste Wohnung',2022.5,'d',cy-60],['Lauftreff',2023.3,'g',cy+62],['Jobwechsel',2024.4,'a',cy-82],['Norwegen allein',2025.6,'t',cy+76]].forEach(e=>{const x=xc(e[1]),y=yAt(e[2],e[1]);const ly=e[3];s+=`<path d="M${x} ${y}L${x} ${ly+(ly<cy?5:-12)}" stroke="${COL[e[2]]}" stroke-width=".8" opacity=".7"/>`+star(x,y,6.500,COL[e[2]])+T(x,ly,e[0],`${LBL()} text-anchor="middle" font-size="10.500"`)});
+  order.forEach(k=>{const d=pathFor(k,NOW,goal[k][0]);s+=`<path d="${d}" fill="none" stroke="${COL[k]}" stroke-width="7" opacity=".16" filter="url(#cGl)"/><path d="${d}" fill="none" stroke="${COL[k]}" stroke-width="2.200" stroke-dasharray="1 6" stroke-linecap="round"/>`});
+  order.forEach(k=>{s+=star(xc(goal[k][0]),gyy(k),7,COL[k],true)});
+  const lab={m:[xc(2028.2),gyy('m')-14,'end'],a:[xc(2028.9),gyy('a')-14,'middle'],g:[xc(2029.3),gyy('g')+24,'middle'],d:[xc(2027.8)-10,gyy('d')+22,'end'],t:[xc(2030.5),gyy('t')+22,'end']};
+  order.forEach(k=>{const l=lab[k];s+=T(l[0],l[1],goal[k][1],`${LBL('#F0E4FF')} text-anchor="${l[2]}" font-size="10.500" font-style="italic"`)});
+  s+=`<rect x="${xc(2030.3)}" y="170" width="${X0+W-xc(2030.3)+16}" height="420" fill="url(#cFog)"/>`;
+  const nx=xc(NOW);
+  s+=`<path d="M${nx} 208V592" stroke="#fff" stroke-width="1" stroke-dasharray="2 4" opacity=".55"/><circle cx="${nx}" cy="${cy}" r="14" fill="#fff" opacity=".12"/><circle cx="${nx}" cy="${cy}" r="6" fill="#fff"/>`;
+  s+=`<rect x="${nx-24}" y="178" width="48" height="24" rx="12" fill="#fff"/>`+T(nx,194,'Jetzt',`fill="#191E4A" stroke="none" font-size="13" font-weight="700" text-anchor="middle"`);
+  s+=T(nx-8,222,'was war',`fill="#8C86C8" stroke="none" font-size="10.500" text-anchor="end"`)+T(nx+8,222,'was kommen könnte',`fill="#FFD08A" stroke="none" font-size="10.500"`);
+  document.getElementById('pC').innerHTML=s;
+})();
+
+/* ============ D: Lebensmonate ============ */
+(function(){
+  const gx=44,gy=140,cp=10.2,rp=9.4,r=3.500;
+  let s=`<defs><radialGradient id="dBg" cx="35%" cy="40%" r="90%"><stop offset="0" stop-color="#261C62"/><stop offset=".55" stop-color="#130E3A"/><stop offset="1" stop-color="#07051C"/></radialGradient>
+  <filter id="dGl" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur stdDeviation="2.800"/></filter></defs>
+  <rect width="390" height="844" fill="url(#dBg)"/>`+bgStars(21,110,0,844);
+  const R=rng(9),moodCol=m=>m<.25?'#5A4BC0':m<.5?'#8E7DF0':m<.75?'#C9BEFF':'#FFD9A0';
+  const inPh=t=>PH.some(p=>t>=p[1]-.02&&t<=p[2]+.06);
+  const pos=t=>{const yr=Math.floor(t),mo=Math.floor((t-yr)*12);return [gx+mo*cp,gy+(yr-1995)*rp]};
+  let past='',fut='',dark='';
+  for(let yr=1995;yr<=2039;yr++)for(let mo=0;mo<12;mo++){
+    const t=yr+mo/12+.04;if(yr===1995&&mo<2)continue;const x=gx+mo*cp,y=gy+(yr-1995)*rp;
+    if(t<=NOW){const m=mood(t)+(R()-.5)*.1;
+      if(inPh(t))dark+=`<circle cx="${x}" cy="${y}" r="${r}" fill="#03020F" stroke="#9D8BD6" stroke-width="1"/>`;
+      else past+=`<circle cx="${x}" cy="${y}" r="${r*(.8+m*.35)}" fill="${moodCol(m)}" opacity="${(.55+m*.45).toFixed(2)}"/>`}
+    else{const d=t-NOW,fade=Math.max(.12,1-d/13);fut+=`<circle cx="${x}" cy="${y}" r="${r*.85}" fill="none" stroke="#6C62C8" stroke-width=".9" opacity="${(fade*.85).toFixed(2)}"/>`}}
+  s+=past+dark+fut;
+  for(let yr=1995;yr<=2040;yr+=5){const y=gy+(yr-1995)*rp;s+=T(gx-9,y+3.500,yr,`fill="#8C86C8" stroke="none" font-size="10" text-anchor="end"`);if(yr%10===5)s+=`<path d="M${gx-6} ${y-rp/2}H${gx+12*cp-4}" stroke="#4A41A8" stroke-width=".8" opacity=".6"/>`}
+  EV.forEach(e=>{const [x,y]=pos(e[1]);s+=`<circle cx="${x}" cy="${y}" r="9" fill="${COL[e[2]]}" opacity=".35" filter="url(#dGl)"/><circle cx="${x}" cy="${y}" r="${e[3]>=3?5.400:4.400}" fill="${COL[e[2]]}"/>`});
+  const sp=(x,y,rr)=>`M${x} ${y-rr}L${x+rr*.3} ${y-rr*.3}L${x+rr} ${y}L${x+rr*.3} ${y+rr*.3}L${x} ${y+rr}L${x-rr*.3} ${y+rr*.3}L${x-rr} ${y}L${x-rr*.3} ${y-rr*.3}Z`;
+  ZIEL.forEach(z=>{const [x,y]=pos(z[1]);s+=`<circle cx="${x}" cy="${y}" r="9" fill="#FFD08A" opacity=".25" filter="url(#dGl)"/><path d="${sp(x,y,6.500)}" fill="#0E0A2C" stroke="#FFD08A" stroke-width="1.400"/>`});
+  const [nx,ny]=pos(NOW);
+  s+=`<circle cx="${nx}" cy="${ny}" r="14" fill="#fff" opacity=".18" filter="url(#dGl)"/><circle cx="${nx}" cy="${ny}" r="8.500" fill="none" stroke="#fff" stroke-width="1.500"/><circle cx="${nx}" cy="${ny}" r="3.500" fill="#fff"/>`;
+  const LX=186,items=[
+    {n:'Einschulung',t:2001.7,c:COL.a},{n:'Jonas kennengelernt',t:2012.5,c:COL.m},{n:'Gesellenbrief',t:2019.6,c:COL.a},
+    {n:'Erste Wohnung',t:2022.5,c:COL.d},{n:'Ausgebrannt, 9 Wochen',t:2023.8,c:'#C9BEEA',it:1},{n:'Jobwechsel',t:2024.4,c:COL.a},{n:'Norwegen allein',t:2025.6,c:COL.t},
+    {n:'Jetzt: Jobsuche, Woche 6',t:NOW,c:'#fff',jetzt:1},
+    {n:'Neue Stelle',t:2027.2,c:'#FFD08A',z:1},{n:'Meisterschule',t:2028.9,c:'#FFD08A',z:1},{n:'Eigene Werkstatt',t:2030.5,c:'#FFD08A',z:1}];
+  items.forEach(i=>{const p=pos(i.t);i.px=p[0];i.py=p[1];i.ly=p[1]});
+  for(let k=1;k<items.length;k++){if(items[k].ly-items[k-1].ly<15)items[k].ly=items[k-1].ly+15}
+  items.forEach(i=>{s+=`<path d="M${i.px+7} ${i.py}L${LX-6} ${i.ly}" stroke="${i.c}" stroke-width=".8" opacity="${i.z?.5:.6}" ${i.z?'stroke-dasharray="2 3"':''}/>`;
+    if(i.jetzt)s+=`<rect x="${LX-4}" y="${i.ly-10}" width="${i.n.length*6.7+12}" height="20" rx="10" fill="#fff"/>`+T(LX+2,i.ly+4,i.n,`fill="#191E4A" stroke="none" font-size="11.500" font-weight="700"`);
+    else s+=T(LX,i.ly+4,i.n,`fill="${i.c}" stroke="#07051C" stroke-width="3" font-size="11.500" ${i.z||i.it?'font-style="italic"':''}`)});
+  s+=T(LX,146,'Jeder Punkt ist ein Monat.',`fill="#A6ABDD" stroke="none" font-size="10.500"`)+T(LX,160,'Hell: gut. Dunkel: schwer.',`fill="#A6ABDD" stroke="none" font-size="10.500"`)+T(LX,174,'Umriss: noch offen.',`fill="#A6ABDD" stroke="none" font-size="10.500"`);
+  document.getElementById('pD').innerHTML=s;
+})();
+</script>
+</body>
+</html>
