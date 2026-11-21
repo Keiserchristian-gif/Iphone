@@ -26,3 +26,9 @@ test('Tabelle nennt nur Schriften aus den Richtungen, Gewicht passt zur Abfrage'
   }
   for (const family of used) assert.ok(!/[^A-Za-z0-9+]/.test(fontQuery(family).split('&')[0].slice(7).split(':')[0]));
 });
+
+test('Archivo Black hat nur Gewicht 400: Abfrage ohne Achse', () => {
+  assert.equal(fontQuery('Archivo Black'), 'family=Archivo+Black&display=swap');
+  assert.equal(headWeight('Archivo Black'), 400);
+  assert.ok(directions.find((d) => d.id === 'swiss-poster').schriften.includes('Archivo Black'));
+});

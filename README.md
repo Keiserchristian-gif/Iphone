@@ -6,7 +6,7 @@ Ein kleiner Trainer für Menschen, die keine Entwickler sind, aber mit Claude Co
 - Claude Code **präzise zu briefen**, statt vage Wünsche zu äußern,
 - **mutige, nicht-standardmäßige Designs** zu finden, statt bei der üblichen Karten-und-Verlauf-Seite zu landen.
 
-Alles läuft offline im Browser, ohne Build-Schritt und ohne Abhängigkeiten.
+Die Prompt-Prüfung und die gesamte Logik laufen offline im Browser, ohne Build-Schritt. Nur die Schriften kommen von Google Fonts (mit Ersatzschriften, falls sie nicht erreichbar sind).
 
 ## Die vier Bereiche
 

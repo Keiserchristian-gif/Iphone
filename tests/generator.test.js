@@ -74,3 +74,11 @@ test('mixDirections ist deterministisch und vollständig', () => {
   assert.ok(analyzePrompt(a.prompt).score >= 4);
   assert.ok(a.quellen.length === 2 && a.quellen[0] !== a.quellen[1]);
 });
+
+test('Mix-Prompt hat keine fest verdrahtete 12vw-Größe und rahmt das Layout als Hero-Idee', () => {
+  for (let seed = 1; seed <= 60; seed++) {
+    const m = mixDirections(seed);
+    if (!m.layout.includes('12vw')) assert.ok(!m.prompt.includes('12vw'), `seed ${seed}`);
+    assert.ok(m.prompt.includes('Layout-Idee (nur im Hero umsetzen):'));
+  }
+});

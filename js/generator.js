@@ -38,8 +38,8 @@ export function mixDirections(seed) {
   const farben = a.farben.slice();
   const prompt =
     `Gestalte die Überschrift und den Hero-Hintergrund als Mischung aus „${a.name}“ und „${b.name}“: ` +
-    `Farben ${farben.join(', ')} aus „${a.name}“, Schrift ${schrift} mit 12vw Größe aus „${b.name}“. ` +
-    `Layout: ${a.layout} Bewegung: ${b.bewegung} ` +
+    `Farben ${farben.join(', ')} aus „${a.name}“, Schrift ${schrift} aus „${b.name}“. ` +
+    `Layout-Idee (nur im Hero umsetzen): ${a.layout} Bewegung: ${b.bewegung} ` +
     `Der Stil wirkt mutig, überraschend und eigenständig. Nur den Hero ändern, nichts anderes anfassen.`;
   return { farben, schrift, layout: a.layout, bewegung: b.bewegung, prompt, quellen: [a.id, b.id] };
 }

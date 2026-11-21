@@ -45,3 +45,10 @@ test('Plural „Bilder“ und „anfühlen“ werden erkannt', () => {
   assert.equal(analyzePrompt('Mache die Bilder größer').found.element, true);
   assert.equal(analyzePrompt('damit es sich lebendig anfühlt').found.mood, true);
 });
+
+test('„Überschrift“ zählt nicht als Eigenschaft „Schrift“', () => {
+  assert.equal(analyzePrompt('Die Überschrift soll besser aussehen').found.property, false);
+  assert.equal(analyzePrompt('Die Ueberschrift soll besser aussehen').found.property, false);
+  assert.equal(analyzePrompt('Ändere die Schrift im Hero').found.property, true);
+  assert.equal(analyzePrompt('Eine andere Schriftart im Hero').found.property, true);
+});

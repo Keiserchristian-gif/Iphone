@@ -27,6 +27,9 @@ const LISTS = {
 };
 
 // Kurze Wörter nur als ganzes Wort treffen, um Fehltreffer zu vermeiden.
+// Wortanfang-Treffer (nicht nach „über“): „Schrift“, „Schriftart“, „Schriftgröße“, aber nicht „Überschrift“.
+const WORD_START = ['schrift'];
+
 const WORD_ONLY = new Set(['nur', 'ohne', 'nav', 'form', 'rand', 'only', 'look', 'feel', 'like a', 'wie ein', 'bild', 'text', 'link', 'icon', 'card', 'logo', 'font', 'size', 'style', 'stil', 'title', 'menu', 'hero']);
 
 const COLOR_NAMES = [
@@ -65,6 +68,9 @@ function escapeRe(s) {
 }
 
 function hasKeyword(text, kw) {
+  if (WORD_START.includes(kw)) {
+    return new RegExp(`(^|[^a-zäöüß])${escapeRe(kw)}`).test(text);
+  }
   if (WORD_ONLY.has(kw)) {
     return new RegExp(`(^|[^a-zäöüß])${escapeRe(kw)}($|[^a-zäöüß])`).test(text);
   }

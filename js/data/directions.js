@@ -11,7 +11,7 @@ export const directions = [
     schriften: ['Special Elite', 'Courier Prime', 'IM Fell English'],
     layout: 'Der Inhalt liegt wie ein Formular auf einem Papierbogen (max. 720px breit) mit sichtbaren Falzlinien. Abschnitte sind durch gestrichelte Linien getrennt, Überschriften als rote Stempel (3° gedreht, 3px Rand). Kein Hero-Bild, nur Text und ein Stempel.',
     bewegung: 'Stempel schlagen beim Scrollen mit 120ms ein (scale 1.4 auf 1, kurzes Nachwippen). Sonst nichts bewegt sich.',
-    prompt: 'Gestalte die Hero-Überschrift und den Hintergrund der Startseite wie einen gestempelten Behördenbogen aus den Fünfzigern: Hintergrundfarbe #f1e7d0 mit feinem Papierrauschen, Text in #2b2a26 in der Schrift Special Elite mit 18px Größe, die Überschrift als roter Stempel (#b3262c, 3px Rahmen, 3° gedreht). Das Ganze wirkt haptisch, ruhig und persönlich, wie echtes Papier. Nur Hero und Hintergrund ändern, Navigation, Footer und Texte nichts anderes anfassen.',
+    prompt: 'Gestalte die Hero-Überschrift und den Hintergrund der Startseite wie einen gestempelten Behördenbogen aus den Fünfzigern: Hintergrundfarbe #f1e7d0 mit feinem Papierrauschen, Text in #2b2a26 in der Schrift Special Elite mit 18px Größe, die Überschrift als roter Stempel (#b3262c, 3px Rahmen, 3° gedreht). Das Ganze wirkt haptisch, ruhig und persönlich, wie echtes Papier. Nur Hero und Hintergrund ändern; Navigation, Footer und Texte nicht anfassen.',
   },
   {
     id: 'editorial-zeitung',
@@ -30,7 +30,7 @@ export const directions = [
     mut: 25,
     beschreibung: 'Internationaler Typografischer Stil: ein strenges Raster, eine Grotesk, eine Signalfarbe. Klar, kühl, extrem präzise.',
     farben: ['#ffffff', '#0a0a0a', '#ff3b00', '#d9d9d9'],
-    schriften: ['Archivo', 'Space Grotesk', 'Archivo Narrow'],
+    schriften: ['Archivo Black', 'Space Grotesk', 'Archivo Narrow'],
     layout: 'Sichtbares 12-Spalten-Raster (Linien 1px #d9d9d9 als Hintergrund). Überschrift linksbündig, 14vw, nur in Spalte 1 bis 8, am unteren Rand verankert. Eine einzige Orange-Fläche (#ff3b00) als Rechteck, das zwei Spalten füllt. Alles linksbündig, flatterrechts.',
     bewegung: 'Das Raster blendet sich beim Hover einer Spalte ein; die Orange-Fläche gleitet in 400ms (cubic-bezier(.7,0,.2,1)) auf die nächste Spalte.',
     prompt: 'Gestalte den Hero-Bereich als Schweizer Typo-Poster: Überschrift in Archivo Black, Größe 14vw, linksbündig, Farbe #0a0a0a auf Hintergrund #ffffff, dazu ein orangefarbenes Rechteck in #ff3b00 über zwei Spalten eines sichtbaren 12-Spalten-Rasters (Linien 1px, #d9d9d9). Die Stimmung ist kühl, präzise und streng, wie ein Plakat von 1965. Nur den Hero verändern, nichts anderes anfassen.',
@@ -147,6 +147,6 @@ export const traps = [
   'Gleichmäßige Abstände und sauberes Raster ohne einen einzigen Bruch: Perfekte Ordnung ohne Spannung wirkt wie ein Baukasten, nicht wie eine Entscheidung.',
   'Blau als Markenfarbe, weil es „vertrauenswürdig“ ist: Fast jede Bank, jeder SaaS-Anbieter und jedes Dashboard nutzt es, du verschwindest in der Masse.',
   'Emoji oder Standard-Icons (Raketen, Glühbirnen, Häkchen) als Dekoration für Features: Sie ersetzen eine eigene Bildsprache durch Clipart.',
-  'Dunkelmodus mit Neon-Akzenten und Partikelhintergrund als Zeichen für „Tech“: Das Klischee ist so verbreitet, dass es nicht mehr nach Zukunft, sondern nach Vorlage aussieht.',
+  'Dunkelmodus mit beliebigen Neon-Akzenten, Glow und Partikelhintergrund, nur weil es „techy“ aussieht, ohne Konzept: Das ist die Vorlage, nicht die Zukunft. Eine bewusste Neon-Richtung unterscheidet sich durch ein Konzept, Zurückhaltung und eine feste Regel, etwa eine einzige Leuchtfarbe auf Schwarz.',
   'Weiche Einblend-Animation (Fade-up) bei jedem Element: Wenn alles gleich animiert, bedeutet keine Bewegung etwas.',
 ];

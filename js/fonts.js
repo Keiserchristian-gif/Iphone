@@ -2,10 +2,10 @@
 // Nur Familien mit belegtem kräftigem Schnitt bekommen eine wght-Achse, und zwar
 // genau mit dem stärksten Schnitt, den die Familie bei Google Fonts wirklich hat
 // (geprüft per Anfrage an fonts.googleapis.com/css2, November 2026).
-// Alle anderen werden ohne Achse geladen (Normalschnitt 400).
+// Alle anderen werden ohne Achse geladen (Normalschnitt 400), z. B. Archivo Black
+// (hat nur Gewicht 400; "family=Archivo+Black" liefert 200).
 
 export const BOLD_WEIGHT = {
-  'Archivo': 800,
   'Jost': 800,
   'Playfair Display': 800,
   'Source Serif 4': 800,
