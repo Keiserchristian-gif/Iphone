@@ -5,6 +5,7 @@ import { analyzePrompt } from './prompt-check.js';
 import { pickDirection, mixDirections } from './generator.js';
 import { directions, traps } from './data/directions.js';
 import { skills, workflow } from './data/skills.js';
+import { fontQuery, headWeight } from './fonts.js';
 
 const GROUPS = ['Layout', 'Typografie', 'Farbe', 'Abstand', 'Interaktion', 'Bewegung'];
 const byId = new Map(vocab.map((v) => [v.id, v]));
@@ -602,23 +603,15 @@ const mutLevel = (v) => MUT_LEVELS.find((l) => v <= l.max) || MUT_LEVELS[MUT_LEV
 const SWATCH_ROLES = ['Grund', 'Text', 'Akzent', 'Akzent', 'Akzent'];
 const FONT_ROLES = ['Überschrift', 'Fließtext', 'Ergänzung'];
 
-// Schriften mit kräftigen Schnitten: dort fordern wir 400 und 800 an, sonst nur den Normalschnitt.
-const BOLD_FONTS = new Set([
-  'Archivo', 'Archivo Narrow', 'Space Grotesk', 'Jost', 'Josefin Sans', 'Playfair Display', 'Source Serif 4',
-  'Syne', 'Unbounded', 'DM Sans', 'Orbitron', 'Baloo 2', 'Chakra Petch', 'IBM Plex Mono', 'Space Mono',
-  'Courier Prime', 'Caveat',
-]);
-
-// Schriften erst laden, wenn eine Richtung sie zeigt. Jede Familie einzeln:
-// fällt eine aus (offline, Tippfehler), bleiben die anderen und die Ersatzschrift greift.
+// Schriften erst laden, wenn eine Richtung sie zeigt. Jede Familie einzeln und nur mit
+// Schnitten, die es gibt (js/fonts.js): fällt eine aus, greift die Ersatzschrift.
 const loadedFonts = new Set();
 function loadFont(family) {
   if (!family || loadedFonts.has(family)) return;
   loadedFonts.add(family);
-  const axis = BOLD_FONTS.has(family) ? ':wght@400;800' : '';
   const link = document.createElement('link');
   link.rel = 'stylesheet';
-  link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family).replace(/%20/g, '+')}${axis}&display=swap`;
+  link.href = `https://fonts.googleapis.com/css2?${fontQuery(family)}`;
   link.addEventListener('error', () => { link.remove(); });
   document.head.append(link);
 }
@@ -738,7 +731,7 @@ function initInspiration() {
     const text = view.schriften[1] || head;
     spec.style.setProperty('--fa', fontStack(head));
     spec.style.setProperty('--fb', fontStack(text));
-    spec.style.setProperty('--wa', BOLD_FONTS.has(head) ? '800' : '400');
+    spec.style.setProperty('--wa', String(headWeight(head)));
     spec.dataset.art = view.art;
     $('#spec-cap').textContent = `Vorschau: die Bäckerei aus dem Atlas, gesetzt in ${head} mit dieser Palette`;
   }
