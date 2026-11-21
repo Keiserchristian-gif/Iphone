@@ -52,3 +52,21 @@ Skill im Repo (`.claude/skills/design-coach/`), nutzt dieselben Inhalte: schärf
 
 ## Dem Builder überlassen
 Exakte Begriffslisten, Farbwerte, Schriftwahl, Textinhalte der Übungen, Dateiaufteilung.
+
+## Etappe 2: Design (freigegeben mit „leg mit Etappe 2 los", 2026-11-21)
+
+**Zweck:** Ein Skill `design-coach` in `.claude/skills/design-coach/`, der in jedem Projekt greift, wenn der Nutzer ein Website-Aussehen vage beschreibt („mach das cooler", „sieht langweilig aus", „nicht so Standard"). Er übersetzt den Wunsch in präzise Begriffe, bringt dabei nebenbei die Fachwörter bei und bietet bei offener Richtung mutige Gegenrichtungen an, bevor gebaut wird.
+
+**Verhalten (Form: Ablaufvertrag, kein Verbotskatalog):**
+1. Wunsch in die fünf Bausteine übersetzen (Element, Eigenschaft, Wert, Stimmung, Grenze) und in einer kurzen Zeile zurückspielen, mit den richtigen Fachbegriffen („Das ist der *Hero*, du meinst dessen *Typografie* …").
+2. Ist die Richtung offen: 2–3 konkrete Gegenrichtungen aus dem Katalog des Trainers anbieten (mit Mut-Stufe), den Standard-Fallen ausdrücklich ausweichen; Nutzer wählt.
+3. Erst dann umsetzen, im gewählten Umfang (Grenze beachten), und zum Schluss die verwendeten Begriffe in einer Zeile nennen.
+4. Ist der Wunsch bereits präzise: nicht dazwischenfragen, sofort bauen, nur Begriffe nennen.
+
+**Inhalte:** Referenzdateien im Skill, **erzeugt aus den Datenmodulen des Trainers** (`js/data/*.js`) durch `node scripts/build-skill-refs.mjs`, damit Trainer und Skill nicht auseinanderlaufen; ein Test prüft, dass die generierten Dateien aktuell sind.
+
+**Nicht-Ziele:** Kein Plugin-Packaging, keine Hooks, keine KI-Aufrufe.
+
+**Tests:** Baseline ohne Skill (3 vage Wünsche) und dieselben Szenarien mit Skill; Ergebnis im Plan/Report festgehalten.
+
+**Meine Entscheidungen:** Skill liegt im Repo (nicht global), Sprache Deutsch, Triggerbeschreibung deckt auch englische Formulierungen ab.
