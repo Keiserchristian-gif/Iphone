@@ -38,14 +38,15 @@ var ringTex = ringBild(4), duennTex = ringBild(1.5);
 function sprite(map, color, scale, add) { var s = new THREE.Sprite(new THREE.SpriteMaterial({ map: map, color: color, transparent: true, depthWrite: false, depthTest: false, blending: add === false ? THREE.NormalBlending : THREE.AdditiveBlending })); s.scale.set(scale, scale, 1); return s; }
 
 /* ---------- Punktwolken ---------- */
-var uni = { uT: { value: 999 }, uH: { value: 500 }, uTime: { value: 0 }, uFade: { value: 1 } };
-function punktMat(deckkraft) { return new THREE.ShaderMaterial({ uniforms: { uOp: { value: deckkraft }, uT: uni.uT, uH: uni.uH, uTime: uni.uTime, uFade: uni.uFade }, transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending,
-  vertexShader: 'attribute float size;attribute vec3 aColor;attribute float aT;attribute float aPh;uniform float uT;uniform float uH;uniform float uTime;varying vec3 vC;varying float vA;void main(){vec4 mv=modelViewMatrix*vec4(position,1.);gl_Position=projectionMatrix*mv;float tw=.78+.22*sin(uTime*1.4+aPh);gl_PointSize=max(1.,size*tw*uH/-mv.z);vC=aColor;vA=1.-smoothstep(uT,uT+.5,aT);}',
+var uni = { uT: { value: 999 }, uH: { value: 500 }, uTime: { value: 0 }, uFade: { value: 1 }, uF: { value: 0 } };
+var BNR = { menschen: 1, arbeit: 2, gesundheit: 3, geld: 4, traeume: 5 };
+function punktMat(deckkraft, filtert) { return new THREE.ShaderMaterial({ uniforms: { uOp: { value: deckkraft }, uT: uni.uT, uH: uni.uH, uTime: uni.uTime, uFade: uni.uFade, uF: filtert ? uni.uF : { value: 0 } }, transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending,
+  vertexShader: 'attribute float size;attribute vec3 aColor;attribute float aT;attribute float aPh;attribute float aB;uniform float uT;uniform float uH;uniform float uTime;uniform float uF;varying vec3 vC;varying float vA;void main(){vec4 mv=modelViewMatrix*vec4(position,1.);gl_Position=projectionMatrix*mv;float tw=.78+.22*sin(uTime*1.4+aPh);gl_PointSize=max(1.,size*tw*uH/-mv.z);vC=aColor;vA=1.-smoothstep(uT,uT+.5,aT);if(uF>.5&&abs(aB-uF)>.5)vA*=.05;}',
   fragmentShader: 'precision mediump float;uniform float uOp;uniform float uFade;varying vec3 vC;varying float vA;void main(){float d=length(gl_PointCoord-.5);float a=smoothstep(.5,0.,d);gl_FragColor=vec4(vC,a*a*vA*uOp*uFade);}' }); }
-function punkte(liste, deckkraft, order) { var n = liste.length, p = new Float32Array(n * 3), c = new Float32Array(n * 3), s = new Float32Array(n), t = new Float32Array(n), ph = new Float32Array(n);
-  liste.forEach(function (o, i) { p[i * 3] = o.pos.x; p[i * 3 + 1] = o.pos.y; p[i * 3 + 2] = o.pos.z; c[i * 3] = o.col[0]; c[i * 3 + 1] = o.col[1]; c[i * 3 + 2] = o.col[2]; s[i] = o.size; t[i] = o.t; ph[i] = rnd() * 6.28; });
-  var g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(p, 3)); g.setAttribute('aColor', new THREE.BufferAttribute(c, 3)); g.setAttribute('size', new THREE.BufferAttribute(s, 1)); g.setAttribute('aT', new THREE.BufferAttribute(t, 1)); g.setAttribute('aPh', new THREE.BufferAttribute(ph, 1));
-  var pts = new THREE.Points(g, punktMat(deckkraft)); pts.renderOrder = order; pts.frustumCulled = false; return pts; }
+function punkte(liste, deckkraft, order, filtert) { var n = liste.length, p = new Float32Array(n * 3), c = new Float32Array(n * 3), s = new Float32Array(n), t = new Float32Array(n), ph = new Float32Array(n), bb = new Float32Array(n);
+  liste.forEach(function (o, i) { p[i * 3] = o.pos.x; p[i * 3 + 1] = o.pos.y; p[i * 3 + 2] = o.pos.z; c[i * 3] = o.col[0]; c[i * 3 + 1] = o.col[1]; c[i * 3 + 2] = o.col[2]; s[i] = o.size; t[i] = o.t; ph[i] = rnd() * 6.28; bb[i] = o.b || 0; });
+  var g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(p, 3)); g.setAttribute('aColor', new THREE.BufferAttribute(c, 3)); g.setAttribute('size', new THREE.BufferAttribute(s, 1)); g.setAttribute('aT', new THREE.BufferAttribute(t, 1)); g.setAttribute('aPh', new THREE.BufferAttribute(ph, 1)); g.setAttribute('aB', new THREE.BufferAttribute(bb, 1));
+  var pts = new THREE.Points(g, punktMat(deckkraft, filtert)); pts.renderOrder = order; pts.frustumCulled = false; return pts; }
 function rgb(h) { var c = new THREE.Color(h); return [c.r, c.g, c.b]; }
 function misch(a, b, k) { return [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, a[2] + (b[2] - a[2]) * k]; }
 
@@ -92,22 +93,25 @@ function baueGalaxie() {
     var p = sp(mitte);
     var rand = sprite(duennTex, 0xA898E8, groesse * .78 + bogen * .5); rand.material.opacity = w.offen ? .75 : .45; rand.position.copy(p); rand.renderOrder = 5; rand.userData.t = w.t0; galaxie.add(rand); wolken.push(rand);
     waehlbar.push({ modus: 'galaxie', art: 'wolke', id: w.id, t: w.t0, pos: function () { return p; }, radius: groesse * .4 });
-    schild(w.name, 'wolke', { modus: 'galaxie', t: w.t0, prio: w.offen ? 9 : 7.5, pos: function () { return p; }, dy: 14 });
+    schild(w.name, 'wolke', { modus: 'galaxie', t: w.t0, prio: w.offen ? 9 : 2 + Math.min(4, (w.t1 - w.t0) * 24), pos: function () { return p; }, dy: 14 });
   });
   function inWolke(t) { return (daten.wolken || []).some(function (w) { return t > w.t0 - .12 && t < w.t1 + .12; }); }
 
-  // Sterne des Lebens
-  l = [];
-  var beschriftet = (daten.sterne || []).filter(function (s) { return s.art === 'ereignis' && s.gewicht >= 2; }).sort(function (a, b) { return b.gewicht - a.gewicht || b.t - a.t; }).slice(0, 14);
+  // Sterne des Lebens. Ereignisse sind einzelne helle Sterne, Tage eine eigene, dichteabhängig gedimmte Schicht,
+  // damit tausende Tageseinträge den Arm nicht zu einem weißen Band verschmelzen lassen.
+  l = []; var lt = [];
+  var beschriftet = (daten.sterne || []).filter(function (s) { return s.art === 'ereignis'; }).sort(function (a, b) { return b.gewicht - a.gewicht || b.t - a.t; }).slice(0, 90);
   (daten.sterne || []).forEach(function (s) {
-    var tag = s.art === 'tag', p = sp(s.t, tag ? gauss() * 3.5 : 0, tag ? gauss() * 1.2 : 0), farbe = rgb(FARBE[s.bereich] || WEISS);
-    l.push({ pos: p, col: farbe, size: tag ? 6 : [9, 9, 15, 21][s.gewicht] || 9, t: s.t });
-    waehlbar.push({ modus: 'galaxie', art: tag ? 'tag' : 'stern', id: s.id, t: s.t, pos: function () { return p; }, radius: tag ? 3 : 6 });
-    if (beschriftet.indexOf(s) >= 0) schild(s.name, '', { modus: 'galaxie', t: s.t, prio: s.gewicht * 2 + s.t / A, pos: function () { return p; } });
+    var tag = s.art === 'tag', p = sp(s.t, tag ? gauss() * 3.5 : 0, tag ? gauss() * 1.2 : 0), farbe = rgb(FARBE[s.bereich] || WEISS), b = BNR[s.bereich] || 0;
+    if (tag) lt.push({ pos: p, col: farbe.map(function (x) { return x * .85; }), size: 3.6, t: s.t, b: b });
+    else l.push({ pos: p, col: farbe, size: [9, 9, 15, 21][s.gewicht] || 9, t: s.t, b: b });
+    waehlbar.push({ modus: 'galaxie', art: tag ? 'tag' : 'stern', id: s.id, t: s.t, bereich: b, pos: function () { return p; }, radius: tag ? 3 : 6 });
+    if (beschriftet.indexOf(s) >= 0) schild(s.name, '', { modus: 'galaxie', t: s.t, bereich: b, prio: s.gewicht * 2 + s.t / A, pos: function () { return p; } });
   });
   // Staub des Alltags zwischen den echten Sternen, damit der Arm nie kahl wirkt
   for (i = 0; i < 150; i++) { t = A * (.02 + .97 * Math.pow(rnd(), .62)); if (inWolke(t)) continue; var f = Object.keys(FARBE)[Math.floor(rnd() * 5)]; l.push({ pos: sp(t, gauss() * 4.5, gauss() * 1.5), col: rgb(FARBE[f]).map(function (x) { return x * .75; }), size: 4 + rnd() * 3, t: t }); }
-  galaxie.add(punkte(l, 1, 6));
+  galaxie.add(punkte(l, 1, 6, true));
+  if (lt.length) galaxie.add(punkte(lt, Math.min(.6, 380 / lt.length), 6, true));
   var mitteP = new THREE.Vector3();
   waehlbar.push({ modus: 'galaxie', art: 'geburt', id: '', t: 0, pos: function () { return mitteP; }, radius: 8 });
   schild('Geburt ' + daten.geburtsjahr, '', { modus: 'galaxie', t: 0, prio: 5, pos: function () { return mitteP; }, dy: 14 });
@@ -234,8 +238,8 @@ canvas.addEventListener('wheel', function (e) { e.preventDefault(); cam.zoom = M
 
 function tippe(x, y) {
   var beste = null, besteD = 1e9;
-  waehlbar.forEach(function (o) { if (o.modus !== modus) return; if (o.t !== undefined && o.t > T + .05) return; v.copy(o.pos()).project(camera); if (v.z > 1) return;
-    var px = (v.x * .5 + .5) * W, py = (-v.y * .5 + .5) * H, d = Math.hypot(px - x, py - y) - (o.vorrang ? 10 : 0); if (d < 30 && d < besteD) { besteD = d; beste = o; } });
+  waehlbar.forEach(function (o) { if (o.modus !== modus) return; if (o.t !== undefined && o.t > T + .05) return; if (o.bereich && uni.uF.value > .5 && o.bereich !== uni.uF.value) return; v.copy(o.pos()).project(camera); if (v.z > 1) return;
+    var px = (v.x * .5 + .5) * W, py = (-v.y * .5 + .5) * H, d = Math.hypot(px - x, py - y) - (o.vorrang ? 10 : 0) + (o.art === 'tag' ? 9 : 0); if (d < 30 && d < besteD) { besteD = d; beste = o; } });
   auswahl = beste; melde(beste ? { typ: 'wahl', art: beste.art, id: beste.id } : { typ: 'wahl', art: 'nichts', id: '' });
   if (beste) melde({ typ: 'haptik', art: 'leicht' });
 }
@@ -284,14 +288,16 @@ function bild() {
   renderer.render(scene, camera);
 
   // Beschriftungen: wichtigste zuerst, was sich überlappen würde, wird ausgeblendet
-  var belegt = [], nah = cam.zoom * zoomFaktor < .6;
+  var belegt = [], nah = cam.zoom * zoomFaktor < .6, zaehler = 0, naheZoom = cam.zoom * zoomFaktor, grenze = naheZoom > .85 ? 9 : (naheZoom > .5 ? 20 : 40);
   schilder.slice().sort(function (a, b) { return b.prio - a.prio; }).forEach(function (s) {
     var sichtbar = s.modus === modus && !uebergang && (s.t === undefined || s.t <= T + .05) && (!s.heute || jetzt);
     if (sichtbar && s.mond) sichtbar = nah || (auswahl && (auswahl.id === s.planet));
+    if (sichtbar && s.bereich && uni.uF.value > .5 && s.bereich !== uni.uF.value) sichtbar = false;
+    if (sichtbar && s.prio < 30 && zaehler >= grenze) sichtbar = false;
     var x = 0, y = 0;
     if (sichtbar) { v.copy(s.pos()).project(camera); x = (v.x * .5 + .5) * W; y = (-v.y * .5 + .5) * H; if (v.z > 1 || y < randOben + 22 || y > H - randUnten - 6 || x < -20 || x > W + 20) sichtbar = false; }
     if (sichtbar) { var links = s.heute ? (x > W - 96 ? x - s.breite - 12 : x + 10) : Math.max(6, Math.min(W - s.breite - 6, x - s.breite / 2)), oben = s.heute ? y - 12 : (s.dy !== undefined ? y + s.dy - (s.dy < 0 ? 22 : 0) : y - 26), kasten = [links, oben, links + s.breite, oben + 20];
-      if (belegt.some(function (b) { return kasten[0] < b[2] && kasten[2] > b[0] && kasten[1] < b[3] && kasten[3] > b[1]; })) sichtbar = false; else { belegt.push(kasten); s.el.style.transform = 'translate(' + links.toFixed(1) + 'px,' + oben.toFixed(1) + 'px)'; } }
+      if (belegt.some(function (b) { return kasten[0] < b[2] && kasten[2] > b[0] && kasten[1] < b[3] && kasten[3] > b[1]; })) sichtbar = false; else { belegt.push(kasten); if (s.prio < 30) zaehler++; s.el.style.transform = 'translate(' + links.toFixed(1) + 'px,' + oben.toFixed(1) + 'px)'; } }
     s.el.style.opacity = sichtbar ? 1 : 0;
   });
 }
@@ -305,6 +311,7 @@ window.Szene = {
   zeit: function (t) { T = (t === null || t === undefined || t >= A - .02) ? 999 : Math.max(0, t); uni.uT.value = T; einflug = 1; },
   raender: function (oben, unten) { randOben = oben || 0; randUnten = unten || 0; groesse(); },
   waehle: function () { auswahl = null; },
+  filter: function (b) { uni.uF.value = BNR[b] || 0; auswahl = null; },
   zustand: function () { return { modus: modus, alter: A, schilder: schilder.length, waehlbar: waehlbar.length, funken: funken.length }; }
 };
 bild();

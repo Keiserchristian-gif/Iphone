@@ -40,6 +40,8 @@ public struct Szene: Codable, Equatable, Sendable {
         public var eintraege: Int
         public var text: String
         public var monde: [MondDaten]
+        /// Monde, die in der Szene nicht mehr Platz haben. Sie stehen in der Mondliste.
+        public var weitere: Int
     }
 
     public var rufname: String
@@ -55,6 +57,9 @@ public struct Szene: Codable, Equatable, Sendable {
 }
 
 public enum Szenenbau {
+    /// So viele Monde zeichnet die Szene pro Planet. Alle weiteren werden gezählt und in der Detailkarte genannt.
+    public static let mondeProPlanet = 6
+
     public static func baue(_ bestand: Bestand, heute: Date, kalender: Calendar = .current) -> Szene {
         let geburt = bestand.profil?.geburt ?? heute.addingTimeInterval(-Zeit.jahrInSekunden)
         let alter = max(1, Zeit.alter(geburt: geburt, am: heute))
@@ -100,11 +105,12 @@ public enum Szenenbau {
                     text = "Dieser Bereich trägt dich gerade. \(tage.count) \(tage.count == 1 ? "Eintrag" : "Einträge") in den letzten 30 Tagen."
                 }
             }
-            let monde = bestand.monde.filter { $0.bereich == bereich }.prefix(8).map {
+            let alleMonde = bestand.monde.filter { $0.bereich == bereich }
+            let monde = alleMonde.prefix(Szenenbau.mondeProPlanet).map {
                 Szene.MondDaten(id: $0.id.uuidString, name: $0.name, art: $0.art.rawValue)
             }
             return Szene.Planet(bereich: bereich.rawValue, name: bereich.titel, zustand: zustand, eintraege: tage.count,
-                                text: text, monde: Array(monde))
+                                text: text, monde: Array(monde), weitere: max(0, alleMonde.count - Szenenbau.mondeProPlanet))
         }
 
         return Szene(rufname: bestand.profil?.rufname ?? "", alter: alter, geburtsjahr: Zeit.jahr(geburt, kalender: Zeit.fest),

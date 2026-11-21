@@ -57,4 +57,35 @@ extension Bestand {
         b.antworten[FragebogenInhalt.briefFrage] = Antwort(text: "Du bist aus jeder Wolke wieder herausgekommen.")
         return b
     }
+
+    /// Ein sehr volles erfundenes Leben für Belastungstests und Vorschauen: zehn Jahre fast täglicher Einträge.
+    public static func beispielVoll(heute: Date, kalender: Calendar = .current) -> Bestand {
+        var z: UInt64 = 42
+        func zufall() -> Double { z = z &* 6364136223846793005 &+ 1442695040888963407; return Double(z >> 11) / Double(1 << 53) }
+        let jahr = Zeit.jahr(heute, kalender: Zeit.fest)
+        var b = Bestand(profil: Profil(rufname: "Alex", geburt: Zeit.datum(jahr: jahr - 31, monat: 3, tag: 14)))
+        let namen = ["Umzug", "Neuer Job", "Kurs", "Reise", "Prüfung", "Streit", "Hochzeit", "Operation", "Preis", "Kündigung"]
+        for i in 0..<160 {
+            b.ereignisse.append(Ereignis(titel: "\(namen[i % namen.count]) \(i)",
+                                         datum: Zeit.datum(jahr: jahr - 28 + Int(zufall() * 27), monat: 1 + Int(zufall() * 12), tag: 1 + Int(zufall() * 27)),
+                                         bereich: Bereich.allCases[Int(zufall() * 5)], gewicht: 1 + Int(zufall() * 3)))
+        }
+        for k in 0..<12 {
+            let beginn = Zeit.datum(jahr: jahr - 22 + 2 * k, monat: 3, tag: 1)
+            b.phasen.append(Phase(name: "Phase \(k)", beginn: beginn,
+                                  ende: k == 11 ? nil : beginn.addingTimeInterval(Double(14 + Int(zufall() * 60)) * 86_400)))
+        }
+        for bereich in Bereich.allCases {
+            for j in 0..<8 { b.monde.append(Mond(name: "\(bereich.titel) \(j)", bereich: bereich, art: MondArt.allCases[j % 3])) }
+        }
+        for n in 1...3650 where zufall() > 0.15 {
+            let datum = kalender.startOfDay(for: heute.addingTimeInterval(Double(-n) * 86_400))
+            b.tage.append(Tag(datum: datum, text: "Tag \(n)", stimmung: 1 + Int(zufall() * 5),
+                              bereiche: [Bereich.allCases[Int(zufall() * 5)]], kurz: "Tag \(n)"))
+        }
+        b.tage.sort { $0.datum < $1.datum }
+        let beginn = kalender.startOfDay(for: heute)
+        b.notizen = (0..<3).map { Notiz(zeit: beginn.addingTimeInterval(Double(8 + 5 * $0) * 3600), text: "Notiz \($0)") }
+        return b
+    }
 }

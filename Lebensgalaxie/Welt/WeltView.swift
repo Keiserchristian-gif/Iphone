@@ -14,6 +14,7 @@ struct WeltView: View {
     @State private var zeigtDebug = false
     @State private var debugZiel = ""
     @State private var zeitreise = false
+    @State private var filter: Bereich?
     @State private var zeit = 0.0
     @State private var obenHoehe: CGFloat = 0
     @State private var untenHoehe: CGFloat = 0
@@ -41,8 +42,13 @@ struct WeltView: View {
         }
         .onAppear(perform: verbinde)
         .onChange(of: model.szenenStand) { _, _ in sendeDaten() }
+        .onChange(of: filter) { _, neu in
+            auswahl = nil
+            steuerung?.filter(neu)
+        }
         .onChange(of: modus) { _, neu in
             auswahl = nil
+            filter = nil
             zeitreise = false
             steuerung?.zeit(nil)
             steuerung?.modus(neu)
@@ -75,6 +81,7 @@ struct WeltView: View {
             case "kapitel": KapitelView(kapitel: FragebogenInhalt.kapitel[2])
             case "einstellungen": EinstellungenView()
             case "dokumente": DokumenteView()
+            case "tagebuch": TagebuchView()
             default: FragebogenView()
             }
         }
@@ -101,12 +108,28 @@ struct WeltView: View {
                 }
                 .accessibilityLabel("Mehr")
             }
-            Picker("Ansicht", selection: $modus) {
-                Text("Verlauf").tag("galaxie")
-                Text("Jetzt").tag("system")
+            HStack(spacing: 6) {
+                Picker("Ansicht", selection: $modus) {
+                    Text("Verlauf").tag("galaxie")
+                    Text("Jetzt").tag("system")
+                }
+                .pickerStyle(.segmented)
+                .frame(width: 190)
+                if modus == "galaxie" {
+                    Spacer(minLength: 4)
+                    ForEach(Bereich.allCases) { bereich in
+                        Button {
+                            filter = filter == bereich ? nil : bereich
+                        } label: {
+                            Circle().fill(bereich.farbe).frame(width: 18, height: 18)
+                                .overlay(Circle().strokeBorder(Stil.tinte, lineWidth: filter == bereich ? 2.5 : 0).padding(-3))
+                                .opacity(filter == nil || filter == bereich ? 1 : 0.3)
+                                .frame(width: 30, height: 44)
+                        }
+                        .accessibilityLabel(filter == bereich ? "Filter \(bereich.titel) aufheben" : "Nur \(bereich.titel) zeigen")
+                    }
+                }
             }
-            .pickerStyle(.segmented)
-            .frame(maxWidth: 220)
         }
         .padding(.horizontal, 16)
         .padding(.top, 6)
@@ -119,7 +142,7 @@ struct WeltView: View {
             if let fehler = model.speicherFehler {
                 Text(fehler).font(.footnote).foregroundStyle(Stil.warnung).padding(10).frame(maxWidth: .infinity).tafel(rund: 14)
             }
-            DetailKarte(auswahl: auswahl, schliessen: {
+            DetailKarte(auswahl: auswahl, filter: filter, schliessen: {
                 auswahl = nil
                 steuerung?.hebeAuswahlAuf()
             })
@@ -200,7 +223,7 @@ struct WeltView: View {
         if werte.string(forKey: "ansicht") == "system" { modus = "system" }
         if werte.string(forKey: "blatt") == "abschluss" { zeigtAbschluss = true }
         if werte.string(forKey: "blatt") == "mehr" { zeigtMehr = true }
-        if let ziel = werte.string(forKey: "blatt"), ["fragebogen", "kapitel", "einstellungen", "dokumente"].contains(ziel) {
+        if let ziel = werte.string(forKey: "blatt"), ["fragebogen", "kapitel", "einstellungen", "dokumente", "tagebuch"].contains(ziel) {
             debugZiel = ziel
             zeigtDebug = true
         }

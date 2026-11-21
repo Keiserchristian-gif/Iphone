@@ -5,6 +5,7 @@ import SwiftUI
 struct DetailKarte: View {
     @Environment(AppModel.self) private var model
     let auswahl: Auswahl?
+    var filter: Bereich?
     let schliessen: () -> Void
 
     var body: some View {
@@ -26,7 +27,9 @@ struct DetailKarte: View {
                 if let planet = szene.planeten.first(where: { $0.bereich == auswahl?.id }) {
                     kopf(planet.name, farbe: Bereich(rawValue: planet.bereich)?.farbe ?? Stil.tinte)
                     text(planet.text)
-                    if !planet.monde.isEmpty { klein("Monde: " + planet.monde.map(\.name).joined(separator: ", ")) }
+                    if !planet.monde.isEmpty {
+                        klein("Monde: " + planet.monde.map(\.name).joined(separator: ", ") + (planet.weitere > 0 ? " und \(planet.weitere) weitere unter Mehr, Monde" : ""))
+                    }
                 }
             case "mond":
                 if let mond = model.bestand.monde.first(where: { $0.id.uuidString == auswahl?.id }) {
@@ -42,8 +45,15 @@ struct DetailKarte: View {
                 kopf(szene.rufname.isEmpty ? "Du" : szene.rufname, farbe: Stil.gold, symbol: "sun.max.fill")
                 text("Um dich kreisen deine fünf Lebensbereiche. Ein Sturm auf einem Planeten heißt nicht, dass das ganze System stillsteht.")
             default:
-                kopf("Von außen betrachtet", farbe: nil)
-                text(szene.ueberblick.isEmpty ? "Tippe einen Stern an." : szene.ueberblick)
+                if let filter {
+                    let ereignisse = szene.sterne.filter { $0.art == "ereignis" && $0.bereich == filter.rawValue }.count
+                    let tage = szene.sterne.filter { $0.art == "tag" && $0.bereich == filter.rawValue }.count
+                    kopf("Nur \(filter.titel)", farbe: filter.farbe)
+                    text("\(ereignisse) \(ereignisse == 1 ? "Ereignis" : "Ereignisse") und \(tage) \(tage == 1 ? "Tag" : "Tage") in diesem Lebensbereich. Tippe den Farbpunkt noch einmal an, um wieder alles zu sehen.")
+                } else {
+                    kopf("Von außen betrachtet", farbe: nil)
+                    text(szene.ueberblick.isEmpty ? "Tippe einen Stern an." : szene.ueberblick)
+                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

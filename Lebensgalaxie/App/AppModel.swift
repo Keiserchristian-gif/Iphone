@@ -22,6 +22,8 @@ final class AppModel {
     var phasenVorschlag = false
     let demo: Bool
 
+    @ObservationIgnored private var szeneCache: (stand: Int, tag: Int, szene: Szene)?
+    @ObservationIgnored private var aenderungen = 0
     @ObservationIgnored private var schluessel: SymmetricKey?
     @ObservationIgnored private var tresor: Tresor?
 
@@ -32,7 +34,7 @@ final class AppModel {
         demo = false
         #endif
         if demo {
-            bestand = .beispiel(heute: .now)
+            bestand = ProcessInfo.processInfo.arguments.contains("-voll") ? .beispielVoll(heute: .now) : .beispiel(heute: .now)
             zustand = .offen
         }
     }
@@ -56,6 +58,7 @@ final class AppModel {
             b.raeumeAuf(heute: .now)
             schluessel = s
             bestand = b
+            aenderungen += 1
             meldung = nil
             zustand = .offen
             speichere()
@@ -72,6 +75,7 @@ final class AppModel {
         speichere()
         schluessel = nil
         bestand = Bestand()
+        aenderungen += 1
         zustand = .gesperrt
     }
 
@@ -80,6 +84,7 @@ final class AppModel {
     /// Ändert den Datenbestand und speichert sofort. `szene: false`, wenn die Szene die Änderung selbst animiert.
     func aendere(szene: Bool = true, _ aenderung: (inout Bestand) -> Void) {
         aenderung(&bestand)
+        aenderungen += 1
         speichere()
         if szene { szenenStand += 1 }
     }
@@ -94,7 +99,15 @@ final class AppModel {
         }
     }
 
-    var szene: Szene { Szenenbau.baue(bestand, heute: .now) }
+    /// Die Szene wird nur neu berechnet, wenn sich der Datenbestand oder der Tag ändert. Bei tausenden Einträgen würde sie sonst bei jedem Tastendruck entstehen.
+    var szene: Szene {
+        let aktuell = bestand // Lesezugriff, damit Ansichten bei Änderungen neu zeichnen
+        let tag = Calendar.current.ordinality(of: .day, in: .era, for: .now) ?? 0
+        if let c = szeneCache, c.stand == aenderungen, c.tag == tag { return c.szene }
+        let neu = Szenenbau.baue(aktuell, heute: .now)
+        szeneCache = (aenderungen, tag, neu)
+        return neu
+    }
 
     // MARK: Tag
 
@@ -151,6 +164,7 @@ final class AppModel {
         tresor?.loescheAlles()
         schluessel = nil
         bestand = Bestand()
+        aenderungen += 1
         zustand = demo ? .offen : .gesperrt
         szenenStand += 1
     }

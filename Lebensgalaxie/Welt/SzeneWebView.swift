@@ -1,3 +1,4 @@
+import LebensKern
 import SwiftUI
 import UIKit
 import WebKit
@@ -76,6 +77,7 @@ final class SzeneSteuerung: NSObject, WKNavigationDelegate {
     func zeit(_ t: Double?) { js("window.Szene.zeit(\(t.map { String(format: "%.3f", $0) } ?? "null"))") }
     func raender(oben: CGFloat, unten: CGFloat) { js("window.Szene.raender(\(Int(oben)), \(Int(unten)))") }
     func hebeAuswahlAuf() { js("window.Szene.waehle(null)") }
+    func filter(_ bereich: Bereich?) { js("window.Szene.filter(\(bereich.map { "'\($0.rawValue)'" } ?? "null"))") }
 
     // MARK: Szene an App
 

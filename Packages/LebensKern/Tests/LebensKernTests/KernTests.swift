@@ -217,3 +217,25 @@ extension KernTests {
         try JSONEncoder().encode(s).write(to: URL(fileURLWithPath: pfad))
     }
 }
+
+extension KernTests {
+    func vollesLeben() -> Bestand { Bestand.beispielVoll(heute: heute, kalender: kal) }
+
+    func testVollesLebenBleibtBegrenztUndWirdAngezeigt() {
+        let b = vollesLeben()
+        let s = Szenenbau.baue(b, heute: heute, kalender: kal)
+        XCTAssertGreaterThan(s.sterne.count, 3000)
+        XCTAssertTrue(s.sterne.allSatisfy { $0.t >= 0 && $0.t <= s.alter })
+        XCTAssertEqual(s.wolken.count, 12)
+        XCTAssertTrue(s.planeten.allSatisfy { $0.monde.count == Szenenbau.mondeProPlanet && $0.weitere == 8 - Szenenbau.mondeProPlanet })
+        XCTAssertEqual(Szenenbau.baue(Bestand.beispiel(heute: heute, kalender: kal), heute: heute, kalender: kal).planeten.map(\.weitere), [0, 0, 0, 0, 0])
+        XCTAssertFalse(s.ueberblick.isEmpty)
+    }
+
+    func testSchreibeVollesLeben() throws {
+        guard let pfad = ProcessInfo.processInfo.environment["SZENE_VOLL_JSON"] else { return }
+        let s = Szenenbau.baue(vollesLeben(), heute: heute, kalender: kal)
+        try JSONEncoder().encode(s).write(to: URL(fileURLWithPath: pfad))
+        print("VOLL: \(s.sterne.count) Sterne, \(s.wolken.count) Wolken, \(s.planeten.map { $0.monde.count })")
+    }
+}
