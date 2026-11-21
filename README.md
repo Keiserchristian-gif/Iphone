@@ -12,6 +12,11 @@ Eine iPhone-App, die dein Leben von oben zeigt: als drehbare Galaxie für den Ve
 - **Dokumente:** Lebenslauf als PDF, Foto oder Text einlesen. Erkannte Stationen bestätigst du einzeln.
 - **Sicherheit:** Face ID, AES-256-Verschlüsselung, Schlüssel nur im Schlüsselbund dieses Geräts, kein Konto, kein Server, kein Netzwerkzugriff.
 
+## Erst ansehen, dann einrichten
+
+- **In der App:** Auf dem Sperrbildschirm und beim ersten Start gibt es „Beispiel-Leben ansehen". Es zeigt ein erfundenes Leben (auf Wunsch mit zehn Jahren Einträgen). Alles, was du darin ausprobierst, bleibt im Arbeitsspeicher und verschwindet beim Beenden. Deine echten Daten werden nicht berührt.
+- **Im Browser, ohne Xcode:** `mockups/demo-lebensgalaxie.html` ist die echte 3D-Szene mit denselben Beispieldaten und den Bedienelementen der App. Die Datei lässt sich in jedem aktuellen Browser öffnen. Neu erzeugen mit `python3 Szene/baue_demo.py <klein.json> <voll.json>`, die Datenquellen beschreibt das Skript.
+
 ## Auf dein iPhone bringen
 
 Du brauchst einen Mac mit Xcode 26 oder neuer und ein iPhone mit iOS 26 oder neuer.
@@ -45,4 +50,4 @@ mockups/                  Entwürfe und Prototyp aus der Planung
 docs/                     Entwurf und Bauplan
 ```
 
-Die 3D-Szene wird mit `python3 Szene/baue.py` zu `Lebensgalaxie/Ressourcen/szene.html` zusammengefügt. Die Tests des Kerns laufen mit `swift test --package-path Packages/LebensKern`.
+Die 3D-Szene wird mit `python3 Szene/baue.py` zu `Lebensgalaxie/Ressourcen/szene.html` zusammengefügt, die Browser-Vorschau mit `Szene/baue_demo.py`. Die Tests des Kerns laufen mit `swift test --package-path Packages/LebensKern`.

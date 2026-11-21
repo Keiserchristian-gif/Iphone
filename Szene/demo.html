@@ -1,0 +1,198 @@
+<title>Lebensgalaxie Demo</title>
+<style>
+:root{color-scheme:dark;--raum:#06051A;--tafel:#16123A;--feld:#211C47;--linie:rgba(160,150,255,.3);--tinte:#F3F0FF;--matt:#B3ABDD;--gold:#FFD08A;--menschen:#FF8FA8;--arbeit:#FFC857;--gesundheit:#6EE7B7;--geld:#6FD3FF;--traeume:#C3A6FF;
+  --schrift:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0}
+body{background:var(--raum);color:var(--tinte);font-family:var(--schrift);overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#schilder{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.schild{position:absolute;left:0;top:0;color:#F3F0FF;font:500 11.5px/1 var(--schrift);white-space:nowrap;padding:3px 0;text-shadow:0 0 6px #06051A,0 0 12px #06051A,0 1px 2px #06051A;will-change:transform,opacity;transition:opacity .25s}
+.schild.wolke{font-style:italic;color:#B3ABDD}.schild.planet{font-weight:700;font-size:13px}.schild.mond{font-size:10.5px;color:#D9D4F5}
+.schild.heute{font-weight:700;font-size:12.5px;color:#06051A;text-shadow:none}.schild.heute span{background:#F3F0FF;border-radius:999px;padding:5px 10px;display:inline-block}
+#blende{position:fixed;inset:0;background:#06051A;opacity:0;pointer-events:none}
+.oben,.unten{position:fixed;left:0;right:0;z-index:5;pointer-events:none;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px))}
+.oben{top:0;padding-top:max(10px,env(safe-area-inset-top,0px))}
+.unten{bottom:0;padding-bottom:max(10px,env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px;max-width:520px;margin:0 auto}
+.oben>*,.unten>*{pointer-events:auto}
+.tafel{background:rgba(22,18,58,.84);border:1px solid var(--linie);border-radius:20px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+h1{margin:0;font-size:24px;font-weight:600;letter-spacing:-.01em}
+.zeile{display:flex;align-items:center;gap:6px;margin-top:8px}
+.kopfzeile{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.banner{display:flex;gap:8px;align-items:center;font-size:12.5px;padding:7px 12px;border-radius:14px;margin-top:8px;color:var(--tinte)}
+.banner button{margin-left:auto;background:none;border:0;color:var(--gold);font:600 12.5px var(--schrift);cursor:pointer;padding:6px 0 6px 10px}
+.seg{display:flex;background:#1A1640;border-radius:10px;padding:2px;border:1px solid var(--linie)}
+.seg button{border:0;background:none;color:var(--tinte);font:500 14px var(--schrift);padding:6px 16px;border-radius:8px;cursor:pointer}
+.seg button[aria-pressed=true]{background:#4A4668}
+.punkte{display:flex;margin-left:auto}
+.punkt{width:30px;height:40px;border:0;background:none;padding:0;cursor:pointer;display:grid;place-items:center}
+.punkt i{display:block;width:18px;height:18px;border-radius:50%;box-sizing:border-box}
+.punkt[aria-pressed=true] i{box-shadow:0 0 0 3px var(--raum),0 0 0 5px var(--tinte)}
+.punkte.aktiv .punkt[aria-pressed=false] i{opacity:.3}
+.karte{padding:12px 15px;position:relative;min-height:48px}
+.karte h2{margin:0;font-size:14.5px;font-weight:600;display:flex;align-items:center;gap:8px;padding-right:28px}
+.karte h2 i{width:9px;height:9px;border-radius:50%;flex:none}
+.karte p{margin:5px 0 0;font-size:14px;line-height:1.42}
+.karte small{display:block;margin-top:5px;color:var(--matt);font-size:12.5px}
+.karte .zu{position:absolute;top:2px;right:2px;width:40px;height:40px;background:none;border:0;color:var(--matt);font-size:16px;cursor:pointer}
+.karte li{list-style:none;display:flex;gap:8px;font-size:13.5px;margin-top:4px}.karte ul{margin:6px 0 0;padding:0}.karte li time{color:var(--matt);font-variant-numeric:tabular-nums}
+.reihe{display:flex;gap:8px;align-items:center}
+.feld{flex:1;min-width:0;border:0;border-radius:999px;padding:12px 16px;background:var(--tinte);color:var(--raum);font:500 15px var(--schrift);-webkit-user-select:text;user-select:text}
+.feld::placeholder{color:#6b6790}
+.rund{width:46px;height:46px;flex:none;border-radius:50%;border:1px solid var(--linie);background:rgba(22,18,58,.84);color:var(--tinte);font-size:19px;cursor:pointer;display:grid;place-items:center}
+.rund.gold{background:var(--gold);color:var(--raum);border:0;font-size:24px;font-weight:600}.rund:disabled{opacity:.5}
+.rand{border:1.5px solid var(--tinte);background:none;color:var(--tinte);border-radius:999px;padding:12px;font:600 15px var(--schrift);cursor:pointer;width:100%}
+.zeit{display:flex;gap:10px;align-items:center;padding:8px 14px;border-radius:26px;font-size:14px}
+.zeit input{flex:1;min-width:0;accent-color:var(--gold)}.zeit output{min-width:46px;text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.blatt{position:fixed;inset:0;z-index:20;background:rgba(6,5,26,.72);display:none;align-items:flex-end;justify-content:center}
+.blatt.offen{display:flex}
+.blatt>div{background:#0F0C2B;width:100%;max-width:520px;max-height:92%;overflow:auto;border-radius:24px 24px 0 0;padding:18px max(18px,env(safe-area-inset-left,0px)) max(22px,env(safe-area-inset-bottom,0px));border:1px solid var(--linie);box-sizing:border-box}
+.blatt h3{margin:0 0 14px;font-size:18px}.blatt h4{margin:18px 0 8px;font-size:15px}
+.stimm{display:flex;gap:6px}.stimm button{flex:1;border:0;border-radius:12px;background:var(--tafel);color:var(--tinte);padding:10px 2px;font:500 11px var(--schrift);cursor:pointer;display:flex;flex-direction:column;gap:4px;align-items:center}
+.stimm b{font-size:20px;line-height:1}.stimm button[aria-pressed=true]{background:var(--gold);color:var(--raum)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chips button{border:0;border-radius:999px;padding:8px 13px;background:var(--feld);color:var(--tinte);font:500 14px var(--schrift);cursor:pointer}
+.chips button[aria-pressed=true]{color:var(--raum)}
+.chips.daten{margin-top:6px}.chips.daten button{font-size:12.5px;padding:6px 11px}.chips.daten button[aria-pressed=true]{background:var(--gold)}
+textarea{width:100%;box-sizing:border-box;border:0;border-radius:14px;padding:13px;background:var(--tafel);color:var(--tinte);font:15px var(--schrift);min-height:84px;resize:vertical;-webkit-user-select:text;user-select:text}
+.haupt{width:100%;border:0;border-radius:999px;padding:14px;background:var(--gold);color:var(--raum);font:600 16px var(--schrift);cursor:pointer;margin-top:18px}
+.sehr-klein{font-size:12px;color:var(--matt);margin-top:10px}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media (max-height:640px){.sehr-klein{display:none}}
+</style>
+
+<canvas id="gl" aria-label="Dein Leben als drehbare Galaxie"></canvas>
+<div id="schilder"></div>
+<div id="blende"></div>
+
+<div class="oben" id="oben">
+  <div class="kopfzeile"><h1 id="titel">Deine Galaxie</h1></div>
+  <div class="zeile">
+    <div class="seg" role="group" aria-label="Ansicht"><button id="mVerlauf" aria-pressed="true">Verlauf</button><button id="mJetzt" aria-pressed="false">Jetzt</button></div>
+    <div class="punkte" id="punkte"></div>
+  </div>
+  <div class="banner tafel"><span>Vorschau mit erfundenem Leben, nichts wird gespeichert</span></div>
+  <div class="chips daten" id="datenwahl"><button id="dKlein" aria-pressed="true">Beispiel-Leben</button><button id="dVoll" aria-pressed="false">Zehn Jahre Einträge</button></div>
+</div>
+
+<div class="unten" id="unten">
+  <div class="karte tafel" id="karte" aria-live="polite"></div>
+  <div class="zeit tafel" id="zeit" hidden><input id="regler" type="range" min="0" max="31" step="0.1" value="31" aria-label="Zeitreise"><output id="jahr">heute</output><button class="rund" style="width:34px;height:34px;font-size:13px" id="zeitZu" aria-label="Zeitreise beenden">✕</button></div>
+  <div class="reihe" id="notizzeile"><input class="feld" id="notiz" type="text" maxlength="80" placeholder="Notiz für jetzt" autocomplete="off" aria-label="Notiz für jetzt"><button class="rund gold" id="plus" aria-label="Notiz festhalten" disabled>+</button><button class="rund" id="uhr" aria-label="Zeitreise">⟲</button></div>
+  <button class="rand" id="abschluss">Tag abschließen</button>
+</div>
+
+<div class="blatt" id="blatt" role="dialog" aria-modal="true" aria-label="Tag abschließen"><div>
+  <h3>Tag abschließen</h3>
+  <h4>Deine Notizen von heute</h4><div class="karte tafel" id="blattNotizen"></div>
+  <h4>Wie war dein Tag?</h4><textarea id="tagtext" placeholder="Schreib, so viel oder wenig du magst"></textarea>
+  <h4>Stimmung</h4><div class="stimm" id="stimm"></div>
+  <h4>Worum ging es?</h4><div class="chips" id="bereiche"></div>
+  <p class="sehr-klein">In der App schlägt das Sprachmodell des iPhones die Lebensbereiche vor. Hier wählst du sie selbst.</p>
+  <button class="haupt" id="fertig">Abschließen</button>
+  <button class="rand" id="abbrechen" style="margin-top:10px">Abbrechen</button>
+</div></div>
+
+<script>/*THREE*/</script>
+<script>
+window.DATEN = /*DATEN*/;
+window.webkit = { messageHandlers: { app: { postMessage: function (m) { if (window.__aufApp) window.__aufApp(m); } } } };
+</script>
+<script>/*SZENE*/</script>
+<script>
+(function () {
+'use strict';
+var BEREICHE = [['menschen', 'Menschen', '#FF8FA8'], ['arbeit', 'Arbeit', '#FFC857'], ['gesundheit', 'Gesundheit', '#6EE7B7'], ['geld', 'Geld', '#6FD3FF'], ['traeume', 'Träume', '#C3A6FF']];
+var NAME = {}; BEREICHE.forEach(function (b) { NAME[b[0]] = b; });
+var STIMM = [['🌧', 'schwer'], ['☁', 'gedrückt'], ['⛅', 'gemischt'], ['☀', 'gut'], ['✨', 'sehr gut']];
+var WOERTER = { menschen: ['freund', 'famil', 'mama', 'papa', 'telefon', 'getroffen', 'jonas', 'besuch', 'streit'], arbeit: ['arbeit', 'job', 'chef', 'bewerb', 'absage', 'tischler', 'meeting', 'projekt', 'prüfung'],
+  gesundheit: ['schlaf', 'müde', 'arzt', 'krank', 'laufen', 'gelaufen', 'sport', 'gekocht', 'spazier'], geld: ['geld', 'miete', 'rechnung', 'konto', 'gehalt', 'gespart'], traeume: ['traum', 'ziel', 'plan', 'idee', 'reise', 'werkstatt', 'wunsch'] };
+var $ = function (id) { return document.getElementById(id); };
+function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+var satz = 'klein', d = null, modus = 'galaxie', filter = null, auswahl = null, notizen = [], tagZu = false, stimmung = 0, gewaehlt = [];
+function jetzt() { var n = new Date(); return ('0' + n.getHours()).slice(-2) + ':' + ('0' + n.getMinutes()).slice(-2); }
+
+function lade(name) {
+  satz = name; d = JSON.parse(JSON.stringify(window.DATEN[name])); filter = null; auswahl = null; tagZu = false; notizen = [];
+  for (var i = 0; i < d.funken; i++) notizen.push({ zeit: ['08:10', '13:30', '18:45', '10:05', '12:20', '15:40'][i % 6], text: ['Schlecht geschlafen', 'Absage von der Tischlerei', '30 Minuten gelaufen', 'Notiz', 'Notiz', 'Notiz'][i % 6] });
+  d.funken = notizen.length; d.tagZu = false;
+  $('regler').max = String(d.alter.toFixed(1)); $('regler').value = String(d.alter.toFixed(1)); $('zeit').hidden = true;
+  window.Szene.zeit(null); window.Szene.filter(null); window.Szene.setze(d);
+  $('dKlein').setAttribute('aria-pressed', satz === 'klein'); $('dVoll').setAttribute('aria-pressed', satz === 'voll');
+  bauePunkte(); karte(); knopf();
+}
+
+function bauePunkte() {
+  var h = '';
+  BEREICHE.forEach(function (b) { h += '<button class="punkt" data-b="' + b[0] + '" aria-pressed="' + (filter === b[0]) + '" aria-label="' + (filter === b[0] ? 'Filter ' + b[1] + ' aufheben' : 'Nur ' + b[1] + ' zeigen') + '"><i style="background:' + b[2] + '"></i></button>'; });
+  $('punkte').innerHTML = h; $('punkte').className = 'punkte' + (filter ? ' aktiv' : ''); $('punkte').style.display = modus === 'galaxie' ? '' : 'none';
+}
+$('punkte').addEventListener('click', function (e) { var b = e.target.closest('.punkt'); if (!b) return; filter = filter === b.dataset.b ? null : b.dataset.b; auswahl = null; window.Szene.filter(filter); bauePunkte(); karte(); });
+
+function setModus(m) { if (m === modus) return; modus = m; filter = null; window.Szene.filter(null); auswahl = null; $('zeit').hidden = true; window.Szene.zeit(null); window.Szene.modus(m);
+  $('mVerlauf').setAttribute('aria-pressed', m === 'galaxie'); $('mJetzt').setAttribute('aria-pressed', m === 'system'); $('titel').textContent = m === 'galaxie' ? 'Deine Galaxie' : 'Dein Sonnensystem';
+  $('notizzeile').style.display = $('abschluss').style.display = m === 'galaxie' ? '' : 'none'; bauePunkte(); karte(); raender(); }
+$('mVerlauf').onclick = function () { setModus('galaxie'); }; $('mJetzt').onclick = function () { setModus('system'); };
+
+function kopf(t, farbe) { return '<h2>' + (farbe ? '<i style="background:' + farbe + '"></i>' : '') + esc(t) + '</h2>'; }
+function karte() {
+  var h = '', a = auswahl, x;
+  if (a && (a.art === 'stern' || a.art === 'tag') && (x = d.sterne.filter(function (s) { return s.id === a.id; })[0])) {
+    h = kopf(x.jahr ? x.name + ', ' + x.jahr : x.name, (NAME[x.bereich] || [])[2]) + (x.text ? '<p>' + esc(x.text) + '</p>' : '') + (NAME[x.bereich] ? '<small>' + NAME[x.bereich][1] + '</small>' : '');
+  } else if (a && a.art === 'wolke' && (x = d.wolken.filter(function (w) { return w.id === a.id; })[0])) { h = kopf(x.name, '#B3ABDD') + '<p>' + esc(x.text) + '</p>'; }
+  else if (a && a.art === 'planet' && (x = d.planeten.filter(function (p) { return p.bereich === a.id; })[0])) {
+    h = kopf(x.name, NAME[x.bereich][2]) + '<p>' + esc(x.text) + '</p>' + (x.monde.length ? '<small>Monde: ' + esc(x.monde.map(function (m) { return m.name; }).join(', ')) + (x.weitere ? ' und ' + x.weitere + ' weitere' : '') + '</small>' : '');
+  } else if (a && a.art === 'mond') { d.planeten.forEach(function (p) { p.monde.forEach(function (m) { if (m.id === a.id) h = kopf(m.name, NAME[p.bereich][2]) + '<small>' + { mensch: 'Mensch', vorhaben: 'Vorhaben', ziel: 'Ziel' }[m.art] + ', kreist um ' + p.name + '</small>'; }); }); }
+  else if (a && a.art === 'heute') {
+    if (tagZu && !notizen.length) h = kopf('Heute ist ein Stern', '#FFD08A') + '<p>Der Tag ist abgeschlossen.</p>';
+    else if (!notizen.length) h = kopf('Heute') + '<p>Noch keine Notiz. Halte unten fest, was gerade ist. Abends wird daraus ein Stern.</p>';
+    else h = kopf('Heute, ' + notizen.length + (notizen.length === 1 ? ' Notiz' : ' Notizen')) + '<ul>' + notizen.slice(-4).map(function (n) { return '<li><time>' + n.zeit + '</time><span>' + esc(n.text) + '</span></li>'; }).join('') + '</ul>';
+  } else if (a && a.art === 'geburt') { h = kopf('Geburt, ' + d.geburtsjahr, '#FFD08A') + '<p>Hier beginnt die Spirale. Jede Umdrehung nach außen ist ein Jahrzehnt.</p>'; }
+  else if (a && a.art === 'sonne') { h = kopf(d.rufname || 'Du', '#FFD08A') + '<p>Um dich kreisen deine fünf Lebensbereiche. Ein Sturm auf einem Planeten heißt nicht, dass das ganze System stillsteht.</p>'; }
+  else if (filter && modus === 'galaxie') {
+    var e = d.sterne.filter(function (s) { return s.art === 'ereignis' && s.bereich === filter; }).length, t = d.sterne.filter(function (s) { return s.art === 'tag' && s.bereich === filter; }).length;
+    h = kopf('Nur ' + NAME[filter][1], NAME[filter][2]) + '<p>' + e + (e === 1 ? ' Ereignis' : ' Ereignisse') + ' und ' + t + (t === 1 ? ' Tag' : ' Tage') + ' in diesem Lebensbereich. Tippe den Farbpunkt noch einmal an, um wieder alles zu sehen.</p>';
+  } else h = kopf('Von außen betrachtet') + '<p>' + esc(d.ueberblick || 'Tippe einen Stern an.') + '</p>';
+  $('karte').innerHTML = h + (auswahl ? '<button class="zu" aria-label="Schließen">✕</button>' : '');
+}
+$('karte').addEventListener('click', function (e) { if (e.target.closest('.zu')) { auswahl = null; window.Szene.waehle(null); karte(); } });
+window.__aufApp = function (m) {
+  if (m.typ === 'wahl') { auswahl = m.art === 'nichts' ? null : { art: m.art, id: m.id }; karte(); if (document.activeElement) document.activeElement.blur(); }
+  if (m.typ === 'verschmolzen') { tagZu = true; notizen = []; d.tagZu = true; d.funken = 0; auswahl = { art: 'heute', id: '' }; karte(); knopf(); }
+};
+
+function knopf() { $('abschluss').textContent = tagZu && !notizen.length ? 'Tag ergänzen' : (notizen.length ? 'Tag abschließen, ' + notizen.length + (notizen.length === 1 ? ' Notiz' : ' Notizen') : 'Tag abschließen'); }
+$('notiz').addEventListener('input', function () { $('plus').disabled = !$('notiz').value.trim(); });
+function festhalten() { var t = $('notiz').value.trim(); if (!t) return; notizen.push({ zeit: jetzt(), text: t }); $('notiz').value = ''; $('plus').disabled = true; $('zeit').hidden = true; window.Szene.zeit(null); window.Szene.funke(); auswahl = { art: 'heute', id: '' }; karte(); knopf(); raender(); }
+$('plus').onclick = festhalten; $('notiz').addEventListener('keydown', function (e) { if (e.key === 'Enter') festhalten(); });
+$('uhr').onclick = function () { var an = $('zeit').hidden; $('zeit').hidden = !an; $('regler').value = $('regler').max; $('jahr').textContent = 'heute'; window.Szene.zeit(null); raender(); };
+$('zeitZu').onclick = function () { $('zeit').hidden = true; window.Szene.zeit(null); raender(); };
+$('regler').addEventListener('input', function () { var v = +$('regler').value, ende = +$('regler').max; window.Szene.zeit(v >= ende - .05 ? null : v); $('jahr').textContent = v >= ende - .05 ? 'heute' : String(d.geburtsjahr + Math.floor(v)); });
+
+function raender() { window.requestAnimationFrame(function () { window.Szene.raender($('oben').getBoundingClientRect().bottom, $('unten').getBoundingClientRect().height + 34); }); }
+window.addEventListener('resize', raender);
+
+// Tagesabschluss
+function oeffneBlatt() {
+  $('blattNotizen').innerHTML = notizen.length ? '<ul>' + notizen.map(function (n) { return '<li><time>' + n.zeit + '</time><span>' + esc(n.text) + '</span></li>'; }).join('') + '</ul>' : '<p>Keine Notizen. Du kannst den Tag auch nur mit einem Satz abschließen.</p>';
+  $('stimm').innerHTML = STIMM.map(function (s, i) { return '<button data-s="' + (i + 1) + '" aria-pressed="false"><b>' + s[0] + '</b>' + s[1] + '</button>'; }).join('');
+  stimmung = 0; schlage();
+  $('blatt').classList.add('offen');
+}
+function schlage() {
+  var alle = (notizen.map(function (n) { return n.text; }).join(' ') + ' ' + $('tagtext').value).toLowerCase(); gewaehlt = [];
+  BEREICHE.forEach(function (b) { if (WOERTER[b[0]].some(function (w) { return alle.indexOf(w) >= 0; })) gewaehlt.push(b[0]); });
+  gewaehlt = gewaehlt.slice(0, 3); zeigeBereiche();
+}
+function zeigeBereiche() { $('bereiche').innerHTML = BEREICHE.map(function (b) { var an = gewaehlt.indexOf(b[0]) >= 0; return '<button data-b="' + b[0] + '" aria-pressed="' + an + '"' + (an ? ' style="background:' + b[2] + '"' : '') + '>' + b[1] + '</button>'; }).join(''); }
+$('abschluss').onclick = oeffneBlatt;
+$('stimm').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; stimmung = stimmung === +b.dataset.s ? 0 : +b.dataset.s; Array.prototype.forEach.call($('stimm').children, function (k) { k.setAttribute('aria-pressed', +k.dataset.s === stimmung); }); });
+$('bereiche').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; var i = gewaehlt.indexOf(b.dataset.b); if (i >= 0) gewaehlt.splice(i, 1); else gewaehlt.push(b.dataset.b); zeigeBereiche(); });
+$('tagtext').addEventListener('change', schlage);
+$('abbrechen').onclick = function () { $('blatt').classList.remove('offen'); };
+$('fertig').onclick = function () { $('blatt').classList.remove('offen'); $('tagtext').value = ''; setModus('galaxie'); $('zeit').hidden = true; window.Szene.verschmelze(); };
+
+$('dKlein').onclick = function () { if (satz !== 'klein') lade('klein'); }; $('dVoll').onclick = function () { if (satz !== 'voll') lade('voll'); };
+bauePunkte(); raender(); lade('klein'); window.setTimeout(raender, 400);
+})();
+</script>
