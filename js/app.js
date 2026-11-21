@@ -1,5 +1,7 @@
 // Design-Trainer · Oberfläche. Jeder Bereich hat seine eigene init-Funktion.
 import { vocab } from './data/vocab.js';
+import { exercises } from './data/exercises.js';
+import { analyzePrompt } from './prompt-check.js';
 
 const GROUPS = ['Layout', 'Typografie', 'Farbe', 'Abstand', 'Interaktion', 'Bewegung'];
 const byId = new Map(vocab.map((v) => [v.id, v]));
@@ -241,8 +243,347 @@ function initLexicon() {
   apply('Alle');
 }
 
+/* ───────── 02 · Prompt-Werkstatt ───────── */
+
+const BLOCKS = [
+  { key: 'element', name: 'Element' },
+  { key: 'property', name: 'Eigenschaft' },
+  { key: 'value', name: 'Wert' },
+  { key: 'mood', name: 'Stimmung' },
+  { key: 'limit', name: 'Grenze' },
+];
+
+function band(score) {
+  if (score <= 1) return { word: 'Noch vage', tone: 'low' };
+  if (score <= 3) return { word: 'Auf dem Weg', tone: 'mid' };
+  return { word: 'Präzise', tone: 'high' };
+}
+
+// „Stimmung fehlt: Beschreibe …“ → „Beschreibe …“ (der Name steht schon daneben)
+const adviceOf = (hint) => {
+  const i = hint.indexOf(': ');
+  return i >= 0 ? hint.slice(i + 2) : hint;
+};
+
+// Hinweise aus result.missing den Bausteinen zuordnen (gleiche Reihenfolge wie BLOCKS)
+function hintsFor(result) {
+  const map = {};
+  let i = 0;
+  BLOCKS.forEach((b) => { if (!result.found[b.key]) { map[b.key] = result.missing[i] || ''; i += 1; } });
+  return map;
+}
+
+function missingNames(result) {
+  return BLOCKS.filter((b) => !result.found[b.key]).map((b) => b.name);
+}
+
+function announceText(result) {
+  if (result.empty) return 'Noch kein Prompt.';
+  const miss = missingNames(result);
+  return `${result.score} von 5 Bausteinen, ${band(result.score).word}.${miss.length ? ` Fehlt: ${miss.join(', ')}.` : ''}`;
+}
+
+function debounce(fn, ms) {
+  let t;
+  return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+}
+
+// Text mit [Platzhaltern]: die Lücken werden markiert, alles per textContent.
+function fillWithGaps(node, text) {
+  node.replaceChildren();
+  text.split(/(\[[^\]]*\])/).forEach((piece) => {
+    if (!piece) return;
+    if (piece.startsWith('[') && piece.endsWith(']')) node.append(el('mark', 'gap', piece));
+    else node.append(document.createTextNode(piece));
+  });
+}
+
+// Plakat-Zähler: große Zahl, Stempel, fünf Balken
+function createScore(compact = false) {
+  const root = el('div', compact ? 'score score--compact' : 'score');
+  const top = el('div', 'score__top');
+  top.append(el('p', 'score__label label', 'Bausteine erkannt'));
+  const num = el('p', 'score__num');
+  const n = el('span', 'score__n', '0');
+  num.append(n, el('span', 'score__of', '/5'));
+  const stamp = el('p', 'score__stamp');
+  const bar = el('ol', 'score__bar');
+  bar.setAttribute('aria-hidden', 'true');
+  const segs = BLOCKS.map(() => { const s = el('li'); bar.append(s); return s; });
+  root.append(top, num, stamp, bar);
+
+  let last = null;
+  return {
+    root,
+    update(result) {
+      const b = band(result.score);
+      n.textContent = String(result.score);
+      num.setAttribute('aria-label', `${result.score} von 5`);
+      stamp.textContent = b.word;
+      root.dataset.tone = b.tone;
+      segs.forEach((s, i) => s.classList.toggle('is-on', i < result.score));
+      if (last !== null && last !== result.score && !reduceMotion.matches) {
+        root.classList.remove('is-bump');
+        void root.offsetWidth;
+        root.classList.add('is-bump');
+      }
+      last = result.score;
+    },
+    reset() { last = null; },
+  };
+}
+
+// Prüf-Tafel: Zähler + fünf Bausteine (+ optional präzisere Version)
+function createCheck({ withImproved = false } = {}) {
+  const root = el('div', 'check');
+
+  const empty = el('div', 'check__empty');
+  empty.append(
+    el('p', 'check__empty-big', 'Schreib erst etwas …'),
+    el('p', 'check__empty-small', 'Sobald dein Prompt dasteht, siehst du hier, welche der fünf Bausteine er schon hat und was noch fehlt.'),
+  );
+
+  const filled = el('div', 'check__filled');
+  const score = createScore();
+
+  const list = el('ol', 'blocks');
+  list.setAttribute('aria-label', 'Die fünf Bausteine');
+  const rows = BLOCKS.map((b, i) => {
+    const li = el('li', 'block');
+    const head = el('div', 'block__head');
+    head.append(
+      el('span', 'block__no', String(i + 1).padStart(2, '0')),
+      el('span', 'block__name', b.name),
+    );
+    const state = el('span', 'block__state label');
+    head.append(state);
+    const hint = el('p', 'block__hint');
+    li.append(head, hint);
+    list.append(li);
+    return { li, state, hint, key: b.key };
+  });
+
+  filled.append(score.root, list);
+
+  let better = null;
+  if (withImproved) {
+    better = {
+      wrap: el('div', 'better'),
+      label: el('p', 'better__label label'),
+      text: el('p', 'brick better__text'),
+      btn: el('button', 'btn-copy', 'Kopieren'),
+      status: el('span', 'copy-status'),
+      value: '',
+    };
+    better.btn.type = 'button';
+    better.status.setAttribute('role', 'status');
+    const actions = el('div', 'better__actions');
+    actions.append(better.btn, better.status);
+    better.wrap.append(better.label, better.text, actions);
+    bindCopy(better.btn, () => better.value, better.status);
+    filled.append(better.wrap);
+  }
+
+  root.append(empty, filled);
+
+  function render(result) {
+    empty.hidden = !result.empty;
+    filled.hidden = result.empty;
+    if (result.empty) { score.reset(); return; }
+    score.update(result);
+    const hints = hintsFor(result);
+    rows.forEach((r) => {
+      const ok = result.found[r.key];
+      r.li.dataset.state = ok ? 'found' : 'missing';
+      r.state.textContent = ok ? 'erkannt' : 'fehlt';
+      r.hint.textContent = ok ? '' : adviceOf(hints[r.key]);
+      r.hint.hidden = ok;
+    });
+    if (better) {
+      better.value = result.improved;
+      const done = result.score === 5;
+      better.label.textContent = done ? 'Alle fünf Bausteine drin, bereit zum Kopieren' : 'Präzisere Version: ersetze die Lücken';
+      fillWithGaps(better.text, result.improved);
+      better.btn.textContent = done ? 'Prompt kopieren' : 'Version kopieren';
+      better.status.textContent = '';
+    }
+  }
+
+  return { root, render };
+}
+
+function initWerkstatt() {
+  const body = $('#werkstatt-body');
+  if (!body) return;
+
+  /* Modus-Reiter (Pfeiltasten wie bei echten Tabs) */
+  const tabs = [...body.querySelectorAll('[role="tab"]')];
+  function select(tab, focus) {
+    tabs.forEach((t) => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      $(`#${t.getAttribute('aria-controls')}`).hidden = !on;
+    });
+    if (focus) tab.focus();
+  }
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => select(tab, false));
+    tab.addEventListener('keydown', (e) => {
+      let next = null;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = tabs[(i + 1) % tabs.length];
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = tabs[(i - 1 + tabs.length) % tabs.length];
+      if (e.key === 'Home') next = tabs[0];
+      if (e.key === 'End') next = tabs[tabs.length - 1];
+      if (next) { e.preventDefault(); select(next, true); }
+    });
+  });
+
+  initFreeMode();
+  initExercises();
+}
+
+function initFreeMode() {
+  const input = $('#frei-input');
+  const out = $('#frei-out');
+  const mini = $('#frei-mini');
+  const live = $('#frei-live');
+  const check = createCheck({ withImproved: true });
+  out.append(check.root);
+
+  let lastSaid = '';
+  const announce = debounce((result) => {
+    const text = announceText(result);
+    if (text !== lastSaid) { live.textContent = text; lastSaid = text; }
+  }, 900);
+
+  function update() {
+    const result = analyzePrompt(input.value);
+    check.render(result);
+    mini.hidden = result.empty;
+    mini.textContent = result.empty ? '' : `${result.score}/5`;
+    mini.dataset.tone = band(result.score).tone;
+    announce(result);
+  }
+
+  input.addEventListener('input', update);
+  document.querySelectorAll('#panel-frei [data-sample]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      input.value = btn.dataset.sample;
+      update();
+      input.focus();
+    });
+  });
+  update();
+}
+
+function initExercises() {
+  const total = exercises.length;
+  const nEl = $('#ex-n');
+  const ofEl = $('#ex-of');
+  const ticks = $('#ex-ticks');
+  const solvedEl = $('#ex-solved');
+  const vageEl = $('#ex-vage');
+  const hintEl = $('#ex-hint');
+  const input = $('#ex-input');
+  const out = $('#ex-out');
+  const live = $('#ex-live');
+  const solutionBtn = $('#ex-solution');
+  const muster = $('#ex-muster');
+  const musterText = $('#ex-muster-text');
+  const musterStatus = $('#ex-muster-status');
+  const musterScore = createScore(true);
+  $('#ex-muster-score').append(musterScore.root);
+  $('#ex-count').textContent = String(total);
+  ofEl.textContent = `/${total}`;
+
+  const check = createCheck();
+  out.append(check.root);
+  out.hidden = true;
+
+  const best = new Array(total).fill(-1);   // beste Wertung je Übung (nur im Speicher)
+  const drafts = new Array(total).fill(''); // Entwürfe je Übung
+  const tickEls = exercises.map(() => { const li = el('li'); ticks.append(li); return li; });
+
+  let index = 0;
+  let rated = false;  // nach dem ersten „Bewerten“ läuft die Wertung live mit
+
+  function paintTicks() {
+    tickEls.forEach((t, i) => {
+      t.classList.toggle('is-current', i === index);
+      t.classList.toggle('is-solved', best[i] >= 4);
+    });
+    const solved = best.filter((s) => s >= 4).length;
+    solvedEl.textContent = solved ? `${solved} von ${total} präzise gelöst` : 'Ziel: 4 von 5 Bausteinen';
+  }
+
+  function rate(say) {
+    const result = analyzePrompt(input.value);
+    out.hidden = false;
+    check.render(result);
+    if (!result.empty) best[index] = Math.max(best[index], result.score);
+    paintTicks();
+    if (say) live.textContent = announceText(result);
+    return result;
+  }
+  const rateQuietly = debounce(() => rate(false), 250);
+  const sayLater = debounce(() => {
+    const text = announceText(analyzePrompt(input.value));
+    if (text !== live.textContent) live.textContent = text;
+  }, 1000);
+
+  function setSolution(open) {
+    muster.hidden = !open;
+    solutionBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    solutionBtn.textContent = open ? 'Musterlösung verbergen' : 'Musterlösung zeigen';
+  }
+
+  function show(i, say) {
+    drafts[index] = input.value;
+    index = (i + total) % total;
+    const ex = exercises[index];
+    nEl.textContent = String(index + 1).padStart(2, '0');
+    vageEl.textContent = `„${ex.vage}“`;
+    hintEl.textContent = ex.hinweis;
+    input.value = drafts[index];
+    musterText.textContent = ex.muster;
+    musterStatus.textContent = '';
+    musterScore.reset();
+    musterScore.update(analyzePrompt(ex.muster));
+    setSolution(false);
+    rated = false;
+    out.hidden = true;
+    paintTicks();
+    if (say) live.textContent = `Übung ${index + 1} von ${total}: ${ex.vage}`;
+  }
+
+  // Auf schmalen Schirmen liegt das Ergebnis unter dem Textfeld: kurz hinscrollen.
+  function reveal(node) {
+    const r = node.getBoundingClientRect();
+    if (r.top > window.innerHeight - 120 || r.bottom < 0) {
+      node.scrollIntoView({ block: 'start', behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+    }
+  }
+  function rateNow() { rated = true; rate(true); reveal(out); }
+
+  $('#ex-check').addEventListener('click', rateNow);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); rateNow(); }
+  });
+  input.addEventListener('input', () => { if (rated) { rateQuietly(); sayLater(); } });
+  solutionBtn.addEventListener('click', () => {
+    const open = muster.hidden;
+    setSolution(open);
+    if (open) reveal(muster);
+  });
+  $('#ex-next').addEventListener('click', () => show(index + 1, true));
+  bindCopy($('#ex-muster-copy'), () => musterText.textContent, musterStatus);
+
+  show(0, false);
+}
+
 /* ───────── Start ───────── */
 
-// Spätere Bereiche hängen sich hier an (initWerkstatt, initInspiration, initSkills).
-const inits = [initShell, initAtlas];
+// Spätere Bereiche hängen sich hier an (initInspiration, initSkills).
+const inits = [initShell, initAtlas, initWerkstatt];
 inits.forEach((init) => init());

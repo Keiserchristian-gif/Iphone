@@ -13,7 +13,6 @@
 </head>
 <body>
   <a class="skip" href="#atlas">Zum Vokabel-Atlas springen</a>
-
   <header class="mast">
     <a class="mast__brand" href="#top">Design&#8209;Trainer</a>
     <nav class="mast__nav" aria-label="Bereiche">
@@ -123,7 +122,85 @@
         <h2 class="area__title" id="werkstatt-title">Prompt&shy;werkstatt</h2>
         <p class="area__lede">Aus „mach es schöner“ wird ein Auftrag mit Element, Eigenschaft, Wert, Stimmung und Grenze. Schreib deinen Prompt und sieh, was ihm noch fehlt.</p>
       </header>
-      <div class="area__body" id="werkstatt-body"></div>
+      <div class="area__body ws" id="werkstatt-body">
+        <div class="ws-tabs" role="tablist" aria-label="Werkstatt-Modus">
+          <button class="ws-tab" type="button" role="tab" id="tab-frei" aria-controls="panel-frei" aria-selected="true">
+            <span class="ws-tab__no label">A</span><span class="ws-tab__name">Frei schreiben</span>
+          </button>
+          <button class="ws-tab" type="button" role="tab" id="tab-uebung" aria-controls="panel-uebung" aria-selected="false" tabindex="-1">
+            <span class="ws-tab__no label">B</span><span class="ws-tab__name">Übungen</span><sup class="ws-tab__count" id="ex-count">10</sup>
+          </button>
+        </div>
+
+        <!-- A · Frei schreiben -->
+        <div class="ws-panel" id="panel-frei" role="tabpanel" aria-labelledby="tab-frei">
+          <div class="ws-grid">
+            <div class="ws-write">
+              <div class="ws-write__head">
+                <label class="label ws-write__label" for="frei-input">Dein Prompt</label>
+                <span class="ws-mini" id="frei-mini" aria-hidden="true" hidden></span>
+              </div>
+              <textarea class="ws-input" id="frei-input" rows="7" spellcheck="true" autocomplete="off"
+                placeholder="Zum Beispiel: Mach die Überschrift im Hero größer …" aria-describedby="frei-help"></textarea>
+              <p class="ws-help" id="frei-help">Die Prüfung läuft, während du tippst. Sie sucht nach fünf Bausteinen: Element, Eigenschaft, Wert, Stimmung und Grenze.</p>
+              <div class="ws-try">
+                <p class="label">Beispiel einsetzen</p>
+                <div class="ws-try__row">
+                  <button class="chip" type="button" data-sample="mach das cooler">Vage</button>
+                  <button class="chip" type="button" data-sample="Mach die Überschrift im Hero größer.">Halb</button>
+                  <button class="chip" type="button" data-sample="Setze die Überschrift im Hero auf 96px in fetter Schrift und Farbe #16130f, damit sie wie ein Zeitungs-Poster wirkt. Nichts anderes anfassen.">Präzise</button>
+                </div>
+              </div>
+            </div>
+            <div class="ws-out" id="frei-out"></div>
+          </div>
+          <p class="sr-only" role="status" id="frei-live"></p>
+        </div>
+
+        <!-- B · Übungen -->
+        <div class="ws-panel" id="panel-uebung" role="tabpanel" aria-labelledby="tab-uebung" hidden>
+          <div class="ex">
+            <div class="ex__bar">
+              <p class="ex__pos"><span class="label">Übung</span> <span class="ex__n" id="ex-n">01</span><span class="ex__of" id="ex-of">/10</span></p>
+              <ol class="ex__ticks" id="ex-ticks" aria-hidden="true"></ol>
+              <p class="ex__solved label" id="ex-solved"></p>
+            </div>
+
+            <div class="ws-grid">
+              <div class="ws-write">
+                <figure class="ex__task">
+                  <figcaption class="label">Der vage Wunsch</figcaption>
+                  <blockquote class="ex__vage" id="ex-vage"></blockquote>
+                </figure>
+                <p class="ex__hint"><span class="label">Tipp</span><span id="ex-hint"></span></p>
+
+                <label class="label ws-write__label" for="ex-input">Deine präzise Version</label>
+                <textarea class="ws-input" id="ex-input" rows="6" spellcheck="true" autocomplete="off"
+                  placeholder="Schreib den Wunsch so um, dass Claude Code genau weiß, was zu tun ist …" aria-describedby="ex-help"></textarea>
+                <p class="ws-help" id="ex-help">Bewerten mit dem Knopf oder mit Strg + Enter (Mac: ⌘ + Enter).</p>
+
+                <div class="ex__actions">
+                  <button class="btn" type="button" id="ex-check">Bewerten</button>
+                  <button class="btn btn--ghost" type="button" id="ex-solution" aria-expanded="false" aria-controls="ex-muster">Musterlösung zeigen</button>
+                  <button class="btn btn--ghost" type="button" id="ex-next">Nächste Übung <span aria-hidden="true">→</span></button>
+                </div>
+              </div>
+
+              <div class="ws-out">
+                <div id="ex-out"></div>
+                <div class="muster" id="ex-muster" hidden>
+                  <p class="muster__label label">Musterlösung</p>
+                  <div id="ex-muster-score"></div>
+                  <p class="brick" id="ex-muster-text"></p>
+                  <button class="btn-copy" type="button" id="ex-muster-copy">Musterlösung kopieren</button>
+                  <span class="copy-status" role="status" id="ex-muster-status"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="sr-only" role="status" id="ex-live"></p>
+        </div>
+      </div>
     </section>
 
     <!-- 03 · Inspiration -->

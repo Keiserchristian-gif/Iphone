@@ -4,7 +4,7 @@ const LISTS = {
   element: [
     'hero', 'überschrift', 'ueberschrift', 'heading', 'headline', 'titel', 'title', 'header', 'navbar', 'navigation',
     'nav', 'menü', 'menue', 'menu', 'button', 'knopf', 'footer', 'fußzeile', 'fusszeile', 'section', 'abschnitt',
-    'bild', 'image', 'foto', 'logo', 'karte', 'card', 'formular', 'form', 'text', 'absatz', 'paragraph', 'link',
+    'bild', 'bilder', 'image', 'foto', 'logo', 'karte', 'card', 'formular', 'form', 'text', 'absatz', 'paragraph', 'link',
     'liste', 'sidebar', 'banner', 'icon', 'galerie', 'gallery', 'tabelle', 'hintergrund', 'background',
   ],
   property: [
@@ -16,7 +16,7 @@ const LISTS = {
   mood: [
     'wirkt', 'wirken', 'stil', 'style', 'look', 'feel', 'poster', 'retro', 'minimal', 'brutalis', 'elegant',
     'verspielt', 'seriös', 'serioes', 'modern', 'futuristisch', 'editorial', 'zeitung', 'magazin', 'luxus', 'luxury',
-    'playful', 'bold', 'mutig', 'ruhig', 'edgy', 'vintage', 'stimmung', 'atmosphäre', 'atmosphaere', 'vibe', 'like a',
+    'playful', 'bold', 'mutig', 'ruhig', 'edgy', 'vintage', 'stimmung', 'anfühl', 'atmosphäre', 'atmosphaere', 'vibe', 'like a',
     'wie ein',
   ],
   limit: [

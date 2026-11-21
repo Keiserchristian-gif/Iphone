@@ -40,3 +40,8 @@ test('improved enthält Platzhalter', () => {
   const r = analyzePrompt('mach das cooler');
   assert.match(r.improved, /\[[^\]]+\]/);
 });
+
+test('Plural „Bilder“ und „anfühlen“ werden erkannt', () => {
+  assert.equal(analyzePrompt('Mache die Bilder größer').found.element, true);
+  assert.equal(analyzePrompt('damit es sich lebendig anfühlt').found.mood, true);
+});
