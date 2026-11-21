@@ -55,7 +55,7 @@ jobs:
           foto() {
             name=$1; shift
             xcrun simctl terminate "$GERAET" de.lebensgalaxie.app 2>/dev/null || true
-            xcrun simctl launch "$GERAET" de.lebensgalaxie.app -demo "$@"
+            xcrun simctl launch "$GERAET" de.lebensgalaxie.app -demo 1 "$@"
             sleep ${WARTEN:-14}
             xcrun simctl io "$GERAET" screenshot "fotos/$name.png"
             sips -Z 520 -s format jpeg -s formatOptions 38 "fotos/$name.png" --out "fotos/$name.jpg" > /dev/null

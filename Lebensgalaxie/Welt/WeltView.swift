@@ -4,7 +4,8 @@ import SwiftUI
 /// Der Hauptbildschirm: die Szene bildschirmfüllend, darüber wenige schwebende Bedienelemente.
 struct WeltView: View {
     @Environment(AppModel.self) private var model
-    @State private var steuerung = SzeneSteuerung()
+    /// Entsteht erst beim Erscheinen. So wird nicht bei jedem Neuzeichnen eine Web-Ansicht angelegt und verworfen.
+    @State private var steuerung: SzeneSteuerung?
     @State private var modus = "galaxie"
     @State private var auswahl: Auswahl?
     @State private var notiz = ""
@@ -22,9 +23,11 @@ struct WeltView: View {
 
     var body: some View {
         ZStack {
-            SzeneWebView(steuerung: steuerung)
-                .ignoresSafeArea()
-                .accessibilityLabel("Dein Leben als drehbare Galaxie")
+            if let steuerung {
+                SzeneWebView(steuerung: steuerung)
+                    .ignoresSafeArea()
+                    .accessibilityLabel("Dein Leben als drehbare Galaxie")
+            }
 
             VStack(spacing: 0) {
                 kopf
@@ -39,15 +42,15 @@ struct WeltView: View {
         .onChange(of: modus) { _, neu in
             auswahl = nil
             zeitreise = false
-            steuerung.zeit(nil)
-            steuerung.modus(neu)
+            steuerung?.zeit(nil)
+            steuerung?.modus(neu)
         }
         .sheet(isPresented: $zeigtAbschluss) {
             TagesabschlussView { text, stimmung, bereiche, kurz in
                 model.schliesseTag(text: text, stimmung: stimmung, bereiche: bereiche, kurz: kurz)
                 modus = "galaxie"
                 auswahl = nil
-                steuerung.verschmelze()
+                steuerung?.verschmelze()
             }
         }
         .sheet(isPresented: $zeigtMehr) { MehrView() }
@@ -99,21 +102,21 @@ struct WeltView: View {
             }
             DetailKarte(auswahl: auswahl, schliessen: {
                 auswahl = nil
-                steuerung.hebeAuswahlAuf()
+                steuerung?.hebeAuswahlAuf()
             })
 
             if modus == "galaxie" {
                 if zeitreise {
                     HStack(spacing: 10) {
                         Slider(value: $zeit, in: 0...max(alter, 1))
-                            .onChange(of: zeit) { _, neu in steuerung.zeit(neu >= alter - 0.05 ? nil : neu) }
+                            .onChange(of: zeit) { _, neu in steuerung?.zeit(neu >= alter - 0.05 ? nil : neu) }
                             .accessibilityLabel("Zeitreise")
                         Text(zeit >= alter - 0.05 ? "heute" : String(model.szene.geburtsjahr + Int(zeit)))
                             .font(.subheadline.weight(.semibold).monospacedDigit())
                             .frame(minWidth: 46, alignment: .trailing)
                         Button {
                             zeitreise = false
-                            steuerung.zeit(nil)
+                            steuerung?.zeit(nil)
                         } label: { Image(systemName: "xmark").font(.footnote.weight(.bold)) }
                             .accessibilityLabel("Zeitreise beenden")
                     }
@@ -139,7 +142,7 @@ struct WeltView: View {
                     Button {
                         zeit = alter
                         zeitreise.toggle()
-                        if !zeitreise { steuerung.zeit(nil) }
+                        if !zeitreise { steuerung?.zeit(nil) }
                     } label: {
                         Image(systemName: "clock.arrow.circlepath").font(.headline).frame(width: 46, height: 46)
                             .tafel(rund: 23).foregroundStyle(Stil.tinte)
@@ -162,13 +165,16 @@ struct WeltView: View {
     // MARK: Verbindung zur Szene
 
     private func verbinde() {
+        guard steuerung == nil else { return }
+        let steuerung = SzeneSteuerung()
+        self.steuerung = steuerung
         steuerung.beiWahl = { art, id in
             auswahl = art == "nichts" ? nil : Auswahl(art: art, id: id)
             schreibt = false
         }
         steuerung.beiVerschmolzen = { sendeDaten() }
-        sendeDaten()
-        meldeRaender()
+        steuerung.raender(oben: obenHoehe, unten: untenHoehe + 34)
+        if let json = szeneJSON() { steuerung.setze(json: json) }
         #if DEBUG
         // Startzustände für automatische Bildschirmfotos: -ansicht system, -blatt abschluss|mehr
         let werte = UserDefaults.standard
@@ -178,13 +184,17 @@ struct WeltView: View {
         #endif
     }
 
+    private func szeneJSON() -> String? {
+        guard let roh = try? JSONEncoder().encode(model.szene) else { return nil }
+        return String(data: roh, encoding: .utf8)
+    }
+
     private func sendeDaten() {
-        guard let roh = try? JSONEncoder().encode(model.szene), let json = String(data: roh, encoding: .utf8) else { return }
-        steuerung.setze(json: json)
+        if let json = szeneJSON() { steuerung?.setze(json: json) }
     }
 
     private func meldeRaender() {
-        steuerung.raender(oben: obenHoehe, unten: untenHoehe + 34)
+        steuerung?.raender(oben: obenHoehe, unten: untenHoehe + 34)
     }
 
     private func halteFest() {
@@ -194,7 +204,7 @@ struct WeltView: View {
         notiz = ""
         zeitreise = false
         auswahl = Auswahl(art: "heute", id: "")
-        steuerung.funke()
+        steuerung?.funke()
     }
 }
 

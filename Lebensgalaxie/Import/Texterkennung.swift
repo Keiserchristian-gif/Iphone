@@ -26,7 +26,7 @@ enum Texterkennung {
         defer { if zugriff { url.stopAccessingSecurityScopedResource() } }
         guard let daten = try? Data(contentsOf: url) else { throw LeseFehler.nichtLesbar }
         let typ = UTType(filenameExtension: url.pathExtension.lowercased()) ?? .data
-        let text: String = await Task.detached(priority: .userInitiated) {
+        let text: String = await Task.detached(priority: .userInitiated) { () -> String in
             if typ.conforms(to: .pdf) { return liesPDF(daten) }
             if typ.conforms(to: .image) { return UIImage(data: daten)?.cgImage.map(liesBild) ?? "" }
             return String(data: daten, encoding: .utf8) ?? String(data: daten, encoding: .isoLatin1) ?? ""
