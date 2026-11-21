@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Lebenskarte: Ideen in Richtung Sternenhimmel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#888;display:flex;gap:40px;padding:40px;width:max-content;font-family:Inter,sans-serif}
+.stage{width:520px;padding:40px 0 44px;display:flex;flex-direction:column;align-items:center}
+.cap{width:390px;margin-bottom:26px}
+.cap .n{font-size:15px;font-weight:600;opacity:.6;margin-bottom:4px}
+.cap h2{font-size:38px;line-height:1.05;font-weight:700;letter-spacing:-.01em}
+.cap p{font-size:16px;line-height:1.45;margin-top:10px}
+.foot{width:390px;margin-top:30px;font-size:15px;line-height:1.5}
+.foot b{font-weight:600}
+.phone{width:390px;height:844px;border-radius:56px;position:relative;overflow:hidden;
+  box-shadow:0 0 0 10px #16181d,0 0 0 12px #454851,0 34px 60px -10px rgba(10,15,30,.45)}
+.phone>svg.bg{position:absolute;inset:0;width:390px;height:844px;display:block}
+.notch{position:absolute;top:11px;left:50%;width:122px;height:35px;border-radius:20px;background:#000;transform:translateX(-50%);z-index:20}
+.status{position:absolute;top:17px;left:0;right:0;padding:0 36px 0 40px;display:flex;justify-content:space-between;align-items:center;font:600 16px Inter,sans-serif;z-index:19}
+.status .r{display:flex;gap:6px;align-items:center}
+.status .bat{width:25px;height:12px;border-radius:4px;border:1.5px solid currentColor;position:relative;opacity:.9}
+.status .bat i{position:absolute;inset:1.5px;right:7px;background:currentColor;border-radius:1.5px}
+.status .sig{display:flex;gap:2px;align-items:flex-end;height:11px}
+.status .sig i{width:3px;background:currentColor;border-radius:1px}
+.home{position:absolute;bottom:8px;left:50%;width:136px;height:5px;border-radius:3px;transform:translateX(-50%);z-index:20}
+.lbl{paint-order:stroke;stroke-linejoin:round}
+.top{position:absolute;top:60px;left:22px;right:22px;z-index:5}
+.panel{position:absolute;left:12px;right:12px;bottom:22px;z-index:6}
+.input{margin-top:10px;border-radius:999px;padding:12px 13px 12px 20px;display:flex;justify-content:space-between;align-items:center;font-size:16px;font-weight:500}
+.mic{width:34px;height:34px;border-radius:50%;display:grid;place-items:center}
+
+/* ---------- A Zeitreise ---------- */
+#a{background:#191E4A;color:#E9EAFF;font-family:'Sora',sans-serif}
+#a .cap h2{font-weight:600;letter-spacing:-.02em}
+#a .phone{background:#0F1338;color:#fff}
+#a .top h3{font-size:25px;font-weight:600;letter-spacing:-.02em}
+#a .top small{font-size:13.5px;color:#A6ABDD;display:block;margin-top:4px}
+#a .time{background:rgba(31,37,92,.94);border:1px solid #3A4192;border-radius:22px;padding:13px 15px 12px}
+#a .time .hd{display:flex;justify-content:space-between;font-size:14px;color:#A6ABDD}
+#a .time .hd b{color:#fff;font-weight:600}
+#a .time p{font-size:13.5px;line-height:1.4;color:#DADCF7;margin-top:6px}
+#a .input{background:#fff;color:#191E4A}
+#a .mic{background:#191E4A}
+
+/* ---------- B Spiralgalaxie ---------- */
+#b{background:#1B1233;color:#EFE9FF;font-family:'Manrope',sans-serif}
+#b .cap h2{font-weight:800;letter-spacing:-.03em}
+#b .phone{background:#0C0820;color:#fff}
+#b .top h3{font-size:26px;font-weight:800;letter-spacing:-.03em}
+#b .leg{display:flex;gap:11px;margin-top:8px;font-size:12.5px;color:#C9BEEA;font-weight:500}
+#b .leg i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+#b .card{background:rgba(35,24,66,.94);border:1px solid #4A3A80;border-radius:22px;padding:14px 16px}
+#b .card small{font-size:13px;color:#B5A8DC;font-weight:500}
+#b .card p{font-size:15px;line-height:1.42;margin-top:5px;font-weight:500}
+#b .card p b{color:#FFD08A;font-weight:700}
+#b .input{background:#FFD08A;color:#1B1233;font-weight:700}
+#b .mic{background:#1B1233}
+
+/* ---------- C Sternatlas ---------- */
+#c{background:#0E2536;color:#EFE3C4;font-family:'Figtree',sans-serif}
+#c .cap h2{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:46px;letter-spacing:0}
+#c .phone{background:#102C40;color:#EFE3C4}
+#c .top{text-align:center;left:0;right:0}
+#c .top h3{font:600 30px/1 'Cormorant Garamond',serif}
+#c .top small{font:italic 500 16px 'Cormorant Garamond',serif;color:#D9B76A;display:block;margin-top:3px}
+#c .card{border:1px solid #D9B76A;border-radius:4px;padding:14px 16px;background:#0C2233;position:relative}
+#c .card:before{content:"";position:absolute;inset:3px;border:1px solid rgba(217,183,106,.35);border-radius:2px;pointer-events:none}
+#c .card p{font-size:14.5px;line-height:1.45}
+#c .card p+p{margin-top:8px;font:italic 500 17.5px/1.3 'Cormorant Garamond',serif;color:#F3DFA9}
+#c .input{background:#D9B76A;color:#0E2536;border-radius:4px;font-weight:600}
+#c .mic{background:#0E2536;border-radius:3px}
+
+/* ---------- D Jahresringe ---------- */
+#d{background:#E9DCC3;color:#3A2A1A;font-family:'Figtree',sans-serif}
+#d .cap h2{font-family:'Fraunces',serif;font-weight:600;letter-spacing:-.02em}
+#d .phone{background:#F6EEDD;color:#3A2A1A}
+#d .top{display:flex;justify-content:space-between;align-items:flex-start}
+#d .top h3{font:600 28px/1 'Fraunces',serif;letter-spacing:-.02em}
+#d .top small{font-size:14px;color:#7A6248;display:block;margin-top:5px}
+#d .top .yr{font:600 15px 'Fraunces',serif;background:#3A2A1A;color:#F6EEDD;border-radius:999px;padding:7px 13px}
+#d .card{background:#fff;border-radius:22px;padding:15px 16px;box-shadow:0 1px 0 #D8C6A6}
+#d .card p{font-size:15px;line-height:1.42}
+#d .card p b{font-weight:700;color:#8A4B1F}
+#d .card .now{display:flex;gap:9px;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid #EADFCB;font-size:14px;color:#5C6B3C;font-weight:600}
+#d .card .now i{width:11px;height:11px;border-radius:50%;background:#9CC069;box-shadow:0 0 0 4px #E3EFCF}
+#d .input{background:#3A2A1A;color:#F6EEDD}
+#d .mic{background:#F6EEDD}
+
+/* ---------- E Liniennetz ---------- */
+#e{background:#EEF0F3;color:#15181E;font-family:'Barlow',sans-serif}
+#e .cap h2{font-weight:700;letter-spacing:-.01em}
+#e .phone{background:#fff;color:#15181E}
+#e .top{display:flex;justify-content:space-between;align-items:center;top:58px}
+#e .top h3{font:700 27px/1 'Barlow',sans-serif}
+#e .top .z{font-size:13px;font-weight:600;border:1.5px solid #15181E;border-radius:999px;padding:5px 11px}
+#e .card{background:#15181E;color:#fff;border-radius:22px;padding:14px 16px}
+#e .leg{display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:#C5CAD3;white-space:nowrap}
+#e .leg i{display:inline-block;width:10px;height:5px;border-radius:3px;margin-right:4px;vertical-align:middle}
+#e .card p{font-size:15px;line-height:1.4;margin-top:10px}
+#e .card p b{font-weight:700;color:#FFC84A}
+#e .input{background:#fff;color:#15181E;border:2px solid #15181E;margin-top:8px;font-weight:600}
+#e .mic{background:#15181E}
+</style>
+</head>
+<body>
+
+<section class="stage" id="a">
+  <div class="cap"><div class="n">Idee A</div><h2>Himmel mit Zeitreise</h2>
+    <p>Der Sternenhimmel aus Variante 3, dazu ein Regler durch die Jahre. Schwere Phasen liegen als Wolken über einem Teil des Himmels.</p></div>
+  <div class="phone">
+    <svg class="bg" id="skyA" viewBox="0 0 390 844"></svg>
+    <div class="notch"></div>
+    <div class="status"><span>21:47</span><span class="r"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:11px"></i></span><span class="bat"><i></i></span></span></div>
+    <div class="top"><h3>Dein Himmel</h3><small>148 Sterne aus 96 Abenden</small></div>
+    <div class="panel">
+      <div class="time">
+        <div class="hd"><b>Zeitreise</b><span>Heute, mit 31</span></div>
+        <svg id="sliderA" viewBox="0 0 334 52" width="334" height="52" style="display:block;margin-top:4px"></svg>
+        <p>Frühere Wolken: 2021 für 5 Wochen, 2023 für 9 Wochen. Beide sind abgezogen.</p>
+      </div>
+      <div class="input"><span>Erzähl von deinem Tag</span><span class="mic"><svg width="14" height="18" viewBox="0 0 14 18"><rect x="4" y="0" width="6" height="11" rx="3" fill="#fff"/><path d="M1 8a6 6 0 0012 0M7 14v4" stroke="#fff" stroke-width="1.800" fill="none" stroke-linecap="round"/></svg></span></div>
+    </div>
+    <div class="home" style="background:#fff"></div>
+  </div>
+  <div class="foot"><b>Verlauf über den Regler.</b> Zieh ihn zurück und sieh deinen Himmel mit 20. Mit 20 waren es 31 Sterne, heute sind es 148.</div>
+</section>
+
+<section class="stage" id="b">
+  <div class="cap"><div class="n">Idee B</div><h2>Spiralgalaxie</h2>
+    <p>Dein Leben als Spirale. Innen die Geburt, außen heute, jede Umdrehung ein Jahrzehnt. Verlauf und Überblick in einem Bild.</p></div>
+  <div class="phone">
+    <svg class="bg" id="spiral" viewBox="0 0 390 844"></svg>
+    <div class="notch"></div>
+    <div class="status"><span>21:47</span><span class="r"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:11px"></i></span><span class="bat"><i></i></span></span></div>
+    <div class="top"><h3>Deine Galaxie</h3>
+      <div class="leg"><span><i style="background:#FF8FA8"></i>Menschen</span><span><i style="background:#FFC857"></i>Arbeit</span><span><i style="background:#6EE7B7"></i>Gesundheit</span><span><i style="background:#6FD3FF"></i>Geld</span><span><i style="background:#C3A6FF"></i>Träume</span></div></div>
+    <div class="panel">
+      <div class="card"><small>Von außen betrachtet</small>
+        <p>Du bist in deiner vierten Umdrehung. Die Dunkelwolke von 2023 liegt <b>14 Sterne hinter dir</b>. Die jetzige ist 6 Wochen alt.</p></div>
+      <div class="input"><span>Stern für heute setzen</span><span class="mic"><svg width="14" height="18" viewBox="0 0 14 18"><rect x="4" y="0" width="6" height="11" rx="3" fill="#FFD08A"/><path d="M1 8a6 6 0 0012 0M7 14v4" stroke="#FFD08A" stroke-width="1.800" fill="none" stroke-linecap="round"/></svg></span></div>
+    </div>
+    <div class="home" style="background:#fff"></div>
+  </div>
+  <div class="foot"><b>Jeder Eintrag ist ein Stern am Rand.</b> Die Farbe zeigt den Lebensbereich. Antippen öffnet den Tag dahinter.</div>
+</section>
+
+<section class="stage" id="c">
+  <div class="cap"><div class="n">Idee C</div><h2>Sternatlas</h2>
+    <p>Jedes Lebenskapitel ist ein Sternbild auf einer alten Himmelskarte. Das aktuelle wird noch gezeichnet.</p></div>
+  <div class="phone">
+    <svg class="bg" id="atlas" viewBox="0 0 390 844"></svg>
+    <div class="notch"></div>
+    <div class="status"><span>21:47</span><span class="r"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:11px"></i></span><span class="bat"><i></i></span></span></div>
+    <div class="top"><h3>Atlas deines Lebens</h3><small>sechs Sternbilder, eines unvollendet</small></div>
+    <div class="panel">
+      <div class="card"><p>Heute kam ein dunkler Stern dazu: Absage von der Tischlerei. Er gehört zum Sternbild „Übergang“.</p>
+        <p>Auch die Lehrjahre hatten zwei dunkle Sterne. Das Bild wurde trotzdem fertig.</p></div>
+      <div class="input"><span>Heutigen Stern eintragen</span><span class="mic"><svg width="14" height="18" viewBox="0 0 14 18"><rect x="4" y="0" width="6" height="11" rx="3" fill="#D9B76A"/><path d="M1 8a6 6 0 0012 0M7 14v4" stroke="#D9B76A" stroke-width="1.800" fill="none" stroke-linecap="round"/></svg></span></div>
+    </div>
+    <div class="home" style="background:#EFE3C4"></div>
+  </div>
+  <div class="foot"><b>Kapitel statt Einzelpunkte.</b> Die App schlägt vor, wann ein Kapitel endet und wie es heißt. Du entscheidest.</div>
+</section>
+
+<section class="stage" id="d">
+  <div class="cap"><div class="n">Idee D</div><h2>Jahresringe</h2>
+    <p>Dein Leben als Baumscheibe von oben. Jedes Jahr ein Ring, jeder Lebensbereich eine Richtung. Harte Jahre sind dünne Ringe.</p></div>
+  <div class="phone">
+    <svg class="bg" id="rings" viewBox="0 0 390 844"></svg>
+    <div class="notch"></div>
+    <div class="status"><span>21:47</span><span class="r"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:11px"></i></span><span class="bat"><i></i></span></span></div>
+    <div class="top"><div><h3>Deine Ringe</h3><small>31 Jahre, 148 Einträge</small></div><div class="yr">2026</div></div>
+    <div class="panel">
+      <div class="card"><p><b>2021 und 2023 waren dünne Ringe.</b> Direkt danach kamen deine zwei breitesten Jahre.</p>
+        <div class="now"><i></i>Der Ring von 2026 wächst noch.</div></div>
+      <div class="input"><span>Heute eintragen</span><span class="mic"><svg width="14" height="18" viewBox="0 0 14 18"><rect x="4" y="0" width="6" height="11" rx="3" fill="#3A2A1A"/><path d="M1 8a6 6 0 0012 0M7 14v4" stroke="#3A2A1A" stroke-width="1.800" fill="none" stroke-linecap="round"/></svg></span></div>
+    </div>
+    <div class="home" style="background:#3A2A1A"></div>
+  </div>
+  <div class="foot"><b>Wachstum statt Bewertung.</b> Auch ein dünner Ring ist ein Ring. Die Scheibe wird mit jedem Eintrag ein Stück größer.</div>
+</section>
+
+<section class="stage" id="e">
+  <div class="cap"><div class="n">Idee E</div><h2>Liniennetz</h2>
+    <p>Deine Lebensbereiche als Linien, Ereignisse als Haltestellen, Verbindungen als Umstiege. Eine Mindmap mit Fahrtrichtung.</p></div>
+  <div class="phone">
+    <svg class="bg" id="net" viewBox="0 0 390 844"></svg>
+    <div class="notch"></div>
+    <div class="status"><span>21:47</span><span class="r"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:11px"></i></span><span class="bat"><i></i></span></span></div>
+    <div class="top"><h3>Dein Netz</h3><div class="z">1995 bis heute</div></div>
+    <div class="panel">
+      <div class="card">
+        <div class="leg"><span><i style="background:#2FA36B"></i>Gesundheit</span><span><i style="background:#E5486D"></i>Menschen</span><span><i style="background:#F2A31B"></i>Arbeit</span><span><i style="background:#3D8BFF"></i>Geld</span><span><i style="background:#9B6DFF"></i>Träume</span></div>
+        <p>Auf der Linie Arbeit wird gebaut. <b>Vier deiner fünf Linien fahren normal.</b> Die Baustelle von 2023 war nach 9 Wochen wieder frei.</p>
+        <div class="input"><span>Halt für heute eintragen</span><span class="mic"><svg width="14" height="18" viewBox="0 0 14 18"><rect x="4" y="0" width="6" height="11" rx="3" fill="#fff"/><path d="M1 8a6 6 0 0012 0M7 14v4" stroke="#fff" stroke-width="1.800" fill="none" stroke-linecap="round"/></svg></span></div>
+      </div>
+    </div>
+    <div class="home" style="background:#fff"></div>
+  </div>
+  <div class="foot"><b>Sehr klar zu lesen.</b> Du siehst auf einen Blick, wo es hakt und was gleichzeitig weiterläuft.</div>
+</section>
+
+<script>
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function smooth(p,closed){const n=p.length;let d='M'+p[0][0].toFixed(1)+' '+p[0][1].toFixed(1);
+  const g=i=>closed?p[(i+n)%n]:p[Math.max(0,Math.min(n-1,i))];
+  for(let i=0;i<(closed?n:n-1);i++){const a=g(i-1),b=g(i),c=g(i+1),e=g(i+2);
+    d+=' C'+(b[0]+(c[0]-a[0])/6).toFixed(1)+' '+(b[1]+(c[1]-a[1])/6).toFixed(1)+' '+(c[0]-(e[0]-b[0])/6).toFixed(1)+' '+(c[1]-(e[1]-b[1])/6).toFixed(1)+' '+c[0].toFixed(1)+' '+c[1].toFixed(1)}
+  return d+(closed?'Z':'')}
+function blob(cx,cy,r,seed,k=9,amp=.28,sx=1,sy=1){const R=rng(seed),pts=[];
+  for(let i=0;i<k;i++){const a=i/k*Math.PI*2,rr=r*(1-amp/2+R()*amp);pts.push([cx+Math.cos(a)*rr*sx,cy+Math.sin(a)*rr*sy])}
+  return smooth(pts,true)}
+const T=(x,y,s,a='')=>`<text x="${x}" y="${y}" ${a}>${s}</text>`;
+const cloudP='M-9 4a4.500 4.500 0 01-.500-9a6 6 0 0111-2.500a4.500 4.500 0 016 5.500a3.200 3.200 0 01-1.500 6z';
+
+/* ---------- A sky with time travel ---------- */
+(function(){
+  let s=`<defs><radialGradient id="neb" cx="50%" cy="42%" r="60%"><stop offset="0" stop-color="#2A2F7A"/><stop offset=".55" stop-color="#171B50"/><stop offset="1" stop-color="#0D1030"/></radialGradient>
+  <radialGradient id="me"><stop offset="0" stop-color="#fff"/><stop offset=".35" stop-color="#fff" stop-opacity=".5"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+  <filter id="blA" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="9"/></filter></defs>
+  <rect width="390" height="844" fill="url(#neb)"/>`;
+  const R=rng(5);
+  for(let i=0;i<150;i++)s+=`<circle cx="${(R()*390).toFixed(1)}" cy="${(R()*844).toFixed(1)}" r="${(.3+R()*.9).toFixed(2)}" fill="#fff" opacity="${(.15+R()*.5).toFixed(2)}"/>`;
+  s+='<g transform="translate(0 -34)">';
+  const C={x:195,y:372};
+  const groups=[
+    {n:'Menschen',c:'#FF8FA8',x:92,y:262,kids:[['Jonas',40,196,7,'end'],['Mama',162,228,5,'middle'],['Lauftreff',38,298,4,'start']]},
+    {n:'Arbeit',c:'#FFC857',x:296,y:256,kids:[['Gesellenbrief',354,218,6,'end'],['Bewerbungen',350,300,5,'end'],['Absage Tischlerei',246,198,4,'end','neu']]},
+    {n:'Gesundheit',c:'#6EE7B7',x:76,y:452,kids:[['Laufen',34,392,6,'start'],['Schlaf',42,520,4,'start'],['Kochen',128,524,4,'middle']]},
+    {n:'Träume',c:'#B79CFF',x:312,y:452,kids:[['Eigene Werkstatt',322,540,7,'end'],['Norwegen',356,396,4,'end']]},
+    {n:'Geld',c:'#6FD3FF',x:196,y:536,kids:[['Notgroschen',226,596,5,'middle']]}];
+  groups.forEach(g=>{s+=`<path d="M${C.x} ${C.y}L${g.x} ${g.y}" stroke="${g.c}" stroke-width="1.400" opacity=".7"/>`;
+    g.kids.forEach(k=>s+=`<path d="M${g.x} ${g.y}L${k[1]} ${k[2]}" stroke="${g.c}" stroke-width="1" opacity=".5"/>`)});
+  s+=`<path d="M40 196Q150 150 246 198" fill="none" stroke="#fff" stroke-width="1.100" stroke-dasharray="3 4" opacity=".75"/>`;
+  s+=`<path d="M34 392Q10 455 42 520" fill="none" stroke="#6EE7B7" stroke-width="1" stroke-dasharray="3 4" opacity=".6"/>`;
+  const F='font-family="Sora"';
+  let labels='';
+  groups.forEach(g=>{
+    s+=`<circle cx="${g.x}" cy="${g.y}" r="20" fill="${g.c}" opacity=".16"/><circle cx="${g.x}" cy="${g.y}" r="9" fill="${g.c}"/>`;
+    const below=g.y>C.y;
+    labels+=T(g.x,g.y+(below?-18:30),g.n,`${F} class="lbl" stroke="#1D2260" stroke-width="6" font-size="15" font-weight="600" fill="${g.c}" text-anchor="middle"`);
+    g.kids.forEach(k=>{
+      if(k[5])s+=`<circle cx="${k[1]}" cy="${k[2]}" r="12" fill="none" stroke="#fff" stroke-width="1.200"/>`;
+      s+=`<circle cx="${k[1]}" cy="${k[2]}" r="${k[3]+5}" fill="${g.c}" opacity=".14"/><circle cx="${k[1]}" cy="${k[2]}" r="${k[3]}" fill="${g.c}"/>`;
+      const ax=k[4]=='start'?k[1]-6:k[4]=='end'?k[1]+6:k[1];
+      const up=k[2]<g.y||k[5];
+      labels+=T(ax,k[2]+(up?-k[3]-(k[5]?13:8):k[3]+17),k[0],`${F} font-size="12.500" fill="#DADCF7" text-anchor="${k[4]=='start'?'start':k[4]=='end'?'end':'middle'}"`)})});
+  s+=`<circle cx="${C.x}" cy="${C.y}" r="58" fill="url(#me)" opacity=".5"/><circle cx="${C.x}" cy="${C.y}" r="24" fill="#fff"/>`;
+  s+=T(C.x,C.y+5,'Du',`${F} font-size="15" font-weight="700" fill="#191E4A" text-anchor="middle"`);
+  // cloud over the work region
+  s+=`<g filter="url(#blA)" opacity=".8"><ellipse cx="304" cy="246" rx="74" ry="40" fill="#7C82C4"/><ellipse cx="266" cy="218" rx="48" ry="28" fill="#8F95D2"/><ellipse cx="338" cy="278" rx="48" ry="28" fill="#6A70B4"/></g>`;
+  s+=labels;
+  s+=`<path d="M312 164V196" stroke="#fff" stroke-width="1"/><g transform="translate(312 150)"><rect x="-64" y="-14" width="128" height="28" rx="14" fill="#fff"/><g transform="translate(-44 1) scale(.9)"><path d="${cloudP}" fill="#191E4A"/></g>`+T(12,4.500,'seit Oktober',`${F} font-size="12" font-weight="600" fill="#191E4A" text-anchor="middle"`)+'</g>';
+  s+='</g>';
+  document.getElementById('skyA').innerHTML=s;
+  // slider
+  const X=y=>10+(y-1995)/31*314;
+  let c=`<path d="M10 28H324" stroke="#3A4192" stroke-width="4" stroke-linecap="round"/><path d="M10 28H324" stroke="#8D95F2" stroke-width="4" stroke-linecap="round"/>`;
+  [[1995,'1995'],[2005,'2005'],[2015,'2015']].forEach(t=>{c+=`<path d="M${X(t[0])} 23v10" stroke="#C9CDF8" stroke-width="1.400"/>`+T(X(t[0]),48,t[1],`font-family="Sora" font-size="11.500" fill="#A6ABDD" text-anchor="${t[0]==1995?'start':'middle'}"`)});
+  c+=T(324,48,'heute','font-family="Sora" font-size="11.500" font-weight="600" fill="#fff" text-anchor="end"');
+  [2021.3,2023.4].forEach(y=>c+=`<g transform="translate(${X(y)} 11) scale(.8)"><path d="${cloudP}" fill="#A6ABDD"/></g>`);
+  c+=`<g transform="translate(${X(2025.700)} 11) scale(.9)"><path d="${cloudP}" fill="#fff"/></g>`;
+  c+=`<circle cx="324" cy="28" r="10" fill="#fff"/><circle cx="324" cy="28" r="4" fill="#191E4A"/>`;
+  document.getElementById('sliderA').innerHTML=c;
+})();
+
+/* ---------- B spiral galaxy ---------- */
+(function(){
+  const cx=195,cy=396,SQ=1;
+  const pos=(t,off=0)=>{const th=t/10*2*Math.PI-Math.PI/2,r=16+t*5.300+off;return [cx+r*Math.cos(th),cy+r*Math.sin(th)*SQ]};
+  let s=`<defs><radialGradient id="gb" cx="50%" cy="43%" r="65%"><stop offset="0" stop-color="#2B1B5A"/><stop offset=".5" stop-color="#170F38"/><stop offset="1" stop-color="#0A061C"/></radialGradient>
+   <radialGradient id="core"><stop offset="0" stop-color="#FFF3D6"/><stop offset=".3" stop-color="#FFD08A" stop-opacity=".7"/><stop offset="1" stop-color="#FFD08A" stop-opacity="0"/></radialGradient>
+   <filter id="blB" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="7"/></filter>
+   <filter id="blB2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter></defs>
+   <rect width="390" height="844" fill="url(#gb)"/>`;
+  const R=rng(31);
+  for(let i=0;i<120;i++)s+=`<circle cx="${(R()*390).toFixed(1)}" cy="${(R()*844).toFixed(1)}" r="${(.3+R()*.7).toFixed(2)}" fill="#fff" opacity="${(.1+R()*.35).toFixed(2)}"/>`;
+  const arm=[];for(let t=0;t<=31;t+=.25)arm.push(pos(t));
+  const fut=[];for(let t=31;t<=35;t+=.25)fut.push(pos(t));
+  const d=smooth(arm,false);
+  s+=`<path d="${d}" fill="none" stroke="#7B5CF0" stroke-width="24" stroke-linecap="round" opacity=".33" filter="url(#blB)"/>`;
+  s+=`<path d="${d}" fill="none" stroke="#C9B8FF" stroke-width="1" opacity=".45"/>`;
+  s+=`<path d="${smooth(fut,false)}" fill="none" stroke="#C9B8FF" stroke-width="1.200" stroke-dasharray="1.500 6" stroke-linecap="round" opacity=".7"/>`;
+  // decade ray
+  s+=`<path d="M${cx} ${cy-14}V${cy-180}" stroke="#fff" stroke-width=".700" stroke-dasharray="2 4" opacity=".4"/>`;
+  // stars along the arm
+  const cols=['#FF8FA8','#FFC857','#6EE7B7','#6FD3FF','#C3A6FF'];
+  for(let i=0;i<150;i++){const t=Math.pow(R(),.62)*31,p=pos(t,(R()-.5)*18);
+    const rr=.8+R()*R()*2.400;s+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${rr.toFixed(2)}" fill="${cols[Math.floor(R()*5)]}" opacity="${(.55+R()*.45).toFixed(2)}"/>`}
+  // dark clouds
+  [[26.2,17,13],[28.3,21,15],[30.72,19,14]].forEach(c=>{const p=pos(c[0]);s+=`<ellipse cx="${p[0]}" cy="${p[1]}" rx="${c[1]}" ry="${c[2]}" fill="#07051A" opacity=".94" filter="url(#blB2)"/><ellipse cx="${p[0]}" cy="${p[1]}" rx="${c[1]+2}" ry="${c[2]+2}" fill="none" stroke="#9D8BD6" stroke-width=".900" stroke-dasharray="2 3"/>`});
+  // core
+  s+=`<circle cx="${cx}" cy="${cy}" r="34" fill="url(#core)"/><circle cx="${cx}" cy="${cy}" r="5" fill="#FFF3D6"/>`;
+  const F='font-family="Manrope" class="lbl" stroke="#120B2C" stroke-width="4"';
+  const key=(t,name,dx,dy,anchor,c,r=4.500)=>{const p=pos(t);return `<circle cx="${p[0]}" cy="${p[1]}" r="${r+4}" fill="${c}" opacity=".25"/><circle cx="${p[0]}" cy="${p[1]}" r="${r}" fill="${c}" stroke="#fff" stroke-width="1.200"/>`+T(p[0]+dx,p[1]+dy,name,`${F} font-size="12" font-weight="600" fill="#F1ECFF" text-anchor="${anchor}"`)};
+  s+=T(cx+12,cy-12,'Geburt 1995',`${F} font-size="11.500" font-weight="600" fill="#FFD08A"`);
+  s+=key(6,'Einschulung',9,15,'start','#FF8FA8',3.500);
+  s+=key(21,'Lehrstelle 2016',10,18,'start','#FFC857');
+  s+=key(24,'Gesellenbrief 2019',6,20,'middle','#FFC857',5);
+  s+=key(27,'Erste Wohnung',12,-6,'start','#6FD3FF');
+  s+=key(29,'Jobwechsel 2024',-2,-12,'middle','#FFC857');
+  // dark cloud labels
+  const dl=(t,txt,dx,dy,a)=>{const p=pos(t);return T(p[0]+dx,p[1]+dy,txt,`font-family="Manrope" class="lbl" stroke="#120B2C" stroke-width="4" font-size="11" font-weight="500" font-style="italic" fill="#B5A8DC" text-anchor="${a}"`)};
+  s+=dl(28.3,'Dunkelwolke 2023',27,4,'start');
+  s+=dl(26.2,'2021',0,30,'middle');s+=dl(30.72,'Dunkelwolke jetzt',-4,-22,'middle');
+  // today
+  const p=pos(31);
+  s+=`<circle cx="${p[0]}" cy="${p[1]}" r="22" fill="#fff" opacity=".08"/><circle cx="${p[0]}" cy="${p[1]}" r="13" fill="none" stroke="#fff" stroke-width="1.200"/><circle cx="${p[0]}" cy="${p[1]}" r="6" fill="#fff"/>`;
+  s+=`<rect x="${p[0]+18}" y="${p[1]-13}" width="62" height="26" rx="13" fill="#fff"/>`+T(p[0]+49,p[1]+4.500,'Heute','font-family="Manrope" font-size="13" font-weight="800" fill="#1B1233" text-anchor="middle"');
+  // decade labels
+  [[10,'10'],[20,'20'],[30,'30 Jahre']].forEach(q=>{const y=cy-(16+q[0]*5.300)*SQ;s+=`<circle cx="${cx}" cy="${y}" r="2" fill="#fff"/>`+T(cx-7,y+4,q[1],`${F} font-size="11" font-weight="700" fill="#fff" text-anchor="end"`)});
+  s+=T(352,368,'Zukunft','font-family="Manrope" font-size="11" font-style="italic" fill="#B5A8DC" text-anchor="middle"');
+  document.getElementById('spiral').innerHTML=s;
+})();
+
+/* ---------- C star atlas ---------- */
+(function(){
+  const cx=195,cy=362,RR=158,G='#D9B76A';
+  const P=(a,r)=>[cx+r*Math.sin(a*Math.PI/180),cy-r*Math.cos(a*Math.PI/180)];
+  let s=`<defs><radialGradient id="gc" cx="50%" cy="41%" r="60%"><stop offset="0" stop-color="#1B4560"/><stop offset=".6" stop-color="#123249"/><stop offset="1" stop-color="#0B2233"/></radialGradient></defs><rect width="390" height="844" fill="url(#gc)"/>`;
+  const R=rng(77);
+  for(let i=0;i<70;i++){const a=R()*360,r=Math.sqrt(R())*RR*.97,p=P(a,r);s+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${(.4+R()*.6).toFixed(2)}" fill="#EFE3C4" opacity="${(.2+R()*.35).toFixed(2)}"/>`}
+  // graticule
+  [40,80,120].forEach(r=>s+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${G}" stroke-width=".500" opacity=".28"/>`);
+  s+=`<circle cx="${cx}" cy="${cy}" r="${RR}" fill="none" stroke="${G}" stroke-width="1.400"/><circle cx="${cx}" cy="${cy}" r="${RR+5}" fill="none" stroke="${G}" stroke-width=".600"/>`;
+  for(let a=0;a<360;a+=360/70){const p=P(a,RR),q=P(a,RR+5);s+=`<path d="M${p[0].toFixed(1)} ${p[1].toFixed(1)}L${q[0].toFixed(1)} ${q[1].toFixed(1)}" stroke="${G}" stroke-width=".600"/>`}
+  const SP=360/7;
+  const years=['1995','2001','2011','2016','2019','2024','heute'];
+  years.forEach((y,k)=>{const a=k*SP,p=P(a,16),q=P(a,RR),l=P(a,RR+19);
+    s+=`<path d="M${p[0]} ${p[1]}L${q[0]} ${q[1]}" stroke="${G}" stroke-width=".600" opacity=".5" stroke-dasharray="${k==6?'0':'1 3'}"/>`;
+    s+=T(l[0].toFixed(1),(l[1]+4).toFixed(1),y,`font-family="Cormorant Garamond" font-size="${k==6?15:13.500}" font-weight="${k==6?700:500}" fill="${k==6?'#fff':G}" text-anchor="middle"`)});
+  const cons=[
+    {n:'Kindheit',pts:[[.2,60],[.45,85],[.7,62],[.5,112],[.25,128],[.8,122]],e:[[0,1],[1,2],[1,3],[3,4],[3,5]],h:[]},
+    {n:'Schulzeit',pts:[[.15,70],[.4,98],[.7,78],[.85,118],[.5,130],[.2,122]],e:[[0,1],[1,2],[2,3],[1,4],[4,5]],h:[]},
+    {n:'Zwischenjahre',pts:[[.3,64],[.6,90],[.35,116],[.75,128]],e:[[0,1],[1,2],[1,3]],h:[2]},
+    {n:'Lehrjahre',pts:[[.15,60],[.4,88],[.72,68],[.62,116],[.3,130],[.86,130],[.5,101]],e:[[0,1],[1,2],[1,6],[6,3],[3,4],[3,5]],h:[2,6]},
+    {n:'Aufbruch',pts:[[.2,72],[.5,58],[.76,88],[.46,104],[.25,128],[.72,130]],e:[[0,1],[1,2],[2,3],[3,4],[3,5]],h:[]},
+    {n:'Übergang',pts:[[.2,66],[.48,92],[.74,72],[.52,124]],e:[[0,1],[1,2]],dash:[[1,3]],h:[2,3],today:3}];
+  cons.forEach((c,k)=>{const a0=k*SP,cur=k==5;
+    const pt=c.pts.map(q=>P(a0+q[0]*SP,q[1]));
+    c.e.forEach(e=>s+=`<path d="M${pt[e[0]][0].toFixed(1)} ${pt[e[0]][1].toFixed(1)}L${pt[e[1]][0].toFixed(1)} ${pt[e[1]][1].toFixed(1)}" stroke="${cur?'#fff':G}" stroke-width="${cur?1.300:.900}" opacity="${cur?1:.85}"/>`);
+    (c.dash||[]).forEach(e=>s+=`<path d="M${pt[e[0]][0].toFixed(1)} ${pt[e[0]][1].toFixed(1)}L${pt[e[1]][0].toFixed(1)} ${pt[e[1]][1].toFixed(1)}" stroke="#fff" stroke-width="1.200" stroke-dasharray="3 4"/>`);
+    pt.forEach((p,i)=>{const hollow=c.h.includes(i),big=i==1||i==3;
+      if(c.today===i)s+=`<circle cx="${p[0]}" cy="${p[1]}" r="11" fill="none" stroke="#fff" stroke-width="1"/><circle cx="${p[0]}" cy="${p[1]}" r="16" fill="none" stroke="#fff" stroke-width=".500" opacity=".6"/>`;
+      s+=hollow?`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${big?4:3.200}" fill="#123249" stroke="${cur?'#fff':G}" stroke-width="1.400"/>`
+        :`<path d="M${p[0]} ${p[1]-(big?7:5)}L${p[0]+1.500} ${p[1]-1.500}L${p[0]+(big?7:5)} ${p[1]}L${p[0]+1.500} ${p[1]+1.500}L${p[0]} ${p[1]+(big?7:5)}L${p[0]-1.500} ${p[1]+1.500}L${p[0]-(big?7:5)} ${p[1]}L${p[0]-1.500} ${p[1]-1.500}Z" fill="${cur?'#fff':'#F3DFA9'}"/>`});
+    // name on arc
+    const mid=a0+SP/2,bottom=mid>90&&mid<270,r=bottom?153:143;
+    const A=P(a0+3,r),B=P(a0+SP-3,r);
+    const dd=bottom?`M${B[0].toFixed(1)} ${B[1].toFixed(1)}A${r} ${r} 0 0 0 ${A[0].toFixed(1)} ${A[1].toFixed(1)}`:`M${A[0].toFixed(1)} ${A[1].toFixed(1)}A${r} ${r} 0 0 1 ${B[0].toFixed(1)} ${B[1].toFixed(1)}`;
+    s+=`<path id="arc${k}" d="${dd}" fill="none"/><text font-family="Cormorant Garamond" font-style="italic" font-size="15" font-weight="${cur?700:500}" fill="${cur?'#fff':'#F3DFA9'}" letter-spacing="1.200"><textPath href="#arc${k}" startOffset="50%" text-anchor="middle">${c.n}</textPath></text>`});
+  // empty sector
+  {const k=6,a0=k*SP,r=143,A=P(a0+3,r),B=P(a0+SP-3,r);
+   s+=`<path id="arc6" d="M${A[0].toFixed(1)} ${A[1].toFixed(1)}A${r} ${r} 0 0 1 ${B[0].toFixed(1)} ${B[1].toFixed(1)}" fill="none"/><text font-family="Cormorant Garamond" font-style="italic" font-size="13.500" fill="${G}" opacity=".8" letter-spacing=".800"><textPath href="#arc6" startOffset="50%" text-anchor="middle">noch ohne Sterne</textPath></text>`}
+  // today label
+  {const p=P(5*SP+.52*SP,124);s+=`<rect x="${p[0]-8}" y="${p[1]+19}" width="46" height="18" rx="2" fill="#fff"/>`+T(p[0]+15,p[1]+32,'heute','font-family="Figtree" font-size="11.500" font-weight="700" fill="#0E2536" text-anchor="middle"')}
+  // centre rose
+  s+=`<g transform="translate(${cx} ${cy})"><circle r="15" fill="#102C40" stroke="${G}" stroke-width="1"/><path d="M0-13L3-3 13 0 3 3 0 13-3 3-13 0-3-3Z" fill="${G}"/><circle r="2.200" fill="#102C40"/></g>`;
+  // legend
+  s+=`<g transform="translate(88 566)"><path d="M0-6L1.500-1.500 6 0 1.500 1.500 0 6-1.500 1.500-6 0-1.500-1.500Z" fill="#F3DFA9"/>`+T(11,4.500,'heller Stern: guter Tag','font-family="Figtree" font-size="12" fill="#CFC6AC"')+`<circle cx="146" cy="0" r="3.500" fill="none" stroke="#F3DFA9" stroke-width="1.400"/>`+T(156,4.500,'dunkler Stern','font-family="Figtree" font-size="12" fill="#CFC6AC"')+'</g>';
+  document.getElementById('atlas').innerHTML=s;
+})();
+
+/* ---------- D tree rings ---------- */
+(function(){
+  const cx=195,cy=372,RR=146;
+  let s='<rect width="390" height="844" fill="#F6EEDD"/>';
+  const R=rng(19);
+  // ring widths per year 1995..2026 (32 rings incl. current partial)
+  const w=[];for(let i=0;i<32;i++)w.push(4+R()*2.600);
+  w[26]=1.900;w[28]=1.700;w[27]=7.200;w[29]=7.600;w[30]=6;w[31]=2.800;w[0]=6;
+  const sum=w.reduce((a,b)=>a+b,0),sc=RR/sum;const rad=[];let acc=0;w.forEach(v=>{acc+=v*sc;rad.push(acc)});
+  const ring=r=>blob(cx,cy,r,23,18,.045,1.03,.97);
+  // bark
+  s+=`<path d="${ring(RR+3)}" fill="#5A3B22" stroke="#5A3B22" stroke-width="7" stroke-linejoin="round"/>`;
+  for(let i=31;i>=0;i--){const thin=i==26||i==28,cur=i==31;
+    const fill=cur?'#D5E6AE':thin?'#B98A56':(i%2?'#E9CFA3':'#E2C493');
+    s+=`<path d="${ring(rad[i])}" fill="${fill}" stroke="${cur?'#8FB05A':'#A47848'}" stroke-width="${thin?1.200:.800}"/>`}
+  s+=`<circle cx="${cx}" cy="${cy}" r="2.500" fill="#5A3B22"/>`;
+  // sectors
+  const P=(a,r)=>[cx+r*Math.sin(a*Math.PI/180)*1.03,cy-r*Math.cos(a*Math.PI/180)*.97];
+  const sect=[['Menschen','#C0392B'],['Arbeit','#C77F12'],['Gesundheit','#3F7D4E'],['Geld','#2F6690'],['Träume','#7A4E9C']];
+  for(let k=0;k<5;k++){const a=k*72-36,p=P(a,10),q=P(a,RR+2);s+=`<path d="M${p[0]} ${p[1]}L${q[0]} ${q[1]}" stroke="#5A3B22" stroke-width=".800" stroke-dasharray="2 4" opacity=".55"/>`}
+  // events
+  const ev=(k,yr,jit,r=3)=>{const i=yr-1995,rm=(rad[i]+(i?rad[i-1]:0))/2,p=P(k*72+jit,rm);return `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${r}" fill="${sect[k][1]}" stroke="#fff" stroke-width="1"/>`};
+  const E=rng(4);
+  for(let n=0;n<58;n++){const k=Math.floor(E()*5),yr=1996+Math.floor(Math.pow(E(),.55)*30);if(yr==2021||yr==2023)continue;s+=ev(k,yr,(E()-.5)*56,2.200)}
+  s+=ev(0,2012,-8,4.500)+ev(1,2019,6,4.500)+ev(3,2022,-4,4.500)+ev(1,2026,-12,4.500)+ev(4,2024,5,4)+ev(2,2025,8,4);
+  const F='class="lbl" stroke="#F1DDB8" stroke-width="3.500" font-family="Figtree" font-size="12" font-weight="600" fill="#3A2A1A"';
+  const lab=(k,yr,jit,t,dx,dy,a)=>{const i=yr-1995,rm=(rad[i]+(i?rad[i-1]:0))/2,p=P(k*72+jit,rm);return T((p[0]+dx).toFixed(1),(p[1]+dy).toFixed(1),t,`${F} text-anchor="${a}"`)};
+  s+=lab(0,2012,-8,'Jonas',0,-9,'middle')+lab(1,2019,6,'Gesellenbrief',-8,4,'end')+lab(3,2022,-4,'Erste Wohnung',8,-7,'start');
+  // sector names outside bark
+  const SN='font-family="Fraunces" font-size="15" font-weight="600"';
+  s+=T(195,cy-RR-18,'Menschen',`${SN} fill="${sect[0][1]}" text-anchor="middle"`);
+  s+=T(376,cy-112,'Arbeit',`${SN} fill="${sect[1][1]}" text-anchor="end"`);
+  s+=T(330,cy+142,'Gesundheit',`${SN} fill="${sect[2][1]}" text-anchor="middle"`);
+  s+=T(66,cy+142,'Geld',`${SN} fill="${sect[3][1]}" text-anchor="middle"`);
+  s+=T(14,cy-112,'Träume',`${SN} fill="${sect[4][1]}" text-anchor="start"`);
+  // thin ring callouts (bottom, between Gesundheit and Geld)
+  const call=(yr,a,tx,ty,txt)=>{const i=yr-1995,p=P(a,rad[i]-w[i]*sc/2);return `<path d="M${p[0]} ${p[1]}L${tx} ${ty-12}" stroke="#3A2A1A" stroke-width="1"/><circle cx="${p[0]}" cy="${p[1]}" r="2.200" fill="#3A2A1A"/><rect x="${tx-44}" y="${ty-12}" width="88" height="23" rx="11.500" fill="#3A2A1A"/>`+T(tx,ty+4,txt,'font-family="Figtree" font-size="12" font-weight="600" fill="#F6EEDD" text-anchor="middle"')};
+  s+=call(2021,186,150,cy+186,'2021: dünn')+call(2023,174,246,cy+186,'2023: dünn');
+  // today marker
+  {const p=P(64,RR-1);s+=`<circle cx="${p[0]}" cy="${p[1]}" r="6" fill="#fff" stroke="#3A2A1A" stroke-width="2"/>`+T(p[0]+11,p[1]-8,'heute','font-family="Figtree" font-size="12.500" font-weight="700" fill="#3A2A1A" class="lbl" stroke="#F6EEDD" stroke-width="4"')}
+  // decade scale along the Träume/Menschen boundary
+  [[2005,'10'],[2015,'20'],[2025,'30']].forEach(q=>{const p=P(-36,rad[q[0]-1995]);s+=T(p[0]-2,p[1]+3,q[1],'font-family="Figtree" font-size="9.500" font-weight="700" fill="#5A3B22" text-anchor="middle" class="lbl" stroke="#E9CFA3" stroke-width="3"')});
+  document.getElementById('rings').innerHTML=s;
+})();
+
+/* ---------- E transit map ---------- */
+(function(){
+  let s='<rect width="390" height="844" fill="#fff"/>';
+  const X={ge:52,me:118,ar:186,gd:254,tr:320};
+  const C={ge:'#2FA36B',me:'#E5486D',ar:'#F2A31B',gd:'#3D8BFF',tr:'#9B6DFF'};
+  const Y={now:214,y24:290,y22:356,y19:424,y16:492,y05:556,y95:604};
+  // year grid
+  [['heute',Y.now],['2024',Y.y24],['2022',Y.y22],['2019',Y.y19],['2016',Y.y16],['2005',Y.y05],['1995',Y.y95]].forEach(q=>{
+    s+=`<path d="M0 ${q[1]}H390" stroke="${q[0]=='heute'?'#15181E':'#E3E6EB'}" stroke-width="${q[0]=='heute'?1.200:1}" stroke-dasharray="${q[0]=='heute'?'4 4':'0'}"/>`+T(6,q[1]-5,q[0],`font-family="Barlow Condensed" font-size="12" font-weight="${q[0]=='heute'?700:500}" fill="${q[0]=='heute'?'#15181E':'#9AA1AD'}"`)});
+  const W=9;
+  const line=(d,c,dash)=>`<path d="${d}" fill="none" stroke="${c}" stroke-width="${W}" stroke-linecap="round" stroke-linejoin="round" ${dash?'stroke-dasharray="1 13" opacity=".55"':''}/>`;
+  // future (dashed)
+  s+=line(`M${X.ge} ${Y.now-14}V160`,C.ge,1)+line(`M${X.me} ${Y.now-14}V160`,C.me,1)+line(`M${X.gd} ${Y.now-14}V176`,C.gd,1);
+  s+=line(`M${X.ar} ${Y.now-16}V176L218 144`,C.ar,1)+line(`M${X.tr} ${Y.now-14}V176L288 144`,C.tr,1);
+  // lines
+  s+=line(`M${X.ge} ${Y.y05}V${Y.now}`,C.ge);
+  s+=line(`M${X.me} ${Y.y95}V${Y.now}`,C.me);
+  s+=line(`M${X.ar} ${Y.y16}V${Y.now}`,C.ar);
+  s+=line(`M${X.gd} ${Y.y19}V${Y.now}`,C.gd);
+  s+=line(`M${X.tr} ${Y.y22}V${Y.now}`,C.tr);
+  // construction zones on Arbeit
+  s+=`<defs><pattern id="str" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="4" height="8" fill="#15181E"/></pattern></defs>`;
+  const zone=(y1,y2,op)=>`<rect x="${X.ar-W/2}" y="${y1}" width="${W}" height="${y2-y1}" fill="#fff"/><rect x="${X.ar-W/2}" y="${y1}" width="${W}" height="${y2-y1}" fill="url(#str)" opacity="${op}"/><rect x="${X.ar-W/2}" y="${y1}" width="${W}" height="${y2-y1}" fill="none" stroke="#15181E" stroke-width="1.200" opacity="${op}"/>`;
+  s+=zone(314,336,.45)+zone(Y.now-2,262,1);
+  // stations
+  const st=(x,y,c)=>`<circle cx="${x}" cy="${y}" r="6.500" fill="#fff" stroke="${c}" stroke-width="3"/>`;
+  const inter=(x1,x2,y)=>`<rect x="${x1-9}" y="${y-9}" width="${x2-x1+18}" height="18" rx="9" fill="#fff" stroke="#15181E" stroke-width="2.600"/><circle cx="${x1}" cy="${y}" r="3" fill="#15181E"/><circle cx="${x2}" cy="${y}" r="3" fill="#15181E"/>`;
+  const L='font-family="Barlow Condensed" font-size="14" font-weight="600" fill="#15181E" class="lbl" stroke="#fff" stroke-width="4"';
+  const l2='font-family="Barlow Condensed" font-size="12.500" font-weight="500" fill="#6B7380" class="lbl" stroke="#fff" stroke-width="4"';
+  s+=st(X.me,Y.y95,C.me)+T(X.me+13,Y.y95+5,'Familie',L);
+  s+=st(X.ge,Y.y05,C.ge)+T(X.ge+13,Y.y05-6,'Fußball',L);
+  s+=inter(X.me,X.ar,Y.y16)+T(X.ar+16,Y.y16+1,'Lehrstelle',L)+T(X.ar+16,Y.y16+15,'Tipp von Jonas',l2);
+  s+=inter(X.ar,X.gd,Y.y19)+T(X.gd+16,Y.y19+1,'Gesellenbrief',L)+T(X.gd+16,Y.y19+15,'erstes Gehalt',l2);
+  s+=inter(X.ge,X.me,Y.y22)+T(X.me+16,Y.y22+18,'Lauftreff',L);
+  s+=st(X.gd,Y.y22+26,C.gd)+T(X.gd+13,Y.y22+24,'Erste',L)+T(X.gd+13,Y.y22+38,'Wohnung',L);
+  s+=st(X.tr,Y.y22,C.tr)+T(X.tr+13,Y.y22+5,'Norwegen',L);
+  s+=st(X.ar,Y.y24,C.ar)+T(X.ar+13,Y.y24+5,'Neuer Job',L);
+  s+=st(X.gd,Y.y24+18,C.gd)+T(X.gd+13,Y.y24+23,'Rücklage',L);
+  s+=st(X.tr,Y.y24-4,C.tr)+T(X.tr+13,Y.y24-6,'Werkstatt-',L)+T(X.tr+13,Y.y24+8,'Idee',L);
+  s+=st(X.me,Y.y24-20,C.me)+T(X.me+13,Y.y24-15,'Umzug',L);
+  s+=st(X.ge,Y.y24+26,C.ge)+T(X.ge+13,Y.y24+31,'Laufen',L);
+  s+=T(X.ar-12,329,'2023',`${l2} text-anchor="end"`);
+  // terminus (goal)
+  s+=`<rect x="209" y="135" width="88" height="18" rx="9" fill="#fff" stroke="#15181E" stroke-width="2.600" stroke-dasharray="4 3"/>`+T(253,126,'Ziel: eigene Werkstatt',`${L} text-anchor="middle"`);
+  // you are here
+  s+=`<circle cx="${X.ar}" cy="${Y.now+22}" r="15" fill="#15181E"/><circle cx="${X.ar}" cy="${Y.now+22}" r="6" fill="#FFC84A"/>`;
+  s+=`<path d="M${X.ar+15} ${Y.now+22}l10-7v14z" fill="#15181E"/><rect x="${X.ar+24}" y="${Y.now+1}" width="150" height="42" rx="10" fill="#15181E"/>`;
+  s+=T(X.ar+35,Y.now+19,'Du bist hier','font-family="Barlow" font-size="14" font-weight="700" fill="#fff"')+T(X.ar+35,Y.now+35,'Baustelle seit Oktober','font-family="Barlow" font-size="12" font-weight="500" fill="#FFC84A"');
+  document.getElementById('net').innerHTML=s;
+})();
+</script>
+</body>
+</html>
