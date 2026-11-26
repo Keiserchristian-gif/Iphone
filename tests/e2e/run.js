@@ -272,6 +272,8 @@ test('In der Claude-Vorschau geht das PDF an die Sichern-Funktion und das Mikrof
   await page.click('#mic');
   await page.waitForSelector('#comp.open');
   assert.equal(await page.evaluate(() => window.__speechUsed === true), false, 'kein Versuch mit dem gesperrten Mikrofon');
+  assert.notEqual(await page.evaluate(() => document.activeElement && document.activeElement.id), 'thought', 'die Vorschau ruft die Tastatur nicht von selbst');
+  assert.match(await page.locator('#compHint').innerText(), /Tippe ins Feld/);
   await page.click('#compCancel');
   await page.click('#btnExport');
   await page.waitForSelector('#exp.open');

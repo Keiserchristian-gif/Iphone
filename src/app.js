@@ -685,10 +685,15 @@
     return !!(window.SpeechRecognition || window.webkitSpeechRecognition) && !ui.srBroken;
   }
   function openComposer(fromMic) {
-    $('compHint').textContent = fromMic
-      ? 'Hier hört die App nicht selbst zu. Tippe auf das Mikrofon deiner Tastatur und sprich – oder schreib einfach.'
-      : 'Tipp: Das Mikrofon auf deiner Tastatur schreibt mit, was du sprichst.';
+    /* In der Claude-Vorschau die Tastatur nicht von selbst rufen: die Claude-App springt sonst zum Chat. */
+    var preview = !!window.claude;
+    $('compHint').textContent = preview
+      ? 'Tippe ins Feld und dann auf das Mikrofon deiner Tastatur – oder schreib einfach.'
+      : (fromMic
+        ? 'Hier hört die App nicht selbst zu. Tippe auf das Mikrofon deiner Tastatur und sprich – oder schreib einfach.'
+        : 'Tipp: Das Mikrofon auf deiner Tastatur schreibt mit, was du sprichst.');
     openOverlay('comp');
+    if (preview) return;
     try { $('thought').focus(); } catch (e) { /* egal */ }
   }
   function submitComposer() {
