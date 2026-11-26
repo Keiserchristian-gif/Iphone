@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Gedanken trägt Gedanken mit Termin in deinen Kalender ein und zeigt deine heutigen Termine in der Karte.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Gedanken trägt Gedanken mit Termin in deinen Kalender ein und zeigt deine heutigen Termine in der Karte.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Gedanken hört zu, wenn du aufs Mikrofon tippst, damit du Notizen einsprechen kannst.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Gedanken wandelt deine gesprochene Notiz in Text um.</string>
+</dict>
+</plist>
