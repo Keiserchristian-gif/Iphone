@@ -1,11 +1,10 @@
 name: iPhone-App bauen
 
 # Baut die native Hülle auf einem Mac und startet sie im iPhone-Simulator.
-# Der Lauf gilt als bestanden, wenn die Web-Oberfläche in der App geladen ist und die Brücke antwortet.
+# Bestanden heißt: Die Oberfläche ist in der App geladen und die Brücke zum iPhone antwortet.
+# Läuft nur auf Knopfdruck (Actions › „iPhone-App bauen" › Run workflow), weil Mac-Rechenzeit
+# knapp ist: Die Simulator-Befehle brauchen dort jeweils mehrere Minuten, ein Lauf rund 12–15.
 on:
-  push:
-    branches: [claude/bold-lamport-ztedtg]
-    paths: ['ios/**', 'src/**', 'index.html', '.github/workflows/ios.yml']
   workflow_dispatch:
 
 permissions:
@@ -43,7 +42,7 @@ jobs:
           done
 
       - name: Im Simulator starten
-        timeout-minutes: 12
+        timeout-minutes: 25
         run: |
           set -x
           # Ein iPhone der neuesten installierten iOS-Version nehmen (ältere Laufzeiten starten hier nicht zuverlässig).

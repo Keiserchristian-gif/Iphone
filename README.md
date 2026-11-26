@@ -25,7 +25,7 @@ Mit kostenloser Apple-ID läuft die App sieben Tage, danach in Xcode erneut auf 
 
 Für Mails muss das Web.de-Konto in der Mail-App des iPhones eingerichtet sein (*Einstellungen › Apps › Mail › Mail-Accounts*). Ohne Konto dort öffnet die App das Teilen-Menü.
 
-Jeder Push baut die App auf einem Mac-Server und startet sie im Simulator (`.github/workflows/ios.yml`).
+Auf Knopfdruck baut GitHub die App auf einem Mac-Server und startet sie im Simulator (*Actions › iPhone-App bauen › Run workflow*, `.github/workflows/ios.yml`). Ein Lauf dauert rund 12–15 Minuten Mac-Rechenzeit.
 
 ## Was die App kann
 
