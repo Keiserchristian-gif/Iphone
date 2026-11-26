@@ -1,4 +1,4 @@
-# Gedanken
+# MindDesk
 
 Notizen und Ideen einsprechen, den Kern als wachsende Mindmap sehen, Erledigtes abhaken und löschen, alles sortiert als PDF sichern. Web-App im iPhone-Look, ohne Build-Schritt und ohne Fremdbibliotheken.
 
@@ -17,7 +17,7 @@ Unter `ios/` liegt ein Xcode-Projekt. Es packt dieselbe Oberfläche in eine nati
 Aufs iPhone bringen (einmalig, am Mac):
 
 1. Repository holen und `ios/Gedanken.xcodeproj` in Xcode öffnen (Xcode 15 oder neuer, iPhone mit iOS 17 oder neuer).
-2. Links das Projekt „Gedanken" wählen › Ziel „Gedanken" › **Signing & Capabilities** › bei **Team** die eigene Apple-ID auswählen. Meldet Xcode, die Kennung sei vergeben, den **Bundle Identifier** leicht ändern.
+2. Links das Projekt „Gedanken" wählen › Ziel „Gedanken" (auf dem iPhone heißt die App „MindDesk") › **Signing & Capabilities** › bei **Team** die eigene Apple-ID auswählen. Meldet Xcode, die Kennung sei vergeben, den **Bundle Identifier** leicht ändern.
 3. iPhone per Kabel anschließen, oben als Ziel auswählen, auf ▶ drücken.
 4. Beim ersten Mal auf dem iPhone: *Einstellungen › Datenschutz & Sicherheit › Entwicklermodus* einschalten und unter *Allgemein › VPN & Geräteverwaltung* der eigenen Apple-ID vertrauen.
 
@@ -25,7 +25,7 @@ Mit kostenloser Apple-ID läuft die App sieben Tage, danach in Xcode erneut auf 
 
 Für Mails muss das Web.de-Konto in der Mail-App des iPhones eingerichtet sein (*Einstellungen › Apps › Mail › Mail-Accounts*). Ohne Konto dort öffnet die App das Teilen-Menü.
 
-Auf Knopfdruck baut GitHub die App auf einem Mac-Server und startet sie im Simulator (*Actions › iPhone-App bauen › Run workflow*, `.github/workflows/ios.yml`). Ein Lauf dauert rund 12–15 Minuten Mac-Rechenzeit.
+Auf Knopfdruck baut GitHub die App auf einem Mac-Server und startet sie im Simulator (*Actions › MindDesk fürs iPhone bauen › Run workflow*, `.github/workflows/ios.yml`). Ein Lauf dauert rund 12–15 Minuten Mac-Rechenzeit.
 
 ## Was die App kann
 

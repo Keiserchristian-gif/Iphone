@@ -395,7 +395,7 @@
     $('calWrite').setAttribute('aria-pressed', calOn('calWrite') ? 'true' : 'false');
     $('calShow').setAttribute('aria-pressed', calOn('calShow') ? 'true' : 'false');
     $('calHint').textContent = granted || ui.caps.calendar === 'unknown' ? '' :
-      'Der Kalenderzugriff ist aus. Erlaube ihn in den iPhone-Einstellungen unter „Gedanken“.';
+      'Der Kalenderzugriff ist aus. Erlaube ihn in den iPhone-Einstellungen unter „MindDesk“.';
   }
   function calToggle(key) {
     var done = function () { save(); renderSettings(); refreshEvents(); syncAllToCalendar(); };
@@ -904,7 +904,7 @@
       ui.rec = null;
       renderCard();
       if (String((err && err.message) || err).indexOf('denied') >= 0) {
-        flashNote('Mikrofon und Spracherkennung sind aus. Erlaube beides in den iPhone-Einstellungen unter „Gedanken“.');
+        flashNote('Mikrofon und Spracherkennung sind aus. Erlaube beides in den iPhone-Einstellungen unter „MindDesk“.');
       } else {
         ui.caps.speech = false;
         openComposer(true);
@@ -924,7 +924,7 @@
       ui.rec = null;
       renderCard();
       flashNote(d.error === 'denied'
-        ? 'Mikrofon und Spracherkennung sind aus. Erlaube beides in den iPhone-Einstellungen unter „Gedanken“.'
+        ? 'Mikrofon und Spracherkennung sind aus. Erlaube beides in den iPhone-Einstellungen unter „MindDesk“.'
         : 'Ich habe nichts gehört. Tippe noch einmal aufs Mikrofon.');
     } else if (name === 'active') {
       openNotes().forEach(fillNode);
@@ -1095,7 +1095,7 @@
     } else if (ui.downloads) {
       job = ui.downloads.save({ filename: name, data: blob }).then(function () { return 'Gesichert: ' + name; });
     } else if (canShareFiles()) {
-      job = navigator.share({ files: [new File([bytes], name, { type: 'application/pdf' })], title: 'Gedanken' }).then(function () { return 'Gesichert: ' + name; });
+      job = navigator.share({ files: [new File([bytes], name, { type: 'application/pdf' })], title: 'MindDesk' }).then(function () { return 'Gesichert: ' + name; });
     } else {
       job = new Promise(function (resolve) {
         var a = document.createElement('a'), url = URL.createObjectURL(blob);
@@ -1132,7 +1132,7 @@
     var doc = C.docModel(state.notes, { sort: state.settings.sort, withDone: !!state.settings.withDone }, today);
     setStatus('Mail wird vorbereitet …', '');
     nat('mail', {
-      subject: 'Gedanken vom ' + today.split('-').reverse().join('.'), body: C.docText(doc), to: state.settings.mailTo || '',
+      subject: 'MindDesk: Gedanken vom ' + today.split('-').reverse().join('.'), body: C.docText(doc), to: state.settings.mailTo || '',
       name: C.fileName(today), base64: toBase64(P.buildPdf(doc))
     }).then(function (r) { var m = mailResult(r); setStatus(m[0], m[1]); }, function () { setStatus('Die Mail konnte nicht geöffnet werden.', 'bad'); });
   }

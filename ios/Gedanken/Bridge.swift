@@ -93,7 +93,7 @@ final class Bridge: NSObject, WKScriptMessageHandlerWithReply {
         case "mail":
             guard let host = host else { replyHandler(nil, "noHost"); return }
             let pdf = (body["base64"] as? String).flatMap { Data(base64Encoded: $0) }
-            let fileName = text("name").isEmpty ? "Gedanken.pdf" : text("name")
+            let fileName = text("name").isEmpty ? "MindDesk.pdf" : text("name")
             mail.send(
                 from: host, subject: text("subject"), body: text("body"), to: text("to"), pdf: pdf, fileName: fileName
             ) { result in

@@ -141,10 +141,10 @@ test('docModel nimmt Erledigtes nur auf Wunsch auf', () => {
 
 test('docModel nennt Datum und Sortierung', () => {
   const doc = core.docModel(NOTES, { sort: 'cat', withDone: false }, TODAY);
-  assert.equal(doc.title, 'Gedanken');
+  assert.equal(doc.title, 'MindDesk');
   assert.match(doc.subtitle, /26\.11\.2026/);
   assert.match(doc.subtitle, /Bereich/);
-  assert.equal(core.fileName(TODAY), 'Gedanken-2026-11-26.pdf');
+  assert.equal(core.fileName(TODAY), 'MindDesk-2026-11-26.pdf');
 });
 
 test('isFree erkennt belegte und freie Plätze', () => {
@@ -192,7 +192,7 @@ test('mit Kalender gibt es einen vierten Bereich, und nichts überlappt', () => 
 test('docText liefert den sortierten Text für eine Mail', () => {
   const doc = core.docModel(NOTES, { sort: 'cat', withDone: false }, TODAY);
   const text = core.docText(doc);
-  assert.ok(text.startsWith('Gedanken\nStand 26.11.2026'));
+  assert.ok(text.startsWith('MindDesk\nStand 26.11.2026'));
   assert.ok(text.includes('\nARBEIT\n- Angebot senden (Morgen · wichtig)\n- Steuer ordnen\n'));
   assert.ok(text.indexOf('ARBEIT') < text.indexOf('PRIVAT'));
 });

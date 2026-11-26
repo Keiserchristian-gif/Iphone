@@ -73,7 +73,7 @@
     var need = function (h) { if (y - h < M + 14) newPage(); };
 
     newPage();
-    text(doc.title || 'Gedanken', M, y - 18, 24, true, 0.1);
+    text(doc.title || 'MindDesk', M, y - 18, 24, true, 0.1);
     y -= 36;
     if (doc.subtitle) { text(doc.subtitle, M, y, 10, false, 0.42); y -= 14; }
     y -= 14;
@@ -122,7 +122,7 @@
         (6 + i * 2) + ' 0 R >>');
       objs.push('<< /Length ' + stream.length + ' >>\nstream\n' + stream + '\nendstream');
     });
-    objs.push('<< /Title ' + pdfString(doc.title || 'Gedanken') + ' /Producer (Gedanken) >>');
+    objs.push('<< /Title ' + pdfString(doc.title || 'MindDesk') + ' /Producer (MindDesk) >>');
 
     var out = '%PDF-1.4\n%\xE2\xE3\xCF\xD3\n', offsets = [];
     objs.forEach(function (o, i) {

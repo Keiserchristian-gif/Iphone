@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Gedanken – die iPhone-App. Die Oberfläche ist die getestete Web-App aus dem Repository;
+/// MindDesk – die iPhone-App. Die Oberfläche ist die getestete Web-App aus dem Repository;
 /// diese Hülle gibt ihr, was nur ein iPhone kann: Mikrofon, Kalender, festen Ordner und Mail.
 @main
 struct GedankenApp: App {

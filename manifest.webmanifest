@@ -1,6 +1,6 @@
 {
-  "name": "Gedanken",
-  "short_name": "Gedanken",
+  "name": "MindDesk",
+  "short_name": "MindDesk",
   "description": "Notizen einsprechen, als wachsende Mindmap sehen, abhaken und als PDF sichern.",
   "lang": "de",
   "start_url": "./",

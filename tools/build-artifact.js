@@ -8,7 +8,7 @@ const read = (f) => fs.readFileSync(path.join(root, f), 'utf8');
 const index = read('index.html');
 const body = index.split('<!-- APP:START -->')[1].split('<!-- APP:END -->')[0].trim();
 const out = [
-  '<title>Gedankenkarte</title>',
+  '<title>MindDesk</title>',
   '<meta name="claude:viewport-fit-sides" content="cover">',
   '<style>\n' + read('src/styles.css') + '</style>',
   body,

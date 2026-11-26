@@ -272,13 +272,13 @@
     }
     var d = toDate(today);
     return {
-      title: 'Gedanken',
+      title: 'MindDesk',
       subtitle: 'Stand ' + pad(d.getUTCDate()) + '.' + pad(d.getUTCMonth() + 1) + '.' + d.getUTCFullYear() +
         ' · sortiert nach ' + (opts.sort === 'hot' ? 'Wichtigkeit' : 'Bereich'),
       groups: groups
     };
   }
-  function fileName(today) { return 'Gedanken-' + (today || todayISO()) + '.pdf'; }
+  function fileName(today) { return 'MindDesk-' + (today || todayISO()) + '.pdf'; }
   /* Derselbe sortierte Inhalt als reiner Text, z. B. für eine Mail. */
   function docText(doc) {
     var out = [doc.title, doc.subtitle];

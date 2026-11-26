@@ -107,6 +107,8 @@ test('Start zeigt die Begrüßung, danach drei Beispiele', async (browser) => {
   await page.waitForFunction(() => getComputedStyle(document.getElementById('intro')).opacity === '0');
   for (const t of ['Mama anrufen', 'Angebot raus', 'Podcast starten']) assert.equal(await node(page, t).count(), 1, t);
   assert.match(await page.locator('#coreCount').innerText(), /3 offen/);
+  assert.equal(await page.title(), 'MindDesk');
+  assert.equal(await page.locator('#top h1').innerText(), 'MindDesk');
   assert.deepEqual(errors, []);
 });
 
@@ -195,11 +197,11 @@ test('Der PDF-Export enthält die Gedanken sortiert als Text', async (browser) =
   await page.click('#sortHot');
   assert.match(await page.locator('#paper').innerText(), /WICHTIG|Wichtig/);
   const [download] = await Promise.all([page.waitForEvent('download', { timeout: 8000 }), page.click('#savePdf')]);
-  assert.match(download.suggestedFilename(), /^Gedanken-\d{4}-\d{2}-\d{2}\.pdf$/);
+  assert.match(download.suggestedFilename(), /^MindDesk-\d{4}-\d{2}-\d{2}\.pdf$/);
   const file = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'gedanken-e2e-')), 'g.pdf');
   await download.saveAs(file);
   const out = execFileSync('pdftotext', ['-layout', file, '-'], { encoding: 'utf8' });
-  for (const want of ['Gedanken', 'WICHTIG', 'Mama anrufen', 'Angebot raus', 'WEITERE', 'Podcast starten']) assert.ok(out.includes(want), 'fehlt im PDF: ' + want + '\n' + out);
+  for (const want of ['MindDesk', 'WICHTIG', 'Mama anrufen', 'Angebot raus', 'WEITERE', 'Podcast starten']) assert.ok(out.includes(want), 'fehlt im PDF: ' + want + '\n' + out);
   assert.ok(out.indexOf('Mama anrufen') < out.indexOf('Podcast starten'), 'Wichtiges steht zuerst');
   await page.waitForFunction(() => /gesichert/i.test(document.getElementById('expStatus').textContent));
   assert.deepEqual(errors, []);
@@ -279,10 +281,10 @@ test('In der Claude-Vorschau geht das PDF an die Sichern-Funktion und das Mikrof
   await page.waitForSelector('#exp.open');
   assert.match(await page.locator('#locName').innerText(), /beim Sichern gewählt/);
   await page.click('#savePdf');
-  await page.waitForFunction(() => /^Gesichert: Gedanken-/.test(document.getElementById('expStatus').textContent));
+  await page.waitForFunction(() => /^Gesichert: MindDesk-/.test(document.getElementById('expStatus').textContent));
   const saved = await page.evaluate(() => window.__saved);
   assert.equal(saved.length, 1);
-  assert.match(saved[0].filename, /^Gedanken-\d{4}-\d{2}-\d{2}\.pdf$/);
+  assert.match(saved[0].filename, /^MindDesk-\d{4}-\d{2}-\d{2}\.pdf$/);
   assert.ok(saved[0].size > 800, 'PDF hat Inhalt: ' + saved[0].size);
   assert.deepEqual(errors, []);
 });
@@ -368,15 +370,15 @@ test('iPhone-App: das PDF landet im gewählten Ordner und geht per Mail raus', a
   await page.click('#locChange');
   await page.waitForFunction(() => document.getElementById('locName').textContent === 'Notizen');
   await page.click('#savePdf');
-  await page.waitForFunction(() => /Gesichert in „Notizen“: Gedanken-/.test(document.getElementById('expStatus').textContent));
+  await page.waitForFunction(() => /Gesichert in „Notizen“: MindDesk-/.test(document.getElementById('expStatus').textContent));
   const save = (await calls(page, 'savePdf'))[0];
-  assert.match(save.name, /^Gedanken-\d{4}-\d{2}-\d{2}\.pdf$/);
+  assert.match(save.name, /^MindDesk-\d{4}-\d{2}-\d{2}\.pdf$/);
   assert.ok(Buffer.from(save.base64, 'base64').toString('latin1').startsWith('%PDF-1.4'));
   await page.click('#mailPdf');
   await page.waitForFunction(() => /Mail gesendet/.test(document.getElementById('expStatus').textContent));
   const mail = (await calls(page, 'mail'))[0];
   assert.equal(mail.to, 'ich@example.org');
-  assert.match(mail.subject, /^Gedanken vom \d{2}\.\d{2}\.\d{4}$/);
+  assert.match(mail.subject, /^MindDesk: Gedanken vom \d{2}\.\d{2}\.\d{4}$/);
   assert.ok(mail.body.includes('PRIVAT') && mail.body.includes('- Mama anrufen'));
   assert.ok(Buffer.from(mail.base64, 'base64').toString('latin1').startsWith('%PDF-1.4'));
   assert.deepEqual(errors, []);

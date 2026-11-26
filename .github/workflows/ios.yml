@@ -1,4 +1,4 @@
-name: iPhone-App bauen
+name: MindDesk fürs iPhone bauen
 
 # Baut die native Hülle auf einem Mac und startet sie im iPhone-Simulator.
 # Bestanden heißt: Die Oberfläche ist in der App geladen und die Brücke zum iPhone antwortet.
@@ -58,8 +58,8 @@ jobs:
           xcrun simctl bootstatus "$DEVICE" -b
           echo "Bereit $(date +%T)"
           xcrun simctl install "$DEVICE" build/Debug-iphonesimulator/Gedanken.app
-          xcrun simctl launch "$DEVICE" de.gedankenkarte.app
-          DATA=$(xcrun simctl get_app_container "$DEVICE" de.gedankenkarte.app data)
+          xcrun simctl launch "$DEVICE" de.minddesk.app
+          DATA=$(xcrun simctl get_app_container "$DEVICE" de.minddesk.app data)
           MARK="$DATA/Library/Application Support/ready.txt"
           for i in $(seq 1 45); do
             if [ -f "$MARK" ]; then break; fi

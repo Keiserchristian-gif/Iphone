@@ -1,8 +1,8 @@
 {
-  "name": "gedanken",
+  "name": "minddesk",
   "version": "1.0.0",
   "private": true,
-  "description": "Gedanken – Notizen einsprechen, als wachsende Mindmap sehen, abhaken und als PDF sichern.",
+  "description": "MindDesk – Notizen einsprechen, als wachsende Mindmap sehen, abhaken und als PDF sichern.",
   "scripts": {
     "test": "node --test tests/*.test.js",
     "e2e": "node tests/e2e/run.js",
