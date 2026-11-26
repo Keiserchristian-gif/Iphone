@@ -14,5 +14,8 @@ const html = (size) => `<body style="margin:0"><div style="width:${size}px;heigh
     await page.screenshot({ path: path.join(__dirname, '..', 'icons', 'icon-' + size + '.png') });
     await page.close();
   }
+  const big = await browser.newPage({ viewport: { width: 1024, height: 1024 }, deviceScaleFactor: 1 });
+  await big.setContent(html(1024));
+  await big.screenshot({ path: path.join(__dirname, '..', 'ios', 'Gedanken', 'Assets.xcassets', 'AppIcon.appiconset', 'icon-1024.png'), omitBackground: false });
   await browser.close();
 })();

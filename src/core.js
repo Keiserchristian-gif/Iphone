@@ -13,6 +13,12 @@
   var CAT_ORDER = ['a', 'p', 'i'];
   /* Lage der Bereiche relativ zum Kern (0,0). */
   var HUBS = { a: { x: -104, y: -80 }, p: { x: 104, y: -76 }, i: { x: 0, y: 124 } };
+  /* Mit Kalender rücken die Ideen nach links unten, die Termine liegen rechts unten. */
+  var LAYOUTS = {
+    base: { id: 'base', cos: 0.47, hubs: HUBS },
+    cal: { id: 'cal', cos: 0.62, hubs: { a: HUBS.a, p: HUBS.p, i: { x: -92, y: 112 }, k: { x: 96, y: 116 } } }
+  };
+  function layoutFor(withCalendar) { return withCalendar ? LAYOUTS.cal : LAYOUTS.base; }
   var CORE_RECT = { x: 0, y: 0, w: 116, h: 116 };
   var HUB_SIZE = { w: 128, h: 44 };
   var GAP = 10;
@@ -163,16 +169,16 @@
   }
 
   /* ---------- Platz in der Karte ---------- */
-  function fixedRects() {
-    var out = [CORE_RECT];
-    CAT_ORDER.forEach(function (c) { out.push({ x: HUBS[c].x, y: HUBS[c].y, w: HUB_SIZE.w, h: HUB_SIZE.h }); });
+  function fixedRects(layout) {
+    var hubs = (layout || LAYOUTS.base).hubs, out = [CORE_RECT];
+    Object.keys(hubs).forEach(function (c) { out.push({ x: hubs[c].x, y: hubs[c].y, w: HUB_SIZE.w, h: HUB_SIZE.h }); });
     return out;
   }
   function hit(a, b) {
     return Math.abs(a.x - b.x) < (a.w + b.w) / 2 + GAP && Math.abs(a.y - b.y) < (a.h + b.h) / 2 + GAP;
   }
-  function isFree(rect, rects) {
-    var blocked = fixedRects().concat(rects || []);
+  function isFree(rect, rects, layout) {
+    var blocked = fixedRects(layout).concat(rects || []);
     for (var i = 0; i < blocked.length; i += 1) if (hit(rect, blocked[i])) return false;
     return true;
   }
@@ -186,26 +192,28 @@
     return flags.indexOf(true) >= 0 ? flags : keyFlags(words);
   }
   var candCache = {};
-  function candidates(cat) {
-    if (candCache[cat]) return candCache[cat];
-    var hub = HUBS[cat], hl = Math.sqrt(hub.x * hub.x + hub.y * hub.y), list = [];
+  function candidates(cat, layout) {
+    var key = layout.id + cat;
+    if (candCache[key]) return candCache[key];
+    var hub = layout.hubs[cat], hl = Math.sqrt(hub.x * hub.x + hub.y * hub.y), list = [];
     for (var x = -560; x <= 560; x += 14) {
       for (var y = -1400; y <= 1400; y += 14) {
         var len = Math.sqrt(x * x + y * y);
         if (len < 60) continue;
-        if ((x * hub.x + y * hub.y) / (len * hl) < 0.47) continue; /* nur im eigenen Sektor */
+        if ((x * hub.x + y * hub.y) / (len * hl) < layout.cos) continue; /* nur im eigenen Sektor */
         var dx = (x - hub.x) * 1.15, dy = y - hub.y;
         list.push({ x: x, y: y, c: dx * dx + dy * dy });
       }
     }
     list.sort(function (p, q) { return p.c - q.c; });
-    candCache[cat] = list;
+    candCache[key] = list;
     return list;
   }
   /* Nächster freier Platz beim Bereich; vorhandene Gedanken bleiben, wo sie sind. */
-  function place(size, rects, cat) {
-    var blocked = fixedRects().concat(rects || []);
-    var list = candidates(CATS[cat] ? cat : 'p');
+  function place(size, rects, cat, layout) {
+    layout = layout || LAYOUTS.base;
+    var blocked = fixedRects(layout).concat(rects || []);
+    var list = candidates(layout.hubs[cat] ? cat : 'p', layout);
     for (var i = 0; i < list.length; i += 1) {
       var r = { x: list[i].x, y: list[i].y, w: size.w, h: size.h }, free = true;
       for (var j = 0; j < blocked.length; j += 1) {
@@ -271,11 +279,21 @@
     };
   }
   function fileName(today) { return 'Gedanken-' + (today || todayISO()) + '.pdf'; }
+  /* Derselbe sortierte Inhalt als reiner Text, z. B. für eine Mail. */
+  function docText(doc) {
+    var out = [doc.title, doc.subtitle];
+    if (!doc.groups.length) out.push('', 'Keine offenen Gedanken.');
+    doc.groups.forEach(function (g) {
+      out.push('', g.title.toUpperCase());
+      g.items.forEach(function (it) { out.push('- ' + it.title + (it.meta ? ' (' + it.meta + ')' : '')); });
+    });
+    return out.join('\n') + '\n';
+  }
 
   return {
     CATS: CATS, CAT_ORDER: CAT_ORDER, HUBS: HUBS, HUB_SIZE: HUB_SIZE, CORE_RECT: CORE_RECT,
     analyze: analyze, keyFlags: keyFlags, normalizeAI: normalizeAI, parseDue: parseDue, dueLabel: dueLabel,
     todayISO: todayISO, addDays: addDays, place: place, fixedRects: fixedRects, isFree: isFree, titleFlags: titleFlags,
-    byHot: byHot, metaOf: metaOf, docModel: docModel, fileName: fileName
+    byHot: byHot, metaOf: metaOf, docModel: docModel, fileName: fileName, docText: docText, layoutFor: layoutFor
   };
 });

@@ -10,6 +10,23 @@ npm run serve        # http://127.0.0.1:4173/
 
 Auf dem iPhone: die Seite in Safari öffnen (sie muss dafür über HTTPS erreichbar sein) und über „Teilen › Zum Home-Bildschirm" ablegen. Danach startet sie wie eine App und läuft auch ohne Netz.
 
+## iPhone-App (nativ)
+
+Unter `ios/` liegt ein Xcode-Projekt. Es packt dieselbe Oberfläche in eine native Hülle und ergänzt, was nur ein iPhone kann: Mikrofon mit Spracherkennung, Kalender, ein fest gewählter Ordner in „Dateien" und Mail über das Konto der Mail-App (z. B. Web.de).
+
+Aufs iPhone bringen (einmalig, am Mac):
+
+1. Repository holen und `ios/Gedanken.xcodeproj` in Xcode öffnen (Xcode 15 oder neuer, iPhone mit iOS 17 oder neuer).
+2. Links das Projekt „Gedanken" wählen › Ziel „Gedanken" › **Signing & Capabilities** › bei **Team** die eigene Apple-ID auswählen. Meldet Xcode, die Kennung sei vergeben, den **Bundle Identifier** leicht ändern.
+3. iPhone per Kabel anschließen, oben als Ziel auswählen, auf ▶ drücken.
+4. Beim ersten Mal auf dem iPhone: *Einstellungen › Datenschutz & Sicherheit › Entwicklermodus* einschalten und unter *Allgemein › VPN & Geräteverwaltung* der eigenen Apple-ID vertrauen.
+
+Mit kostenloser Apple-ID läuft die App sieben Tage, danach in Xcode erneut auf ▶ drücken.
+
+Für Mails muss das Web.de-Konto in der Mail-App des iPhones eingerichtet sein (*Einstellungen › Apps › Mail › Mail-Accounts*). Ohne Konto dort öffnet die App das Teilen-Menü.
+
+Jeder Push baut die App auf einem Mac-Server und startet sie im Simulator (`.github/workflows/ios.yml`).
+
 ## Was die App kann
 
 - **Sprechen oder diktieren:** Das Mikrofon nutzt die Spracherkennung des Browsers. Wo es die nicht gibt, öffnet sich ein Eingabefeld für die Diktiertaste der Tastatur.
@@ -35,6 +52,7 @@ Auf dem iPhone: die Seite in Safari öffnen (sie muss dafür über HTTPS erreich
 | `src/styles.css` | Aussehen, hell und dunkel |
 | `sw.js`, `manifest.webmanifest`, `icons/` | Home-Bildschirm und Offline-Betrieb |
 | `tools/` | Testserver, Icons, Ein-Datei-Fassung für die Claude-Vorschau |
+| `ios/` | Xcode-Projekt: native Hülle mit Sprache, Kalender, Ordner und Mail |
 
 ## Tests
 

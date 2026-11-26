@@ -1,0 +1,63 @@
+name: iPhone-App bauen
+
+# Baut die native Hülle auf einem Mac und startet sie im iPhone-Simulator.
+# Der Lauf gilt als bestanden, wenn die Web-Oberfläche in der App geladen ist und die Brücke antwortet.
+on:
+  push:
+    branches: [claude/bold-lamport-ztedtg]
+    paths: ['ios/**', 'src/**', 'index.html', '.github/workflows/ios.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bauen:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Xcode-Version
+        run: xcodebuild -version
+
+      - name: Für den Simulator bauen
+        run: |
+          set -o pipefail
+          xcodebuild -project ios/Gedanken.xcodeproj -target Gedanken -configuration Debug \
+            -sdk iphonesimulator CODE_SIGNING_ALLOWED=NO ONLY_ACTIVE_ARCH=NO SYMROOT="$PWD/build" build \
+            | grep -E "error|warning: unre|BUILD|\.swift:[0-9]+" | tail -n 120
+
+      - name: Paketinhalt prüfen
+        run: |
+          APP=build/Debug-iphonesimulator/Gedanken.app
+          ls "$APP" "$APP/web" "$APP/web/src"
+          test -f "$APP/web/index.html" && test -f "$APP/web/src/app.js" && test -f "$APP/web/src/core.js"
+          /usr/libexec/PlistBuddy -c "Print :NSMicrophoneUsageDescription" "$APP/Info.plist"
+          /usr/libexec/PlistBuddy -c "Print :NSCalendarsFullAccessUsageDescription" "$APP/Info.plist"
+
+      - name: Im Simulator starten
+        run: |
+          DEVICE=$(xcrun simctl list devices available | grep -E "iPhone" | head -n 1 | grep -oE "[0-9A-F]{8}-[0-9A-F-]{27}")
+          echo "Simulator: $DEVICE"
+          xcrun simctl boot "$DEVICE"
+          xcrun simctl bootstatus "$DEVICE" -b
+          xcrun simctl install "$DEVICE" build/Debug-iphonesimulator/Gedanken.app
+          xcrun simctl launch --console-pty "$DEVICE" de.gedankenkarte.app > app.log 2>&1 &
+          for i in $(seq 1 45); do
+            if grep -q GEDANKEN_READY app.log; then break; fi
+            sleep 2
+          done
+          sleep 4
+          xcrun simctl io "$DEVICE" screenshot simulator.png || true
+          echo "--- Ausgabe der App"
+          tail -n 40 app.log
+          grep -q GEDANKEN_READY app.log
+
+      - name: Bildschirmfoto aufheben
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: simulator
+          path: simulator.png
+          if-no-files-found: ignore

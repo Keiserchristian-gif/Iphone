@@ -1,0 +1,311 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B10000000000000000000000 /* GedankenApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000000 /* GedankenApp.swift */; };
+		B10000000000000000000001 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000001 /* WebViewController.swift */; };
+		B10000000000000000000002 /* Bridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000002 /* Bridge.swift */; };
+		B10000000000000000000003 /* SchemeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000003 /* SchemeHandler.swift */; };
+		B10000000000000000000004 /* StateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000004 /* StateStore.swift */; };
+		B10000000000000000000005 /* SpeechService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000005 /* SpeechService.swift */; };
+		B10000000000000000000006 /* CalendarService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000006 /* CalendarService.swift */; };
+		B10000000000000000000007 /* FolderStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000007 /* FolderStore.swift */; };
+		B10000000000000000000008 /* MailSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000008 /* MailSender.swift */; };
+		B10000000000000000000064 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000064 /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		F10000000000000000000000 /* GedankenApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GedankenApp.swift; sourceTree = "<group>"; };
+		F10000000000000000000001 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		F10000000000000000000002 /* Bridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bridge.swift; sourceTree = "<group>"; };
+		F10000000000000000000003 /* SchemeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemeHandler.swift; sourceTree = "<group>"; };
+		F10000000000000000000004 /* StateStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateStore.swift; sourceTree = "<group>"; };
+		F10000000000000000000005 /* SpeechService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechService.swift; sourceTree = "<group>"; };
+		F10000000000000000000006 /* CalendarService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarService.swift; sourceTree = "<group>"; };
+		F10000000000000000000007 /* FolderStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderStore.swift; sourceTree = "<group>"; };
+		F10000000000000000000008 /* MailSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailSender.swift; sourceTree = "<group>"; };
+		F10000000000000000000064 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A10000000000000000000006 /* Gedanken.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gedanken.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A10000000000000000000009 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A10000000000000000000002 = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000003 /* Gedanken */,
+				A10000000000000000000004 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A10000000000000000000003 /* Gedanken */ = {
+			isa = PBXGroup;
+			children = (
+				F10000000000000000000000 /* GedankenApp.swift */,
+				F10000000000000000000001 /* WebViewController.swift */,
+				F10000000000000000000002 /* Bridge.swift */,
+				F10000000000000000000003 /* SchemeHandler.swift */,
+				F10000000000000000000004 /* StateStore.swift */,
+				F10000000000000000000005 /* SpeechService.swift */,
+				F10000000000000000000006 /* CalendarService.swift */,
+				F10000000000000000000007 /* FolderStore.swift */,
+				F10000000000000000000008 /* MailSender.swift */,
+				F10000000000000000000064 /* Assets.xcassets */,
+			);
+			path = Gedanken;
+			sourceTree = "<group>";
+		};
+		A10000000000000000000004 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000006 /* Gedanken.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A10000000000000000000005 /* Gedanken */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1000000000000000000000C /* Build configuration list for PBXNativeTarget "Gedanken" */;
+			buildPhases = (
+				A10000000000000000000007 /* Sources */,
+				A10000000000000000000009 /* Frameworks */,
+				A10000000000000000000008 /* Resources */,
+				A1000000000000000000000A /* Web-App ins Paket kopieren */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Gedanken;
+			productName = Gedanken;
+			productReference = A10000000000000000000006 /* Gedanken.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A10000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					A10000000000000000000005 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = A1000000000000000000000B /* Build configuration list for PBXProject "Gedanken" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = de;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				de,
+				Base,
+			);
+			mainGroup = A10000000000000000000002;
+			productRefGroup = A10000000000000000000004 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A10000000000000000000005 /* Gedanken */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A10000000000000000000008 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B10000000000000000000064 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A1000000000000000000000A /* Web-App ins Paket kopieren */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Web-App ins Paket kopieren";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nDEST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/web\"\nrm -rf \"$DEST\"\nmkdir -p \"$DEST/src\"\ncp \"${SRCROOT}/../index.html\" \"$DEST/\"\ncp \"${SRCROOT}/../src/\"*.js \"${SRCROOT}/../src/\"*.css \"$DEST/src/\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A10000000000000000000007 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B10000000000000000000000 /* GedankenApp.swift in Sources */,
+				B10000000000000000000001 /* WebViewController.swift in Sources */,
+				B10000000000000000000002 /* Bridge.swift in Sources */,
+				B10000000000000000000003 /* SchemeHandler.swift in Sources */,
+				B10000000000000000000004 /* StateStore.swift in Sources */,
+				B10000000000000000000005 /* SpeechService.swift in Sources */,
+				B10000000000000000000006 /* CalendarService.swift in Sources */,
+				B10000000000000000000007 /* FolderStore.swift in Sources */,
+				B10000000000000000000008 /* MailSender.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A1000000000000000000000D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A1000000000000000000000E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A1000000000000000000000F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Gedanken;
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Gedanken trägt Gedanken mit Termin in deinen Kalender ein und zeigt deine heutigen Termine in der Karte.";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Gedanken trägt Gedanken mit Termin in deinen Kalender ein und zeigt deine heutigen Termine in der Karte.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Gedanken hört zu, wenn du aufs Mikrofon tippst, damit du Notizen einsprechen kannst.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Gedanken wandelt deine gesprochene Notiz in Text um.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = de.gedankenkarte.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		A10000000000000000000010 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Gedanken;
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Gedanken trägt Gedanken mit Termin in deinen Kalender ein und zeigt deine heutigen Termine in der Karte.";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Gedanken trägt Gedanken mit Termin in deinen Kalender ein und zeigt deine heutigen Termine in der Karte.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Gedanken hört zu, wenn du aufs Mikrofon tippst, damit du Notizen einsprechen kannst.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Gedanken wandelt deine gesprochene Notiz in Text um.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = de.gedankenkarte.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A1000000000000000000000B /* Build configuration list for PBXProject "Gedanken" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1000000000000000000000D /* Debug */,
+				A1000000000000000000000E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1000000000000000000000C /* Build configuration list for PBXNativeTarget "Gedanken" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1000000000000000000000F /* Debug */,
+				A10000000000000000000010 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A10000000000000000000001 /* Project object */;
+}

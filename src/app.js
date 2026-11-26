@@ -4,13 +4,15 @@
   var C = window.GCore, P = window.GPdf;
   var KEY = 'gedanken.v1';
   var SVGNS = 'http://www.w3.org/2000/svg';
-  var CAT_CLS = { a: 'cA', p: 'cP', i: 'cI' };
+  var CAT_CLS = { a: 'cA', p: 'cP', i: 'cI', k: 'cK' };
+  var HUB_KEYS = ['a', 'p', 'i', 'k'];
   var ICON = {
     check: '<path d="M5 12.5l4.5 4.5L19 7.5"></path>',
     undo: '<path d="M9 14L4 9l5-5"></path><path d="M4 9h10a6 6 0 0 1 0 12h-3"></path>',
     trash: '<path d="M4 7h16"></path><path d="M9 7V4h6v3"></path><path d="M6 7l1 13h10l1-13"></path>',
     a: '<rect x="3" y="7" width="18" height="13" rx="2.5"></rect><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"></path>',
     p: '<path d="M12 20s-7-4.4-7-9.6A4 4 0 0 1 12 8a4 4 0 0 1 7 2.4C19 15.6 12 20 12 20z"></path>',
+    k: '<rect x="4" y="5" width="16" height="15" rx="2.5"></rect><path d="M8 3v4M16 3v4M4 10h16"></path>',
     i: '<path d="M9 18h6"></path><path d="M10 21h4"></path><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.1 1 1.9V16h5.2v-.3c0-.8.4-1.4 1-1.9A6 6 0 0 0 12 3z"></path>'
   };
   var BURST = '<span class="bp b1" aria-hidden="true"></span><span class="bp b2" aria-hidden="true"></span><span class="bp b3" aria-hidden="true"></span>' +
@@ -29,11 +31,35 @@
       (sw ? ' style="stroke-width:' + sw + '"' : '') + '>' + ICON[name] + '</svg>';
   }
   function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  function noop() { /* bewusst leer */ }
+
+  /* ---------- Brücke zur iPhone-App (nur dort vorhanden) ---------- */
+  var bridge = window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.gedanken;
+  var boot = window.__GEDANKEN_NATIVE__ || null;
+  var isNative = !!bridge;
+  function nat(cmd, data) {
+    if (!isNative) return Promise.reject(new Error('nur in der iPhone-App'));
+    var msg = data || {};
+    msg.cmd = cmd;
+    try { return Promise.resolve(bridge.postMessage(msg)); } catch (e) { return Promise.reject(e); }
+  }
+  function fromBase64(b64) {
+    var bin = atob(b64), bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i += 1) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder('utf-8').decode(bytes);
+  }
+  function toBase64(bytes) {
+    var out = '';
+    for (var i = 0; i < bytes.length; i += 0x8000) out += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    return btoa(out);
+  }
 
   /* ---------- Zustand ---------- */
   function load() {
-    var s = null;
-    try { s = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { s = null; }
+    var s = null, raw = null;
+    if (boot && boot.state64) { try { raw = fromBase64(boot.state64); } catch (e) { raw = null; } }
+    if (raw === null) { try { raw = localStorage.getItem(KEY); } catch (e) { raw = null; } }
+    try { s = JSON.parse(raw || 'null'); } catch (e) { s = null; }
     if (!s || !Array.isArray(s.notes)) s = { v: 1, seq: 0, notes: [], settings: {} };
     s.settings = s.settings || {};
     if (s.settings.sort !== 'hot') s.settings.sort = 'cat';
@@ -49,11 +75,18 @@
     s.seq = Math.max(s.seq || 0, s.notes.reduce(function (m, n) { return Math.max(m, n.id || 0); }, 0));
     return s;
   }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* Speicher gesperrt: läuft ohne weiter */ } }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* Speicher gesperrt: läuft ohne weiter */ }
+    if (isNative) {
+      clearTimeout(ui.timers.nsave);
+      ui.timers.nsave = setTimeout(function () { nat('saveState', { json: JSON.stringify(state) }).catch(noop); }, 250);
+    }
+  }
 
   var state = load();
   var ui = { filter: '', list: false, sel: null, rec: null, auto: true, view: { s: 1, x: 0, y: 0 }, els: {}, hubEls: {}, busy: {},
-    sample: null, aiOff: false, downloads: null, dir: null, sr: null, srBroken: false, note: '', lastDeleted: null, timers: {} };
+    sample: null, aiOff: false, downloads: null, dir: null, sr: null, srBroken: false, note: '', lastDeleted: null, timers: {},
+    layout: C.layoutFor(false), events: [], eventSig: '[]', caps: (boot && boot.caps) || {}, calChain: Promise.resolve() };
   /* In der Claude-Vorschau ist das Mikrofon grundsätzlich gesperrt: dort gleich die Tastatur-Diktierfunktion anbieten. */
   if (window.claude) ui.srBroken = true;
   var world = $('world'), map = $('map'), links = $('links');
@@ -73,7 +106,8 @@
   }
   function fitView(anim) {
     var a = areaRect();
-    var rects = C.fixedRects().concat(openNotes().filter(function (n) { return n.w && typeof n.x === 'number'; }));
+    var rects = C.fixedRects(ui.layout).concat(openNotes().filter(function (n) { return n.w && typeof n.x === 'number'; }))
+      .concat(ui.events.filter(function (e) { return e.w && typeof e.x === 'number'; }));
     var l = Infinity, r = -Infinity, t = Infinity, b = -Infinity;
     rects.forEach(function (q) {
       l = Math.min(l, q.x - q.w / 2); r = Math.max(r, q.x + q.w / 2);
@@ -114,21 +148,30 @@
     return 'M' + a.x.toFixed(1) + ',' + a.y.toFixed(1) + ' Q' + cx.toFixed(1) + ',' + cy.toFixed(1) + ' ' + b.x.toFixed(1) + ',' + b.y.toFixed(1);
   }
   function buildHubs() {
-    C.CAT_ORDER.forEach(function (c, i) {
-      var h = C.HUBS[c], hub = el('div', 'hub glass ' + CAT_CLS[c]);
-      hub.style.left = h.x + 'px';
-      hub.style.top = h.y + 'px';
+    HUB_KEYS.forEach(function (c) {
+      var hub = el('div', 'hub glass ' + CAT_CLS[c]);
       hub.innerHTML = '<span class="hi" aria-hidden="true">' + icon(c, 15) + '</span><span></span><span class="hc">0</span>';
-      hub.children[1].textContent = C.CATS[c].label;
+      hub.children[1].textContent = c === 'k' ? 'Termine' : C.CATS[c].label;
       $('hubs').appendChild(hub);
+      ui.hubEls[c] = { hub: hub, count: hub.children[2], lk: svgPath('lk ' + CAT_CLS[c]), fw: svgPath('fw ' + CAT_CLS[c]) };
+    });
+    layoutHubs();
+  }
+  /* Bereiche an ihre Plätze setzen; „Termine" gibt es nur, wenn der Kalender etwas zeigt. */
+  function layoutHubs() {
+    HUB_KEYS.forEach(function (c, i) {
+      var h = ui.layout.hubs[c], e = ui.hubEls[c];
+      e.hub.hidden = !h;
+      e.lk.style.display = e.fw.style.display = h ? '' : 'none';
+      if (!h) return;
+      e.hub.style.left = h.x + 'px';
+      e.hub.style.top = h.y + 'px';
       var len = Math.sqrt(h.x * h.x + h.y * h.y);
       var a = { x: h.x / len * 46, y: h.y / len * 46 };
       var b = edgePoint(h, { w: C.HUB_SIZE.w - 14, h: 36 }, { x: 0, y: 0 });
       var d = curve(a, b, i % 2 ? 1 : -1);
-      var lk = svgPath('lk ' + CAT_CLS[c]), fw = svgPath('fw ' + CAT_CLS[c]);
-      lk.setAttribute('d', d);
-      fw.setAttribute('d', d);
-      ui.hubEls[c] = { hub: hub, count: hub.children[2], lk: lk, fw: fw };
+      e.lk.setAttribute('d', d);
+      e.fw.setAttribute('d', d);
     });
   }
 
@@ -174,7 +217,7 @@
     if (!e) return;
     e.nw.style.left = n.x + 'px';
     e.nw.style.top = n.y + 'px';
-    var hub = C.HUBS[n.cat];
+    var hub = ui.layout.hubs[n.cat];
     var a = edgePoint(hub, { w: C.HUB_SIZE.w - 14, h: 36 }, n);
     var b = edgePoint(n, { w: n.w, h: n.h }, hub);
     var d = curve(a, b, n.id % 2 ? 1 : -1);
@@ -225,17 +268,27 @@
     openNotes().slice().sort(function (a, b) { return a.created - b.created || a.id - b.id; }).forEach(function (n) {
       if (!n.w) return;
       var r = { x: n.x, y: n.y, w: n.w, h: n.h };
-      if (typeof n.x !== 'number' || typeof n.y !== 'number' || n.hub !== n.cat || !C.isFree(r, placed)) {
-        var p = C.place({ w: n.w, h: n.h }, placed, n.cat);
+      if (typeof n.x !== 'number' || typeof n.y !== 'number' || n.hub !== n.cat || (n.lay || 'base') !== ui.layout.id || !C.isFree(r, placed, ui.layout)) {
+        var p = C.place({ w: n.w, h: n.h }, placed, n.cat, ui.layout);
         n.x = r.x = p.x;
         n.y = r.y = p.y;
         n.hub = n.cat;
+        n.lay = ui.layout.id;
       }
       placed.push(r);
+    });
+    ui.events.forEach(function (ev) {
+      if (!ev.w) return;
+      var p = C.place({ w: ev.w, h: ev.h }, placed, 'k', ui.layout);
+      ev.x = p.x;
+      ev.y = p.y;
+      placed.push({ x: p.x, y: p.y, w: ev.w, h: ev.h });
+      positionEvent(ev);
     });
   }
   function relayout(anim) {
     openNotes().forEach(function (n) { if (ui.els[n.id]) measure(n); });
+    ui.events.forEach(function (ev) { ev.w = ev.node.offsetWidth; ev.h = ev.node.offsetHeight; });
     resolveOverlaps();
     openNotes().forEach(positionNode);
     if (ui.auto) fitView(anim);
@@ -249,6 +302,111 @@
     setTimeout(function () { showNode(n); }, delay || 30);
   }
 
+  /* ---------- Kalendertermine von heute (nur in der iPhone-App) ---------- */
+  function positionEvent(ev) {
+    var hub = ui.layout.hubs.k;
+    if (!hub || typeof ev.x !== 'number') return;
+    ev.nw.style.left = ev.x + 'px';
+    ev.nw.style.top = ev.y + 'px';
+    var d = curve(edgePoint(hub, { w: C.HUB_SIZE.w - 14, h: 36 }, ev), edgePoint(ev, { w: ev.w, h: ev.h }, hub), 1);
+    ev.lk.setAttribute('d', d);
+    ev.fw.setAttribute('d', d);
+  }
+  function setEvents(list) {
+    var sig = JSON.stringify(list.map(function (e) { return [e.id, e.title, e.time]; }));
+    if (sig === ui.eventSig) return;
+    ui.eventSig = sig;
+    ui.events.forEach(function (ev) {
+      [ev.nw, ev.lk, ev.fw].forEach(function (x) { if (x.parentNode) x.parentNode.removeChild(x); });
+    });
+    var shown = list.slice(0, 6);
+    if (list.length > 6) shown[5] = { id: 'more', title: '+' + (list.length - 5) + ' weitere', time: 'Heute' };
+    ui.layout = C.layoutFor(shown.length > 0);
+    layoutHubs();
+    ui.events = shown.map(function (e) {
+      var nw = el('div', 'nw'), nd = el('div', 'nd off'), node = el('div', 'node glass cK card ev');
+      node.innerHTML = '<span class="clip" aria-hidden="true"><span class="shine"></span></span><span class="evi" aria-hidden="true">' +
+        icon('k', 18) + '</span><span class="nb"><span class="tt"></span><span class="mt"></span></span>';
+      node.querySelector('.tt').textContent = e.title;
+      node.querySelector('.mt').textContent = e.time || 'Heute';
+      nd.appendChild(node);
+      nw.appendChild(nd);
+      $('nodes').appendChild(nw);
+      setTimeout(function () { nd.classList.remove('off'); nd.classList.add('on'); nd.classList.toggle('dim', !!ui.filter); }, 60);
+      return { id: e.id, title: e.title, time: e.time || 'Heute', nw: nw, nd: nd, node: node, lk: svgPath('lk cK'), fw: svgPath('fw cK') };
+    });
+    relayout(true);
+    renderCounts(false);
+    if (ui.list) renderList();
+  }
+  function calOn(key) { return isNative && state.settings[key] !== false && ui.caps.calendar === 'granted'; }
+  function refreshEvents() {
+    if (!isNative) return;
+    if (!calOn('calShow')) { setEvents([]); return; }
+    nat('calToday').then(function (list) {
+      var own = {};
+      state.notes.forEach(function (n) { if (n.eventId) own[n.eventId] = true; });
+      setEvents((Array.isArray(list) ? list : []).filter(function (e) { return e && e.title && !own[e.id]; }));
+    }, noop);
+  }
+  /* Hält den Kalendereintrag eines Gedankens passend: anlegen, ändern oder entfernen. */
+  function calSync(n, gone) {
+    if (!isNative) return;
+    ui.calChain = ui.calChain.then(function () {
+      var want = !gone && calOn('calWrite') && !n.done && !!n.due && !n.example;
+      var sig = n.title + '|' + n.due;
+      if (want && !n.eventId) {
+        return nat('calAdd', { title: n.title, due: n.due, notes: n.text }).then(function (r) {
+          if (r && r.id) { n.eventId = r.id; n.calSig = sig; save(); }
+        });
+      }
+      if (want && n.calSig !== sig) {
+        return nat('calUpdate', { id: n.eventId, title: n.title, due: n.due }).then(function () { n.calSig = sig; save(); });
+      }
+      if (!want && n.eventId) {
+        var id = n.eventId;
+        n.eventId = null;
+        n.calSig = null;
+        save();
+        return nat('calRemove', { id: id });
+      }
+      return null;
+    }).catch(noop).then(function () {
+      clearTimeout(ui.timers.cal);
+      ui.timers.cal = setTimeout(refreshEvents, 400);
+    });
+  }
+  function syncAllToCalendar() { openNotes().forEach(function (n) { calSync(n); }); }
+  function startCalendar() {
+    if (state.settings.calWrite === false && state.settings.calShow === false) return;
+    if (ui.caps.calendar === 'unknown') {
+      nat('calAccess').then(function (r) {
+        ui.caps.calendar = r === 'granted' ? 'granted' : 'denied';
+        refreshEvents();
+        syncAllToCalendar();
+      }, function () { ui.caps.calendar = 'denied'; });
+    } else {
+      refreshEvents();
+      syncAllToCalendar();
+    }
+  }
+  function renderSettings() {
+    var granted = ui.caps.calendar === 'granted';
+    $('calWrite').setAttribute('aria-pressed', calOn('calWrite') ? 'true' : 'false');
+    $('calShow').setAttribute('aria-pressed', calOn('calShow') ? 'true' : 'false');
+    $('calHint').textContent = granted || ui.caps.calendar === 'unknown' ? '' :
+      'Der Kalenderzugriff ist aus. Erlaube ihn in den iPhone-Einstellungen unter „Gedanken“.';
+  }
+  function calToggle(key) {
+    var done = function () { save(); renderSettings(); refreshEvents(); syncAllToCalendar(); };
+    if (calOn(key)) { state.settings[key] = false; done(); return; }
+    nat('calAccess').then(function (r) {
+      ui.caps.calendar = r === 'granted' ? 'granted' : 'denied';
+      if (ui.caps.calendar === 'granted') state.settings[key] = true;
+      done();
+    }, function () { ui.caps.calendar = 'denied'; done(); });
+  }
+
   /* ---------- Zähler und Filter ---------- */
   function renderCounts(bump) {
     var open = openNotes(), done = state.notes.length - open.length, total = state.notes.length;
@@ -256,7 +414,8 @@
     C.CAT_ORDER.forEach(function (c) {
       ui.hubEls[c].count.textContent = open.filter(function (n) { return n.cat === c; }).length;
     });
-    $('doneCount').textContent = done + ' erledigt';
+    $('doneNum').textContent = done;
+    ui.hubEls.k.count.textContent = ui.events.length;
     $('ring').style.strokeDashoffset = Math.round(70 * (1 - (total ? done / total : 0)));
     if (bump) {
       var pill = $('donePill');
@@ -279,13 +438,18 @@
       b.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
     moveThumb();
-    C.CAT_ORDER.forEach(function (c) {
+    HUB_KEYS.forEach(function (c) {
       var dim = !!f && f !== c, h = ui.hubEls[c];
       h.hub.classList.toggle('dim', dim);
       h.lk.classList.toggle('dim', dim);
       h.fw.classList.toggle('dim', dim);
     });
     openNotes().forEach(applyDim);
+    ui.events.forEach(function (ev) {
+      ev.nd.classList.toggle('dim', !!f);
+      ev.lk.classList.toggle('dim', !!f);
+      ev.fw.classList.toggle('dim', !!f);
+    });
     if (ui.list) renderList();
   }
 
@@ -302,6 +466,7 @@
       if (!find(id)) return;
       n.done = Date.now();
       save();
+      calSync(n);
       removeNode(id);
       renderCounts(true);
       if (row) row.classList.add('gone');
@@ -316,6 +481,7 @@
     delete n.x;
     addToMap(n, 60);
     save();
+    calSync(n);
     renderCounts(true);
     if (ui.auto) fitView(true);
     if (ui.list) renderList();
@@ -326,6 +492,7 @@
     if (idx < 0) return;
     var n = state.notes.splice(idx, 1)[0];
     ui.lastDeleted = { note: n, index: idx };
+    calSync(n, true);
     removeNode(id);
     save();
     renderCounts(false);
@@ -340,6 +507,7 @@
     state.notes.splice(Math.min(d.index, state.notes.length), 0, d.note);
     if (!d.note.done) addToMap(d.note, 60);
     save();
+    calSync(d.note);
     renderCounts(false);
     if (ui.auto) fitView(true);
     if (ui.list) renderList();
@@ -408,6 +576,20 @@
     var open = openNotes().filter(pass).sort(C.byHot);
     var done = state.notes.filter(function (n) { return n.done && pass(n); }).sort(function (a, b) { return b.done - a.done; });
     box.textContent = '';
+    if (ui.events.length) {
+      var hk = el('div', 'lh');
+      hk.appendChild(el('span', '', 'Heute im Kalender'));
+      box.appendChild(hk);
+      ui.events.forEach(function (ev, i) {
+        var row = el('div', 'row glass cK evrow'), body = el('div', 'rb');
+        row.style.animationDelay = (0.05 + i * 0.05) + 's';
+        body.style.paddingLeft = '16px';
+        body.appendChild(el('span', 'tt', ev.title));
+        body.appendChild(el('span', 'tag', ev.time));
+        row.appendChild(body);
+        box.appendChild(row);
+      });
+    }
     var h = el('div', 'lh');
     h.appendChild(el('span', '', 'Was zu tun ist'));
     h.appendChild(el('small', '', open.length + ' offen'));
@@ -442,11 +624,11 @@
   function closeOverlays() {
     if (ui.sel !== null) commitTitle();
     ui.sel = null;
-    ['detail', 'exp', 'comp', 'bd'].forEach(function (id) { $(id).classList.remove('open'); });
+    ['detail', 'exp', 'comp', 'set', 'bd'].forEach(function (id) { $(id).classList.remove('open'); });
     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
   }
   function openOverlay(id) {
-    ['detail', 'exp', 'comp'].forEach(function (o) { $(o).classList.toggle('open', o === id); });
+    ['detail', 'exp', 'comp', 'set'].forEach(function (o) { $(o).classList.toggle('open', o === id); });
     $('bd').classList.add('open');
   }
   function renderDetail() {
@@ -480,6 +662,7 @@
     if (!t || t === n.title) return;
     n.title = t.length > 40 ? t.slice(0, 39) + '…' : t;
     fillNode(n);
+    calSync(n);
     relayout(true);
     if (ui.list) renderList();
   }
@@ -488,6 +671,7 @@
     if (!n) return;
     fn(n);
     fillNode(n);
+    calSync(n);
     renderDetail();
     relayout(true);
     renderCounts(false);
@@ -496,7 +680,10 @@
   }
 
   /* ---------- Eingabe ---------- */
-  function hasSpeech() { return !!(window.SpeechRecognition || window.webkitSpeechRecognition) && !ui.srBroken; }
+  function hasSpeech() {
+    if (isNative) return ui.caps.speech !== false;
+    return !!(window.SpeechRecognition || window.webkitSpeechRecognition) && !ui.srBroken;
+  }
   function openComposer(fromMic) {
     $('compHint').textContent = fromMic
       ? 'Hier hört die App nicht selbst zu. Tippe auf das Mikrofon deiner Tastatur und sprich – oder schreib einfach.'
@@ -630,7 +817,7 @@
   }
   function ingest(text, opts) {
     text = String(text || '').replace(/\s+/g, ' ').trim().slice(0, 400);
-    if (!text || (ui.rec && !opts.rec)) return Promise.resolve();
+    if (!text || (ui.rec && ui.rec.phase !== 'done' && !opts.rec)) return Promise.resolve();
     setList(false);
     var words = text.split(' ');
     var rec = opts.rec || { phase: 'listen', words: words, flags: [], step: 0.05, cat: 'p' };
@@ -667,6 +854,7 @@
       $('fit').hidden = true;
       fitView(true);
       save();
+      made.forEach(function (n) { calSync(n); });
       var c = $('card').getBoundingClientRect(), a = appRect();
       placeChip({ x: c.left - a.left + c.width / 2, y: c.top - a.top + c.height / 2 + 12 }, true);
       $('chipText').textContent = first.title;
@@ -700,9 +888,51 @@
   }
 
   /* ---------- Mikrofon ---------- */
+  /* In der iPhone-App hört das Gerät selbst zu und schickt den Text herüber. */
+  function startNativeSpeech() {
+    var rec = ui.rec = { phase: 'listen', live: true, native: true, words: [], flags: [], step: 0, cat: 'p' };
+    ui.note = '';
+    setList(false);
+    renderCard();
+    nat('speechStart', { lang: 'de-DE' }).catch(function (err) {
+      if (ui.rec !== rec) return;
+      ui.rec = null;
+      renderCard();
+      if (String((err && err.message) || err).indexOf('denied') >= 0) {
+        flashNote('Mikrofon und Spracherkennung sind aus. Erlaube beides in den iPhone-Einstellungen unter „Gedanken“.');
+      } else {
+        ui.caps.speech = false;
+        openComposer(true);
+      }
+    });
+  }
+  function onNative(name, d) {
+    d = d || {};
+    var rec = ui.rec, live = rec && rec.native && rec.live;
+    if (name === 'speech' && live) {
+      var t = String(d.text || '').replace(/\s+/g, ' ').trim();
+      rec.words = t ? t.split(' ') : [];
+      renderCard();
+    } else if (name === 'speechEnd' && live) {
+      var text = String(d.text || '').replace(/\s+/g, ' ').trim();
+      if (text) { ingest(text, { rec: rec }); return; }
+      ui.rec = null;
+      renderCard();
+      flashNote(d.error === 'denied'
+        ? 'Mikrofon und Spracherkennung sind aus. Erlaube beides in den iPhone-Einstellungen unter „Gedanken“.'
+        : 'Ich habe nichts gehört. Tippe noch einmal aufs Mikrofon.');
+    } else if (name === 'active') {
+      openNotes().forEach(fillNode);
+      refreshEvents();
+    }
+  }
+  window.GedankenNative = { emit: onNative };
+
   function micTap() {
+    if (ui.rec && ui.rec.live && ui.rec.native) { nat('speechStop').catch(noop); return; }
     if (ui.rec && ui.rec.live && ui.sr) { try { ui.sr.stop(); } catch (e) { /* egal */ } return; }
-    if (ui.rec) return;
+    if (ui.rec && ui.rec.phase !== 'done') return;
+    if (isNative && ui.caps.speech !== false) { startNativeSpeech(); return; }
     var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR || ui.srBroken) { openComposer(true); return; }
     var sr, heard = '';
@@ -772,7 +1002,9 @@
   }
   function renderLoc() {
     var name, sub, btn = '';
-    if (canPickDir && ui.dir) { name = ui.dir.name; sub = 'Jedes PDF landet direkt in diesem Ordner.'; btn = 'Ändern'; }
+    if (isNative && ui.caps.folder) { name = ui.caps.folder.name; sub = 'Jedes PDF landet direkt in diesem Ordner.'; btn = 'Ändern'; }
+    else if (isNative) { name = 'Noch kein Ordner gewählt'; sub = 'Wähle einmal einen Ordner in „Dateien“. Die App merkt ihn sich.'; btn = 'Wählen'; }
+    else if (canPickDir && ui.dir) { name = ui.dir.name; sub = 'Jedes PDF landet direkt in diesem Ordner.'; btn = 'Ändern'; }
     else if (canPickDir) { name = 'Noch kein Ordner gewählt'; sub = 'Ohne Ordner landet das PDF bei den Downloads.'; btn = 'Wählen'; }
     else if (ui.downloads) { name = 'Wird beim Sichern gewählt'; sub = 'In dieser Vorschau fragt Claude bei jedem Sichern nach.'; }
     else if (canShareFiles()) { name = 'Dateien-App'; sub = 'iOS fragt beim Sichern nach dem Ordner und merkt sich den letzten.'; }
@@ -783,7 +1015,16 @@
     $('locChange').textContent = btn;
   }
   function pickDir() {
-    window.showDirectoryPicker({ mode: 'readwrite', id: 'gedanken' }).then(function (h) {
+    if (isNative) {
+      return nat('pickFolder').then(function (r) {
+        if (!r || !r.name) return null;
+        ui.caps.folder = r;
+        renderLoc();
+        setStatus('', '');
+        return r;
+      }, function () { return null; });
+    }
+    return window.showDirectoryPicker({ mode: 'readwrite', id: 'gedanken' }).then(function (h) {
       ui.dir = h;
       idb('readwrite', function (s) { return s.put(h, 'dir'); });
       renderLoc();
@@ -839,7 +1080,12 @@
     $('paper').classList.add('fly');
     setTimeout(function () { $('paper').classList.remove('fly'); }, 800);
     var job;
-    if (canPickDir && ui.dir) {
+    if (isNative) {
+      job = (ui.caps.folder ? Promise.resolve(ui.caps.folder) : pickDir()).then(function (folder) {
+        if (!folder) { var stop = new Error('abgebrochen'); stop.code = 'declined'; throw stop; }
+        return nat('savePdf', { name: name, base64: toBase64(bytes) });
+      }).then(function (r) { return 'Gesichert in „' + ((r && r.folder) || ui.caps.folder.name) + '“: ' + name; });
+    } else if (canPickDir && ui.dir) {
       job = writeToDir(bytes, name).then(function () { return 'Gesichert in „' + ui.dir.name + '“: ' + name; });
     } else if (ui.downloads) {
       job = ui.downloads.save({ filename: name, data: blob }).then(function () { return 'Gesichert: ' + name; });
@@ -859,9 +1105,38 @@
     }
     job.then(function (msg) { setStatus(msg, 'ok'); }, function (err) {
       var code = err && (err.code || err.name);
-      if (code === 'declined' || code === 'AbortError') setStatus('Nicht gesichert – du hast abgebrochen.', '');
+      if (String((err && err.message) || err).indexOf('noFolder') >= 0) {
+        ui.caps.folder = null;
+        renderLoc();
+        setStatus('Der Ordner ist nicht mehr erreichbar. Wähle ihn neu.', 'bad');
+      } else if (code === 'declined' || code === 'AbortError') setStatus('Nicht gesichert – du hast abgebrochen.', '');
       else setStatus('Sichern hat nicht geklappt. Versuch es noch einmal.', 'bad');
     }).then(function () { ui.saving = false; });
+  }
+
+  /* ---------- Mail (iPhone-App): PDF oder einzelner Gedanke über das Mail-Konto des iPhones ---------- */
+  function mailResult(r) {
+    var res = r && r.result;
+    if (res === 'sent') return ['Mail gesendet.', 'ok'];
+    if (res === 'saved') return ['Als Entwurf gesichert.', 'ok'];
+    if (res === 'shared') return ['An die gewählte App übergeben.', 'ok'];
+    return ['Mail nicht gesendet.', ''];
+  }
+  function mailPdf() {
+    var today = C.todayISO();
+    var doc = C.docModel(state.notes, { sort: state.settings.sort, withDone: !!state.settings.withDone }, today);
+    setStatus('Mail wird vorbereitet …', '');
+    nat('mail', {
+      subject: 'Gedanken vom ' + today.split('-').reverse().join('.'), body: C.docText(doc), to: state.settings.mailTo || '',
+      name: C.fileName(today), base64: toBase64(P.buildPdf(doc))
+    }).then(function (r) { var m = mailResult(r); setStatus(m[0], m[1]); }, function () { setStatus('Die Mail konnte nicht geöffnet werden.', 'bad'); });
+  }
+  function mailNote() {
+    var n = find(ui.sel);
+    if (!n) return;
+    var due = C.dueLabel(n.due, C.todayISO());
+    nat('mail', { subject: n.title, body: '„' + n.text + '“' + (due ? '\n\nTermin: ' + due : '') + '\n', to: state.settings.mailTo || '' })
+      .then(function (r) { showToast(mailResult(r)[0], false); }, function () { showToast('Die Mail konnte nicht geöffnet werden.', false); });
   }
 
   /* ---------- Karte verschieben und zoomen ---------- */
@@ -959,6 +1234,7 @@
     $('intro').classList.add('out');
     renderCard();
     setTimeout(showAll, 350);
+    if (isNative) setTimeout(startCalendar, 1200);
   }
   function init() {
     buildHubs();
@@ -972,7 +1248,13 @@
 
     $('introGo').addEventListener('click', begin);
     $('mic').addEventListener('click', micTap);
-    $('btnType').addEventListener('click', function () { if (!ui.rec) openComposer(false); });
+    $('btnType').addEventListener('click', function () { if (!ui.rec || ui.rec.phase === 'done') openComposer(false); });
+    $('btnSet').addEventListener('click', function () { openOverlay('set'); renderSettings(); });
+    $('calWrite').addEventListener('click', function () { calToggle('calWrite'); });
+    $('calShow').addEventListener('click', function () { calToggle('calShow'); });
+    $('mailTo').addEventListener('input', function () { state.settings.mailTo = $('mailTo').value.trim(); save(); });
+    $('mailPdf').addEventListener('click', mailPdf);
+    $('dMail').addEventListener('click', mailNote);
     $('btnList').addEventListener('click', function () { setList(!ui.list); });
     $('btnExport').addEventListener('click', function () { setStatus('', ''); openOverlay('exp'); renderExport(); });
     $('bd').addEventListener('click', closeOverlays);
@@ -1011,10 +1293,19 @@
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function () { layoutChrome(); if (ui.auto) fitView(false); }, 120);
     });
+    document.addEventListener('focusout', function () { setTimeout(function () { window.scrollTo(0, 0); }, 60); });
     document.addEventListener('visibilitychange', function () {
       if (!document.hidden) openNotes().forEach(fillNode);
     });
 
+    if (isNative) {
+      ['btnSet', 'mailPdf', 'dMail'].forEach(function (id) { $(id).hidden = false; });
+      $('mailTo').value = state.settings.mailTo || '';
+      nat('caps').then(function (c) {
+        if (c) { ui.caps = c; renderLoc(); renderCard(); }
+        if (state.settings.introSeen) startCalendar();
+      }, noop);
+    }
     if (canPickDir) idb('readonly', function (s) { return s.get('dir'); }).then(function (h) { if (h) { ui.dir = h; renderLoc(); } });
     if (window.claude && typeof window.claude.use === 'function') {
       window.claude.use('sample').then(function (f) { ui.sample = f || null; }, function () { /* ohne KI */ });

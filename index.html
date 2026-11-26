@@ -59,10 +59,11 @@ html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset
 <h1>Gedanken</h1>
 </div>
 <div class="acts">
+<button class="hbtn glass" id="btnSet" type="button" aria-label="Verbindungen: Kalender und Mail" hidden><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 7h10"></path><path d="M18 7h2"></path><circle cx="16" cy="7" r="2"></circle><path d="M4 17h2"></path><path d="M10 17h10"></path><circle cx="8" cy="17" r="2"></circle></svg></button>
 <button class="hbtn glass" id="btnExport" type="button" aria-label="Als PDF sichern"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 4v10"></path><path d="M8 10l4 4 4-4"></path><path d="M5 17v1.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V17"></path></svg></button>
 <div class="pill glass" id="donePill">
 <svg viewBox="0 0 28 28" width="28" height="28" aria-hidden="true" style="transform:rotate(-90deg)"><circle class="ringbg" cx="14" cy="14" r="11"></circle><circle class="ringfg" id="ring" cx="14" cy="14" r="11"></circle></svg>
-<span id="doneCount">0 erledigt</span>
+<span id="doneCount"><span id="doneNum">0</span><span class="vh"> erledigt</span></span>
 </div>
 </div>
 </div>
@@ -130,6 +131,20 @@ html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset
 <button class="pri" id="dDone" type="button"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="stroke-width:2.8"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Erledigt</button>
 <button class="sec danger" id="dDelete" type="button">Löschen</button>
 </div>
+<button class="sec si" id="dMail" type="button" style="width:100%;margin-top:10px;animation-delay:.28s" hidden>Per Mail senden</button>
+</div>
+
+<div class="sheet gut" id="set" role="dialog" aria-label="Verbindungen">
+<div class="grab" aria-hidden="true"></div>
+<h2 class="si">Verbindungen</h2>
+<div class="eb si" style="margin-top:16px;animation-delay:.05s">Kalender</div>
+<button class="switch si" id="calWrite" type="button" aria-pressed="false" style="animation-delay:.08s"><span>Gedanken mit Termin in den Kalender eintragen</span><span class="knob" aria-hidden="true"></span></button>
+<button class="switch si" id="calShow" type="button" aria-pressed="false" style="animation-delay:.11s"><span>Heutige Termine in der Karte zeigen</span><span class="knob" aria-hidden="true"></span></button>
+<p class="hint" id="calHint"></p>
+<div class="eb si" style="margin-top:18px;animation-delay:.14s">Mail</div>
+<label class="vh" for="mailTo">Empfänger für Mails</label>
+<input class="inp one si" id="mailTo" type="email" inputmode="email" autocomplete="email" autocapitalize="off" placeholder="Empfänger (optional)" style="animation-delay:.17s">
+<p class="hint">Versendet wird über dein Konto in der Mail-App, zum Beispiel Web.de. Ist dort keines eingerichtet, öffnet sich das Teilen-Menü.</p>
 </div>
 
 <div class="sheet gut" id="exp" role="dialog" aria-label="Als PDF sichern">
@@ -150,6 +165,7 @@ html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset
 <button class="switch si" id="withDone" type="button" aria-pressed="false" style="animation-delay:.18s"><span>Erledigtes mit aufnehmen</span><span class="knob" aria-hidden="true"></span></button>
 <div class="paper si" id="paper" style="animation-delay:.2s"></div>
 <button class="pri si" id="savePdf" type="button" style="width:100%;margin-top:14px;animation-delay:.24s">PDF sichern</button>
+<button class="sec si" id="mailPdf" type="button" style="width:100%;margin-top:10px;animation-delay:.27s" hidden>Per Mail senden</button>
 <p class="status" id="expStatus" role="status"></p>
 </div>
 

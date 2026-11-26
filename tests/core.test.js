@@ -169,3 +169,30 @@ test('Füllwörter gehören nicht in den Kern', () => {
   assert.equal(core.analyze('Die Steuer ordnen und zwar dringend', TODAY)[0].title, 'Steuer ordnen');
   assert.equal(core.analyze('Ich sollte eigentlich mal wieder joggen gehen', TODAY)[0].title, 'Joggen gehen');
 });
+
+test('mit Kalender gibt es einen vierten Bereich, und nichts überlappt', () => {
+  const lay = core.layoutFor(true);
+  assert.deepEqual(Object.keys(lay.hubs), ['a', 'p', 'i', 'k']);
+  assert.deepEqual(Object.keys(core.layoutFor(false).hubs), ['a', 'p', 'i']);
+  const rects = [];
+  ['a', 'p', 'i', 'k'].forEach((c) => {
+    for (let n = 0; n < 6; n += 1) {
+      const size = { w: 150, h: n % 2 ? 58 : 40 };
+      const pos = core.place(size, rects, c, lay);
+      const r = { x: pos.x, y: pos.y, w: size.w, h: size.h };
+      for (const other of rects.concat(core.fixedRects(lay))) assert.ok(!overlaps(r, other, 0), 'Überlappung in ' + c + n);
+      assert.ok(core.isFree({ x: pos.x, y: pos.y, w: size.w, h: size.h }, rects, lay));
+      rects.push(r);
+    }
+  });
+  const cal = core.place({ w: 150, h: 58 }, [], 'k', lay);
+  assert.ok(cal.x > 0 && cal.y > 0, 'Termine liegen rechts unten');
+});
+
+test('docText liefert den sortierten Text für eine Mail', () => {
+  const doc = core.docModel(NOTES, { sort: 'cat', withDone: false }, TODAY);
+  const text = core.docText(doc);
+  assert.ok(text.startsWith('Gedanken\nStand 26.11.2026'));
+  assert.ok(text.includes('\nARBEIT\n- Angebot senden (Morgen · wichtig)\n- Steuer ordnen\n'));
+  assert.ok(text.indexOf('ARBEIT') < text.indexOf('PRIVAT'));
+});

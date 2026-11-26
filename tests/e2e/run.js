@@ -40,6 +40,35 @@ async function open(browser, opts) {
       window.claude = { use: (name) => Promise.resolve(name === 'sample' ? sample : (name === 'downloads' ? downloads : null)) };
     });
   }
+  if (opts.native) {
+    /* Die iPhone-App: Sprache, Kalender, Ordner, Mail und Speicher kommen über die Brücke zur nativen Hülle. */
+    await context.addInitScript((cfg) => {
+      const N = window.__native = { calls: [], events: cfg.events || [], folder: null, cal: [], nextId: 1, calendar: cfg.calendar || 'granted' };
+      const handle = (m) => {
+        N.calls.push(m);
+        switch (m.cmd) {
+          case 'caps': return { speech: true, mail: true, calendar: N.calendar, folder: N.folder };
+          case 'saveState': sessionStorage.setItem('nativeState', m.json); return true;
+          case 'speechStart': return { ok: true };
+          case 'speechStop': return true;
+          case 'pickFolder': N.folder = { name: 'Notizen' }; return N.folder;
+          case 'savePdf': if (!N.folder) throw new Error('noFolder'); return { folder: N.folder.name };
+          case 'mail': return { result: 'sent' };
+          case 'calAccess': N.calendar = 'granted'; return 'granted';
+          case 'calToday': return N.events.concat(N.cal);
+          case 'calAdd': { const id = 'ev' + (N.nextId++); N.cal.push({ id, title: m.title, time: 'Ganztägig', allDay: true }); return { id }; }
+          case 'calUpdate': return { id: m.id };
+          case 'calRemove': N.cal = N.cal.filter((e) => e.id !== m.id); return true;
+          default: throw new Error('unbekannt: ' + m.cmd);
+        }
+      };
+      window.webkit = { messageHandlers: { gedanken: { postMessage: (m) => {
+        try { return Promise.resolve(handle(JSON.parse(JSON.stringify(m)))); } catch (e) { return Promise.reject(e); }
+      } } } };
+      const saved = sessionStorage.getItem('nativeState');
+      window.__GEDANKEN_NATIVE__ = { state64: saved ? btoa(unescape(encodeURIComponent(saved))) : '', caps: { speech: true, mail: true, calendar: N.calendar, folder: null } };
+    }, { events: opts.events, calendar: opts.calendar });
+  }
   if (opts.seed) {
     await context.addInitScript((seed) => {
       if (!localStorage.getItem('gedanken.v1')) localStorage.setItem('gedanken.v1', seed);
@@ -106,7 +135,7 @@ test('Abhaken nimmt den Gedanken aus der Karte, zählt mit und lässt sich zurü
   await start(page);
   await node(page, 'Mama anrufen').locator('.ckb').click();
   await page.waitForFunction(() => ![...document.querySelectorAll('.nd')].some((n) => n.textContent.includes('Mama anrufen')), null, { timeout: 6000 });
-  assert.match(await page.locator('#doneCount').innerText(), /1 erledigt/);
+  assert.match(await page.locator('#doneCount').innerText(), /1\s*erledigt/);
   assert.match(await page.locator('#coreCount').innerText(), /2 offen/);
   await page.click('#btnList');
   const done = page.locator('.row.done', { hasText: 'Mama anrufen' });
@@ -114,7 +143,7 @@ test('Abhaken nimmt den Gedanken aus der Karte, zählt mit und lässt sich zurü
   await done.locator('.restore').click();
   await page.click('#btnList');
   await node(page, 'Mama anrufen').waitFor({ state: 'visible', timeout: 6000 });
-  assert.match(await page.locator('#doneCount').innerText(), /0 erledigt/);
+  assert.match(await page.locator('#doneCount').innerText(), /0\s*erledigt/);
   assert.deepEqual(errors, []);
 });
 
@@ -186,7 +215,7 @@ test('Viele Gedanken überlappen nicht und bleiben im Bild', async (browser) => 
   await page.waitForFunction(() => document.querySelectorAll('.nd.on').length === 16, null, { timeout: 8000 });
   await settle(page, 1500);
   const info = await page.evaluate(() => {
-    const boxes = [...document.querySelectorAll('.nd.on .node, .hub, #core')].map((el) => el.getBoundingClientRect()).map((r) => ({ l: r.left, t: r.top, r: r.right, b: r.bottom }));
+    const boxes = [...document.querySelectorAll('.nd.on .node, .hub:not([hidden]), #core')].map((el) => el.getBoundingClientRect()).map((r) => ({ l: r.left, t: r.top, r: r.right, b: r.bottom }));
     const top = document.getElementById('top').getBoundingClientRect().bottom;
     const bottom = document.getElementById('bottom').getBoundingClientRect().top;
     return { boxes, top, bottom, width: innerWidth, scrollW: document.documentElement.scrollWidth };
@@ -222,7 +251,7 @@ test('Mit allen Animationen: Gedanke fliegt in die Karte und lässt sich abhaken
   await page.waitForFunction(() => document.getElementById('card').getAttribute('data-mode') === 'idle', null, { timeout: 8000 });
   await node(page, 'Steuer ordnen').locator('.ckb').click({ force: true });
   await page.waitForFunction(() => ![...document.querySelectorAll('.nd')].some((n) => n.textContent.includes('Steuer ordnen')), null, { timeout: 6000 });
-  assert.match(await page.locator('#doneCount').innerText(), /1 erledigt/);
+  assert.match(await page.locator('#doneCount').innerText(), /1\s*erledigt/);
   assert.deepEqual(errors, []);
 });
 
@@ -254,6 +283,121 @@ test('In der Claude-Vorschau geht das PDF an die Sichern-Funktion und das Mikrof
   assert.match(saved[0].filename, /^Gedanken-\d{4}-\d{2}-\d{2}\.pdf$/);
   assert.ok(saved[0].size > 800, 'PDF hat Inhalt: ' + saved[0].size);
   assert.deepEqual(errors, []);
+});
+
+const calls = (page, cmd) => page.evaluate((c) => window.__native.calls.filter((m) => m.cmd === c), cmd);
+const emit = (page, name, data) => page.evaluate(([n, d]) => window.GedankenNative.emit(n, d), [name, data]);
+
+test('iPhone-App: Sprache kommt vom Gerät, der Gedanke landet in der Karte und wird nativ gespeichert', async (browser) => {
+  const { page, errors } = await open(browser, { native: true });
+  await start(page);
+  await page.click('#mic');
+  await page.waitForFunction(() => window.__native.calls.some((m) => m.cmd === 'speechStart'));
+  await emit(page, 'speech', { text: 'Übermorgen unbedingt' });
+  await page.waitForFunction(() => /Übermorgen/.test(document.getElementById('card').textContent));
+  await page.click('#mic');
+  assert.equal((await calls(page, 'speechStop')).length, 1, 'zweiter Tipp beendet die Aufnahme');
+  await emit(page, 'speechEnd', { text: 'Übermorgen unbedingt Oma anrufen' });
+  await node(page, 'Oma anrufen').waitFor({ state: 'visible', timeout: 12000 });
+  await settle(page, 800);
+  const saved = await calls(page, 'saveState');
+  assert.ok(saved.length > 0 && saved[saved.length - 1].json.includes('Oma anrufen'), 'Zustand geht an die Hülle');
+  await page.evaluate(() => localStorage.clear());
+  await page.reload();
+  await node(page, 'Oma anrufen').waitFor({ state: 'visible', timeout: 8000 });
+  assert.deepEqual(errors, []);
+});
+
+test('iPhone-App: Gedanken mit Termin stehen im Kalender und verschwinden dort beim Abhaken', async (browser) => {
+  const { page, errors } = await open(browser, { native: true });
+  await start(page);
+  await settle(page, 600);
+  assert.equal((await calls(page, 'calAdd')).length, 0, 'Beispiele kommen nicht in den Kalender');
+  await addThought(page, 'Morgen den Rasen mähen', 'Rasen mähen');
+  await page.waitForFunction(() => window.__native.calls.some((m) => m.cmd === 'calAdd'));
+  const add = (await calls(page, 'calAdd'))[0];
+  assert.equal(add.title, 'Rasen mähen');
+  assert.match(add.due, /^\d{4}-\d{2}-\d{2}$/);
+  await addThought(page, 'Irgendwann die Garage aufräumen', 'Garage aufräumen');
+  await settle(page, 600);
+  assert.equal((await calls(page, 'calAdd')).length, 1, 'ohne Termin kein Kalendereintrag');
+  await page.waitForFunction(() => document.getElementById('card').getAttribute('data-mode') === 'idle', null, { timeout: 8000 });
+  await node(page, 'Rasen mähen').locator('.ckb').click();
+  await page.waitForFunction(() => window.__native.calls.some((m) => m.cmd === 'calRemove'), null, { timeout: 6000 });
+  assert.equal((await calls(page, 'calRemove'))[0].id, 'ev1');
+  assert.deepEqual(errors, []);
+});
+
+test('iPhone-App: heutige Kalendertermine erscheinen als eigener Bereich in der Karte', async (browser) => {
+  const events = [{ id: 'x1', title: 'Zahnarzt', time: '09:30–10:00', allDay: false }, { id: 'x2', title: 'Team-Runde', time: '14:00–15:00', allDay: false }];
+  const { page, errors } = await open(browser, { native: true, events });
+  await start(page);
+  await page.waitForFunction(() => document.querySelectorAll('.nd.on .node.ev').length === 2, null, { timeout: 8000 });
+  const zahn = page.locator('.nd.on', { hasText: 'Zahnarzt' });
+  assert.match(await zahn.innerText(), /09:30–10:00/);
+  assert.match(await page.locator('.hub.cK').innerText(), /Termine\s*2/);
+  await settle(page, 1200);
+  const boxes = await page.evaluate(() => [...document.querySelectorAll('.nd.on .node, .hub:not([hidden]), #core')].map((el) => el.getBoundingClientRect()).map((r) => ({ l: r.left, t: r.top, r: r.right, b: r.bottom })));
+  for (let i = 0; i < boxes.length; i += 1) for (let j = i + 1; j < boxes.length; j += 1) {
+    const a = boxes[i], b = boxes[j];
+    assert.ok(a.r <= b.l + 0.5 || b.r <= a.l + 0.5 || a.b <= b.t + 0.5 || b.b <= a.t + 0.5, 'Überlappung: ' + JSON.stringify(a) + ' ' + JSON.stringify(b));
+  }
+  await page.click('#btnList');
+  assert.equal(await page.locator('.row.evrow', { hasText: 'Team-Runde' }).count(), 1, 'Termine stehen auch in der Liste');
+  await page.click('#btnList');
+  await page.click('#btnSet');
+  await page.waitForSelector('#set.open');
+  await page.click('#calShow');
+  await page.waitForFunction(() => document.querySelectorAll('.nd.on .node.ev').length === 0);
+  assert.equal(await page.locator('.hub.cK').isVisible(), false, 'ohne Termine kein vierter Bereich');
+  assert.deepEqual(errors, []);
+});
+
+test('iPhone-App: das PDF landet im gewählten Ordner und geht per Mail raus', async (browser) => {
+  const { page, errors } = await open(browser, { native: true });
+  await start(page);
+  await page.click('#btnSet');
+  await page.waitForSelector('#set.open');
+  await page.fill('#mailTo', 'ich@example.org');
+  await page.click('#bd', { position: { x: 20, y: 20 } });
+  await page.click('#btnExport');
+  await page.waitForSelector('#exp.open');
+  assert.match(await page.locator('#locName').innerText(), /Noch kein Ordner gewählt/);
+  await page.click('#locChange');
+  await page.waitForFunction(() => document.getElementById('locName').textContent === 'Notizen');
+  await page.click('#savePdf');
+  await page.waitForFunction(() => /Gesichert in „Notizen“: Gedanken-/.test(document.getElementById('expStatus').textContent));
+  const save = (await calls(page, 'savePdf'))[0];
+  assert.match(save.name, /^Gedanken-\d{4}-\d{2}-\d{2}\.pdf$/);
+  assert.ok(Buffer.from(save.base64, 'base64').toString('latin1').startsWith('%PDF-1.4'));
+  await page.click('#mailPdf');
+  await page.waitForFunction(() => /Mail gesendet/.test(document.getElementById('expStatus').textContent));
+  const mail = (await calls(page, 'mail'))[0];
+  assert.equal(mail.to, 'ich@example.org');
+  assert.match(mail.subject, /^Gedanken vom \d{2}\.\d{2}\.\d{4}$/);
+  assert.ok(mail.body.includes('PRIVAT') && mail.body.includes('- Mama anrufen'));
+  assert.ok(Buffer.from(mail.base64, 'base64').toString('latin1').startsWith('%PDF-1.4'));
+  assert.deepEqual(errors, []);
+});
+
+test('iPhone-App: ein einzelner Gedanke geht per Mail raus', async (browser) => {
+  const { page } = await open(browser, { native: true });
+  await start(page);
+  await node(page, 'Mama anrufen').locator('.nb').click();
+  await page.waitForSelector('#detail.open');
+  await page.click('#dMail');
+  await page.waitForFunction(() => window.__native.calls.some((m) => m.cmd === 'mail'));
+  const mail = (await calls(page, 'mail'))[0];
+  assert.equal(mail.subject, 'Mama anrufen');
+  assert.ok(mail.body.includes('Ich muss morgen unbedingt Mama anrufen.'));
+  assert.equal(mail.base64, undefined);
+});
+
+test('Im Browser bleiben die iPhone-Funktionen ausgeblendet', async (browser) => {
+  const { page } = await open(browser);
+  await start(page);
+  for (const id of ['#btnSet', '#mailPdf', '#dMail']) assert.equal(await page.locator(id).isVisible(), false, id);
+  assert.equal(await page.locator('.hub.cK').isVisible(), false);
 });
 
 test('Der Filter blendet die anderen Bereiche ab', async (browser) => {
