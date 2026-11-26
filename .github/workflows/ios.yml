@@ -33,8 +33,9 @@ jobs:
           APP=build/Debug-iphonesimulator/Gedanken.app
           ls "$APP" "$APP/web" "$APP/web/src"
           test -f "$APP/web/index.html" && test -f "$APP/web/src/app.js" && test -f "$APP/web/src/core.js"
-          /usr/libexec/PlistBuddy -c "Print :NSMicrophoneUsageDescription" "$APP/Info.plist"
-          /usr/libexec/PlistBuddy -c "Print :NSCalendarsFullAccessUsageDescription" "$APP/Info.plist"
+          for KEY in NSMicrophoneUsageDescription NSSpeechRecognitionUsageDescription NSCalendarsFullAccessUsageDescription CFBundleDisplayName UILaunchScreen; do
+            /usr/libexec/PlistBuddy -c "Print :$KEY" "$APP/Info.plist"
+          done
 
       - name: Im Simulator starten
         run: |

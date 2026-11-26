@@ -37,15 +37,19 @@ final class MailSender: NSObject, MFMailComposeViewControllerDelegate {
         host.present(share, animated: true)
     }
 
-    func mailComposeController(
+    nonisolated func mailComposeController(
         _ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?
     ) {
-        controller.dismiss(animated: true)
+        let outcome: String
         switch result {
-        case .sent: finish("sent")
-        case .saved: finish("saved")
-        case .cancelled: finish("cancelled")
-        default: finish("failed")
+        case .sent: outcome = "sent"
+        case .saved: outcome = "saved"
+        case .cancelled: outcome = "cancelled"
+        default: outcome = "failed"
+        }
+        Task { @MainActor in
+            controller.dismiss(animated: true)
+            self.finish(outcome)
         }
     }
 

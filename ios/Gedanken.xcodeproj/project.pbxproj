@@ -31,6 +31,7 @@
 		F10000000000000000000008 /* MailSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailSender.swift; sourceTree = "<group>"; };
 		F10000000000000000000064 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A10000000000000000000006 /* Gedanken.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gedanken.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F10000000000000000000065 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +66,7 @@
 				F10000000000000000000007 /* FolderStore.swift */,
 				F10000000000000000000008 /* MailSender.swift */,
 				F10000000000000000000064 /* Assets.xcassets */,
+				F10000000000000000000065 /* Info.plist */,
 			);
 			path = Gedanken;
 			sourceTree = "<group>";
@@ -235,11 +237,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Gedanken/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Gedanken;
-				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Gedanken trägt Gedanken mit Termin in deinen Kalender ein und zeigt deine heutigen Termine in der Karte.";
-				INFOPLIST_KEY_NSCalendarsUsageDescription = "Gedanken trägt Gedanken mit Termin in deinen Kalender ein und zeigt deine heutigen Termine in der Karte.";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Gedanken hört zu, wenn du aufs Mikrofon tippst, damit du Notizen einsprechen kannst.";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Gedanken wandelt deine gesprochene Notiz in Text um.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -264,11 +263,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Gedanken/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Gedanken;
-				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Gedanken trägt Gedanken mit Termin in deinen Kalender ein und zeigt deine heutigen Termine in der Karte.";
-				INFOPLIST_KEY_NSCalendarsUsageDescription = "Gedanken trägt Gedanken mit Termin in deinen Kalender ein und zeigt deine heutigen Termine in der Karte.";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Gedanken hört zu, wenn du aufs Mikrofon tippst, damit du Notizen einsprechen kannst.";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Gedanken wandelt deine gesprochene Notiz in Text um.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
