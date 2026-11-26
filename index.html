@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Gedanken</title>
+<meta name="description" content="Notizen einsprechen, als wachsende Mindmap sehen, abhaken und als PDF sichern.">
+<meta name="theme-color" content="#F4F5FA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E0F14" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Gedanken">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<style>
+/* Platz für Notch und Home-Balken; [hidden] soll immer gewinnen. */
+html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box}
+[hidden]{display:none!important}
+</style>
+<link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+<!-- APP:START -->
+<div class="app" id="app">
+
+<div class="bg" aria-hidden="true">
+<div class="blob" style="left:-18%;top:8%;width:64%;aspect-ratio:1;background:var(--blob1)"></div>
+<div class="blob" style="left:58%;top:30%;width:60%;aspect-ratio:1;background:var(--blob2);animation-delay:-4s"></div>
+<div class="blob" style="left:6%;top:56%;width:70%;aspect-ratio:1;background:var(--blob3);animation-delay:-7s"></div>
+<div class="grid"></div>
+<span class="mote" style="left:12%"></span>
+<span class="mote" style="left:34%;animation-delay:-3s"></span>
+<span class="mote" style="left:60%;animation-delay:-5.5s"></span>
+<span class="mote" style="left:82%;animation-delay:-1.5s"></span>
+<span class="mote" style="left:92%;animation-delay:-7s"></span>
+</div>
+
+<div class="map" id="map">
+<div class="world" id="world">
+<svg id="links" aria-hidden="true"></svg>
+<div class="halo" id="halo" aria-hidden="true"></div>
+<div class="sat cA" aria-hidden="true" style="left:-64px;top:-64px;width:128px;height:128px"><span></span></div>
+<div class="sat cP" aria-hidden="true" style="left:-72px;top:-72px;width:144px;height:144px;animation-duration:11s;animation-direction:reverse"><span></span></div>
+<span class="rp" id="rp" aria-hidden="true"></span>
+<div class="core" id="core"><b>Heute</b><span id="coreCount">0 offen</span></div>
+<div id="hubs"></div>
+<div id="nodes"></div>
+</div>
+</div>
+
+<section class="listv gut" id="listv" aria-label="Liste aller Gedanken" hidden></section>
+
+<header class="top gut" id="top">
+<div class="head">
+<div>
+<div class="sub">Deine Gedankenkarte</div>
+<h1>Gedanken</h1>
+</div>
+<div class="acts">
+<button class="hbtn glass" id="btnExport" type="button" aria-label="Als PDF sichern"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 4v10"></path><path d="M8 10l4 4 4-4"></path><path d="M5 17v1.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V17"></path></svg></button>
+<div class="pill glass" id="donePill">
+<svg viewBox="0 0 28 28" width="28" height="28" aria-hidden="true" style="transform:rotate(-90deg)"><circle class="ringbg" cx="14" cy="14" r="11"></circle><circle class="ringfg" id="ring" cx="14" cy="14" r="11"></circle></svg>
+<span id="doneCount">0 erledigt</span>
+</div>
+</div>
+</div>
+<div class="segs glass" id="segs" role="group" aria-label="Bereich filtern">
+<span class="thumb" id="thumb" aria-hidden="true"></span>
+<button class="seg act" type="button" data-f="" aria-pressed="true">Alle</button>
+<button class="seg cA" type="button" data-f="a" aria-pressed="false"><span class="cd" aria-hidden="true"></span>Arbeit</button>
+<button class="seg cP" type="button" data-f="p" aria-pressed="false"><span class="cd" aria-hidden="true"></span>Privat</button>
+<button class="seg cI" type="button" data-f="i" aria-pressed="false"><span class="cd" aria-hidden="true"></span>Ideen</button>
+</div>
+</header>
+
+<button class="fit glass" id="fit" type="button" hidden>Alles zeigen</button>
+
+<div class="bottom gut" id="bottom">
+<div class="card2 glass" id="card" aria-live="polite"></div>
+<div class="dock" id="dock">
+<button class="side glass" id="btnType" type="button" aria-label="Gedanken eintippen oder diktieren"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2.5"></rect><path d="M7 10h.01M11 10h.01M15 10h.01M8 14h8"></path></svg></button>
+<div class="bars" id="barsL" aria-hidden="true"></div>
+<div class="micw">
+<span class="mhalo" aria-hidden="true"></span>
+<span class="ring" aria-hidden="true"></span>
+<span class="ring r2" aria-hidden="true"></span>
+<button class="mic" id="mic" type="button" aria-label="Gedanken sprechen">
+<svg class="ic m1" viewBox="0 0 24 24" width="32" height="32" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3"></path></svg>
+<span class="m2" aria-hidden="true"></span>
+</button>
+</div>
+<div class="bars" id="barsR" aria-hidden="true"></div>
+<button class="side glass" id="btnList" type="button" aria-label="Liste ein- oder ausblenden" aria-pressed="false"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M8 7h11M8 12h11M8 17h11M4.5 7h.01M4.5 12h.01M4.5 17h.01"></path></svg></button>
+</div>
+</div>
+
+<div class="chipf" id="chip" aria-hidden="true"><span class="cd"></span><span id="chipText"></span></div>
+
+<button class="bd" id="bd" type="button" aria-label="Schließen" tabindex="-1"></button>
+
+<div class="comp gut" id="comp">
+<form class="compin" id="compForm">
+<label class="eb" for="thought">Gedanken diktieren oder tippen</label>
+<textarea class="inp" id="thought" rows="3" autocomplete="off" placeholder="z. B. Morgen Oma anrufen"></textarea>
+<p class="hint" id="compHint">Tipp: Das Mikrofon auf deiner Tastatur schreibt mit, was du sprichst.</p>
+<div class="btnrow" style="margin-top:14px">
+<button class="sec" id="compCancel" type="button">Abbrechen</button>
+<button class="pri" id="compAdd" type="submit">In die Karte</button>
+</div>
+</form>
+</div>
+
+<div class="sheet gut" id="detail" role="dialog" aria-label="Gedanke bearbeiten">
+<div class="grab" aria-hidden="true"></div>
+<div class="si" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="tag" id="dTag"></span><span class="tag plain" id="dExample" hidden>Beispiel</span><span class="sub" id="dMeta"></span></div>
+<label class="vh" for="dTitle">Kern des Gedankens</label>
+<input class="tin si" id="dTitle" type="text" autocomplete="off" maxlength="40" style="animation-delay:.06s">
+<div class="eb si" style="margin-top:16px;animation-delay:.1s">Das hast du gesagt</div>
+<p class="quote si" id="dText" style="animation-delay:.12s"></p>
+<div class="eb si" style="margin-top:16px;animation-delay:.16s">Bereich</div>
+<div class="opts si" style="animation-delay:.18s">
+<button class="opt cA" type="button" data-cat="a"><span class="cd" aria-hidden="true"></span>Arbeit</button>
+<button class="opt cP" type="button" data-cat="p"><span class="cd" aria-hidden="true"></span>Privat</button>
+<button class="opt cI" type="button" data-cat="i"><span class="cd" aria-hidden="true"></span>Ideen</button>
+</div>
+<button class="switch si" id="dHot" type="button" aria-pressed="false" style="animation-delay:.2s"><span>Wichtig</span><span class="knob" aria-hidden="true"></span></button>
+<div class="btnrow si" style="animation-delay:.24s">
+<button class="pri" id="dDone" type="button"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="stroke-width:2.8"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Erledigt</button>
+<button class="sec danger" id="dDelete" type="button">Löschen</button>
+</div>
+</div>
+
+<div class="sheet gut" id="exp" role="dialog" aria-label="Als PDF sichern">
+<div class="grab" aria-hidden="true"></div>
+<h2 class="si">Als PDF sichern</h2>
+<p class="sub si" style="margin-top:2px;font-size:14px;font-weight:500;animation-delay:.04s">Deine Gedanken als sortierter Text.</p>
+<div class="eb si" style="margin-top:16px;animation-delay:.08s">Speicherort</div>
+<div class="locrow si" id="locRow" style="animation-delay:.1s">
+<svg class="ic" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="color:var(--link)"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5h3.6l2 2.2h7.4A2.5 2.5 0 0 1 21 9.7v6.8A2.5 2.5 0 0 1 18.5 19h-13A2.5 2.5 0 0 1 3 16.5z"></path></svg>
+<div style="flex:1;min-width:0"><b id="locName"></b><small id="locSub"></small></div>
+<button class="locbtn" id="locChange" type="button" hidden>Ändern</button>
+</div>
+<div class="eb si" style="margin-top:14px;animation-delay:.14s">Sortierung</div>
+<div class="opts si" style="animation-delay:.16s">
+<button class="opt" id="sortCat" type="button">Nach Bereich</button>
+<button class="opt" id="sortHot" type="button">Nach Wichtigkeit</button>
+</div>
+<button class="switch si" id="withDone" type="button" aria-pressed="false" style="animation-delay:.18s"><span>Erledigtes mit aufnehmen</span><span class="knob" aria-hidden="true"></span></button>
+<div class="paper si" id="paper" style="animation-delay:.2s"></div>
+<button class="pri si" id="savePdf" type="button" style="width:100%;margin-top:14px;animation-delay:.24s">PDF sichern</button>
+<p class="status" id="expStatus" role="status"></p>
+</div>
+
+<div class="toast" id="toast" role="status"><span id="toastText"></span><button id="undo" type="button">Rückgängig</button></div>
+
+<div class="intro out" id="intro">
+<div class="orb" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" width="52" height="52"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3"></path></svg></div>
+<h2 class="iw" style="animation-delay:.35s">Gedanken</h2>
+<p><span class="iw" style="animation-delay:.8s">Sprich.</span> <span class="iw" style="animation-delay:1.25s">Ich sortiere.</span> <span class="iw" style="animation-delay:1.7s">Du hakst ab.</span></p>
+<button class="gobtn iw" id="introGo" type="button" style="animation-delay:2.2s">Los geht's</button>
+</div>
+
+</div>
+<!-- APP:END -->
+<script src="src/core.js"></script>
+<script src="src/pdf.js"></script>
+<script src="src/app.js"></script>
+</body>
+</html>
