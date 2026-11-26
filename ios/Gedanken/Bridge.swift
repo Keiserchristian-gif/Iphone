@@ -55,7 +55,7 @@ final class Bridge: NSObject, WKScriptMessageHandlerWithReply {
         case "caps":
             if !announced {
                 announced = true
-                print("GEDANKEN_READY")
+                state.markReady()
                 NSLog("GEDANKEN_READY")
             }
             replyHandler(caps(), nil)

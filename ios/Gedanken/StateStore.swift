@@ -14,6 +14,12 @@ final class StateStore {
         return String(data: data, encoding: .utf8)
     }
 
+    /// Hinterlässt eine kleine Marke, sobald die Oberfläche geladen ist (der automatische Bau prüft sie).
+    func markReady() {
+        guard let file = url?.deletingLastPathComponent().appendingPathComponent("ready.txt") else { return }
+        try? Data("ready".utf8).write(to: file, options: .atomic)
+    }
+
     func save(_ json: String) {
         guard let file = url else { return }
         try? Data(json.utf8).write(to: file, options: .atomic)

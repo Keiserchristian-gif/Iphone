@@ -38,22 +38,24 @@ jobs:
           done
 
       - name: Im Simulator starten
+        timeout-minutes: 12
         run: |
+          set -x
           DEVICE=$(xcrun simctl list devices available | grep -E "iPhone" | head -n 1 | grep -oE "[0-9A-F]{8}-[0-9A-F-]{27}")
-          echo "Simulator: $DEVICE"
-          xcrun simctl boot "$DEVICE"
+          xcrun simctl list devices available | grep -E "iPhone" | head -n 3
           xcrun simctl bootstatus "$DEVICE" -b
           xcrun simctl install "$DEVICE" build/Debug-iphonesimulator/Gedanken.app
-          xcrun simctl launch --console-pty "$DEVICE" de.gedankenkarte.app > app.log 2>&1 &
+          xcrun simctl launch "$DEVICE" de.gedankenkarte.app
+          DATA=$(xcrun simctl get_app_container "$DEVICE" de.gedankenkarte.app data)
+          MARK="$DATA/Library/Application Support/ready.txt"
           for i in $(seq 1 45); do
-            if grep -q GEDANKEN_READY app.log; then break; fi
+            if [ -f "$MARK" ]; then break; fi
             sleep 2
           done
-          sleep 4
+          sleep 3
           xcrun simctl io "$DEVICE" screenshot simulator.png || true
-          echo "--- Ausgabe der App"
-          tail -n 40 app.log
-          grep -q GEDANKEN_READY app.log
+          ls -la "$DATA/Library/Application Support" || true
+          test -f "$MARK"
 
       - name: Bildschirmfoto aufheben
         if: always()
